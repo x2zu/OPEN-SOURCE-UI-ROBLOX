@@ -15,6 +15,7 @@
 
 -- All Credits : @x2zu
 -- ngaku ngaku yatim ngentot di kasi gratis ngelunjak memek
+-- bacot njir nyolong ui lib orng malah claim punya lu 🤡 ^^
 -- 03-02-2025 > Changed UI Color Purple to blue gradient
 -- Revolution : Ancestral > Stellar Create by x2zu
 -- don't be stupid and be smart just give credit @x2zu
