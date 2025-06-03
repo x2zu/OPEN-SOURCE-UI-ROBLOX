@@ -3,7 +3,7 @@ if (game:GetService("CoreGui")):FindFirstChild("Stellar") and (game:GetService("
 	(game:GetService("CoreGui")).ScreenGui:Destroy();
 end;
 _G.Primary = Color3.fromRGB(100, 100, 100);
-_G.Dark = Color3.fromRGB(22, 22, 26);
+_G.Dark = Color3.fromRGB(15, 23, 42);
 _G.Third = Color3.fromRGB(30, 90, 202);
 function CreateRounded(Parent, Size)
 	local Rounded = Instance.new("UICorner");
@@ -67,7 +67,7 @@ ImageButton.Position = UDim2.new(0.5, 0, 0.5, 0);
 ImageButton.Size = UDim2.new(0, 40, 0, 40);
 ImageButton.AnchorPoint = Vector2.new(0.5, 0.5);
 ImageButton.BackgroundColor3 = _G.Dark;
-ImageButton.ImageColor3 = Color3.fromRGB(15, 23, 42)  -- biru tua navy
+ImageButton.ImageColor3 = Color3.fromRGB(250, 250, 250);
 ImageButton.ImageTransparency = 0;
 ImageButton.BackgroundTransparency = 0;
 ImageButton.Image = "rbxassetid://120727887371733";
