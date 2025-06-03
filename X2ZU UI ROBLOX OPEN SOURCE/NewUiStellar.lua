@@ -2,9 +2,9 @@ if (game:GetService("CoreGui")):FindFirstChild("Stellar") and (game:GetService("
 	(game:GetService("CoreGui")).Stellar:Destroy();
 	(game:GetService("CoreGui")).ScreenGui:Destroy();
 end;
-_G.Primary = Color3.fromRGB(100, 100, 100);
-_G.Dark = Color3.fromRGB(22, 22, 26);
-_G.Third = Color3.fromRGB(30, 90, 202);
+_G.Primary = Color3.fromRGB(100, 150, 255);
+_G.Dark = Color3.fromRGB(100, 150, 255);
+_G.Third = Color3.fromRGB(100, 150, 255);
 function CreateRounded(Parent, Size)
 	local Rounded = Instance.new("UICorner");
 	Rounded.Name = "Rounded";
@@ -652,8 +652,7 @@ function Update:Window(Config)
 	MainPage.Name = "MainPage";
 	MainPage.Parent = Page;
 	MainPage.ClipsDescendants = true;
-	MainPage.BackgroundColor3 = Color3.fromRGB(15, 23, 42);
-	-- MainPage.BackgroundColor3 = Color3.fromRGB(255, 255, 255);
+	MainPage.BackgroundColor3 = Color3.fromRGB(255, 255, 255);
 	MainPage.BackgroundTransparency = 1;
 	MainPage.Size = UDim2.new(1, 0, 1, 0);
 	local PageList = Instance.new("Folder");
