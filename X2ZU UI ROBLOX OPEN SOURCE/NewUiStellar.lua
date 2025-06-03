@@ -4,7 +4,7 @@ if (game:GetService("CoreGui")):FindFirstChild("Stellar") and (game:GetService("
 end;
 _G.Primary = Color3.fromRGB(100, 100, 100);
 _G.Dark = Color3.fromRGB(15, 23, 42);
-_G.Third = Color3.fromRGB(30, 90, 202);
+_G.Third = Color3.fromRGB(15, 23, 42);
 function CreateRounded(Parent, Size)
 	local Rounded = Instance.new("UICorner");
 	Rounded.Name = "Rounded";
