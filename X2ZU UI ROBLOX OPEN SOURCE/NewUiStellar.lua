@@ -2,8 +2,8 @@ if (game:GetService("CoreGui")):FindFirstChild("Stellar") and (game:GetService("
 	(game:GetService("CoreGui")).Stellar:Destroy();
 	(game:GetService("CoreGui")).ScreenGui:Destroy();
 end;
-_G.Primary = Color3.fromRGB(64, 128, 255) -- Biru sedang terang
-_G.Dark = Color3.fromRGB(15, 23, 42)      -- Biru tua kehitaman (deep navy blue)
+_G.Primary = Color3.fromRGB(100, 100, 100);
+_G.Dark = Color3.fromRGB(22, 22, 26);
 _G.Third = Color3.fromRGB(30, 90, 202);
 function CreateRounded(Parent, Size)
 	local Rounded = Instance.new("UICorner");
