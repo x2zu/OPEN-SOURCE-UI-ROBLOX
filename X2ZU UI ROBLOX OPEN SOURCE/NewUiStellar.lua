@@ -652,7 +652,8 @@ function Update:Window(Config)
 	MainPage.Name = "MainPage";
 	MainPage.Parent = Page;
 	MainPage.ClipsDescendants = true;
-	MainPage.BackgroundColor3 = Color3.fromRGB(255, 255, 255);
+	MainPage.BackgroundColor3 = Color3.fromRGB(15, 23, 42);
+	-- MainPage.BackgroundColor3 = Color3.fromRGB(255, 255, 255);
 	MainPage.BackgroundTransparency = 1;
 	MainPage.Size = UDim2.new(1, 0, 1, 0);
 	local PageList = Instance.new("Folder");
