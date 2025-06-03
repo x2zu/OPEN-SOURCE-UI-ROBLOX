@@ -79,7 +79,7 @@ ImageButton.BackgroundTransparency = 0;
 ImageButton.Image = "rbxassetid://120727887371733";
 ImageButton.AutoButtonColor = false;
 MakeDraggable(ImageButton, OutlineButton);
-CreateRounded(ImageButton, 20);
+CreateRounded(ImageButton, 50);
 ImageButton.MouseButton1Click:connect(function()
 	(game.CoreGui:FindFirstChild("Stellar")).Enabled = not (game.CoreGui:FindFirstChild("Stellar")).Enabled;
 end);
