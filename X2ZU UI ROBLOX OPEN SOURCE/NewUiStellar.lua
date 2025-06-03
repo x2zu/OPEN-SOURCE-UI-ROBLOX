@@ -158,102 +158,93 @@ function Update:Notify(desc)
 	});
 end;
 function Update:StartLoad()
-	local Loader = Instance.new("ScreenGui");
-	Loader.Parent = game.CoreGui;
-	Loader.ZIndexBehavior = Enum.ZIndexBehavior.Global;
-	Loader.DisplayOrder = 1000;
-	local LoaderFrame = Instance.new("Frame");
-	LoaderFrame.Name = "LoaderFrame";
-	LoaderFrame.Parent = Loader;
-	LoaderFrame.ClipsDescendants = true;
-	LoaderFrame.BackgroundColor3 = Color3.fromRGB(5, 5, 5);
-	LoaderFrame.BackgroundTransparency = 0;
-	LoaderFrame.AnchorPoint = Vector2.new(0.5, 0.5);
-	LoaderFrame.Position = UDim2.new(0.5, 0, 0.5, 0);
-	LoaderFrame.Size = UDim2.new(1.5, 0, 1.5, 0);
-	LoaderFrame.BorderSizePixel = 0;
-	local MainLoaderFrame = Instance.new("Frame");
-	MainLoaderFrame.Name = "MainLoaderFrame";
-	MainLoaderFrame.Parent = LoaderFrame;
-	MainLoaderFrame.ClipsDescendants = true;
-	MainLoaderFrame.BackgroundColor3 = Color3.fromRGB(5, 5, 5);
-	MainLoaderFrame.BackgroundTransparency = 0;
-	MainLoaderFrame.AnchorPoint = Vector2.new(0.5, 0.5);
-	MainLoaderFrame.Position = UDim2.new(0.5, 0, 0.5, 0);
-	MainLoaderFrame.Size = UDim2.new(0.5, 0, 0.5, 0);
-	MainLoaderFrame.BorderSizePixel = 0;
-	local TitleLoader = Instance.new("TextLabel");
-	TitleLoader.Parent = MainLoaderFrame;
-	TitleLoader.Text = "Stellar";
-	TitleLoader.Font = Enum.Font.FredokaOne;
-	TitleLoader.TextSize = 50;
-	TitleLoader.TextColor3 = Color3.fromRGB(255, 255, 255);
-	TitleLoader.BackgroundTransparency = 1;
-	TitleLoader.AnchorPoint = Vector2.new(0.5, 0.5);
-	TitleLoader.Position = UDim2.new(0.5, 0, 0.3, 0);
-	TitleLoader.Size = UDim2.new(0.8, 0, 0.2, 0);
-	TitleLoader.TextTransparency = 0;
-	local DescriptionLoader = Instance.new("TextLabel");
-	DescriptionLoader.Parent = MainLoaderFrame;
-	DescriptionLoader.Text = "Loading..";
-	DescriptionLoader.Font = Enum.Font.Gotham;
-	DescriptionLoader.TextSize = 15;
-	DescriptionLoader.TextColor3 = Color3.fromRGB(255, 255, 255);
-	DescriptionLoader.BackgroundTransparency = 1;
-	DescriptionLoader.AnchorPoint = Vector2.new(0.5, 0.5);
-	DescriptionLoader.Position = UDim2.new(0.5, 0, 0.6, 0);
-	DescriptionLoader.Size = UDim2.new(0.8, 0, 0.2, 0);
-	DescriptionLoader.TextTransparency = 0;
-	local LoadingBarBackground = Instance.new("Frame");
-	LoadingBarBackground.Parent = MainLoaderFrame;
-	LoadingBarBackground.BackgroundColor3 = Color3.fromRGB(50, 50, 50);
-	LoadingBarBackground.AnchorPoint = Vector2.new(0.5, 0.5);
-	LoadingBarBackground.Position = UDim2.new(0.5, 0, 0.7, 0);
-	LoadingBarBackground.Size = UDim2.new(0.7, 0, 0.05, 0);
-	LoadingBarBackground.ClipsDescendants = true;
-	LoadingBarBackground.BorderSizePixel = 0;
-	LoadingBarBackground.ZIndex = 2;
-	local LoadingBar = Instance.new("Frame");
-	LoadingBar.Parent = LoadingBarBackground;
-	LoadingBar.BackgroundColor3 = Color3.fromRGB(30, 90, 202);
-	LoadingBar.Size = UDim2.new(0, 0, 1, 0);
-	LoadingBar.ZIndex = 3;
-	CreateRounded(LoadingBarBackground, 20);
-	CreateRounded(LoadingBar, 20);
-	local tweenService = game:GetService("TweenService");
-	local dotCount = 0;
-	local running = true;
-	local barTweenInfoPart1 = TweenInfo.new(0.5, Enum.EasingStyle.Linear, Enum.EasingDirection.Out);
-	local barTweenPart1 = tweenService:Create(LoadingBar, barTweenInfoPart1, {
-		Size = UDim2.new(0.25, 0, 1, 0)
-	});
-	local barTweenInfoPart2 = TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out);
-	local barTweenPart2 = tweenService:Create(LoadingBar, barTweenInfoPart2, {
+	local TweenService = game:GetService("TweenService")
+	local Loader = Instance.new("ScreenGui")
+	Loader.Name = "ModernLoader"
+	Loader.Parent = game.CoreGui
+	Loader.ZIndexBehavior = Enum.ZIndexBehavior.Global
+	Loader.DisplayOrder = 1000
+
+	local LoaderFrame = Instance.new("Frame")
+	LoaderFrame.Name = "LoaderFrame"
+	LoaderFrame.Parent = Loader
+	LoaderFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+	LoaderFrame.Size = UDim2.new(1, 0, 1, 0)
+	LoaderFrame.Position = UDim2.new(0, 0, 0, 0)
+	LoaderFrame.BorderSizePixel = 0
+
+	local CenterFrame = Instance.new("Frame")
+	CenterFrame.Name = "CenterFrame"
+	CenterFrame.Parent = LoaderFrame
+	CenterFrame.Size = UDim2.new(0, 300, 0, 150)
+	CenterFrame.Position = UDim2.new(0.5, -150, 0.5, -75)
+	CenterFrame.BackgroundColor3 = Color3.fromRGB(35, 45, 65)
+	CenterFrame.BorderSizePixel = 0
+	CreateRounded(CenterFrame, 12)
+
+	local Title = Instance.new("TextLabel")
+	Title.Parent = CenterFrame
+	Title.Text = "Stellar UI"
+	Title.Font = Enum.Font.FredokaOne
+	Title.TextSize = 36
+	Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Title.BackgroundTransparency = 1
+	Title.Size = UDim2.new(1, 0, 0.4, 0)
+	Title.Position = UDim2.new(0, 0, 0, 0)
+
+	local Status = Instance.new("TextLabel")
+	Status.Parent = CenterFrame
+	Status.Text = "Loading..."
+	Status.Font = Enum.Font.Gotham
+	Status.TextSize = 16
+	Status.TextColor3 = Color3.fromRGB(200, 200, 200)
+	Status.BackgroundTransparency = 1
+	Status.Size = UDim2.new(1, 0, 0.2, 0)
+	Status.Position = UDim2.new(0, 0, 0.4, 0)
+
+	local ProgressBarBG = Instance.new("Frame")
+	ProgressBarBG.Parent = CenterFrame
+	ProgressBarBG.BackgroundColor3 = Color3.fromRGB(50, 60, 80)
+	ProgressBarBG.Size = UDim2.new(0.9, 0, 0.1, 0)
+	ProgressBarBG.Position = UDim2.new(0.05, 0, 0.7, 0)
+	ProgressBarBG.BorderSizePixel = 0
+	CreateRounded(ProgressBarBG, 10)
+
+	local ProgressBar = Instance.new("Frame")
+	ProgressBar.Parent = ProgressBarBG
+	ProgressBar.BackgroundColor3 = Color3.fromRGB(100, 170, 255)
+	ProgressBar.Size = UDim2.new(0, 0, 1, 0)
+	ProgressBar.BorderSizePixel = 0
+	CreateRounded(ProgressBar, 10)
+
+	local tween1 = TweenService:Create(ProgressBar, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+		Size = UDim2.new(0.3, 0, 1, 0)
+	})
+
+	local tween2 = TweenService:Create(ProgressBar, TweenInfo.new(1.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
 		Size = UDim2.new(1, 0, 1, 0)
-	});
-	barTweenPart1:Play();
-	function Update:Loaded()
-		barTweenPart2:Play();
-	end;
-	barTweenPart1.Completed:Connect(function()
-		running = true;
-		barTweenPart2.Completed:Connect(function()
-			wait(1);
-			running = false;
-			DescriptionLoader.Text = "Loaded!";
-			wait(0.5);
-			Loader:Destroy();
-		end);
-	end);
+	})
+
+	tween1:Play()
+	tween1.Completed:Connect(function()
+		tween2:Play()
+	end)
+
+	tween2.Completed:Connect(function()
+		Status.Text = "Loaded!"
+		wait(0.5)
+		Loader:Destroy()
+	end)
+
 	spawn(function()
-		while running do
-			dotCount = (dotCount + 1) % 4;
-			local dots = string.rep(".", dotCount);
-			DescriptionLoader.Text = "Please wait" .. dots;
-			wait(0.5);
-		end;
-	end);
-end;
+		local dotCount = 0
+		while tween2.PlaybackState ~= Enum.PlaybackState.Completed do
+			dotCount = (dotCount + 1) % 4
+			Status.Text = "Loading" .. string.rep(".", dotCount)
+			wait(0.4)
+		end
+	end)
+end
 local SettingsLib = {
 	SaveSettings = true,
 	LoadAnimation = true
