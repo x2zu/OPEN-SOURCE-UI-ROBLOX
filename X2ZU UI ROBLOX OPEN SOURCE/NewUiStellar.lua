@@ -2,7 +2,7 @@ if (game:GetService("CoreGui")):FindFirstChild("Stellar") and (game:GetService("
 	(game:GetService("CoreGui")).Stellar:Destroy();
 	(game:GetService("CoreGui")).ScreenGui:Destroy();
 end;
-_G.Primary = Color3.fromRGB(100, 100, 100);
+_G.Primary = Color3.fromRGB(15, 23, 42);
 _G.Dark = Color3.fromRGB(15, 23, 42);
 _G.Third = Color3.fromRGB(15, 23, 42);
 function CreateRounded(Parent, Size)
