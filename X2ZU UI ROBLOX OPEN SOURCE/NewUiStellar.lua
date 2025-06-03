@@ -157,12 +157,7 @@ function Update:Notify(desc)
 		title
 	});
 end;
-function Update:StartLoad()
 	
--- ✅ Dipindah ke luar agar bisa dipanggil dari luar
-function Update:Loaded()
-	barTweenPart2:Play()
-end
 
 local SettingsLib = {
 	SaveSettings = true,
