@@ -2,9 +2,9 @@ if (game:GetService("CoreGui")):FindFirstChild("Stellar") and (game:GetService("
 	(game:GetService("CoreGui")).Stellar:Destroy();
 	(game:GetService("CoreGui")).ScreenGui:Destroy();
 end;
-_G.Primary = Color3.fromRGB(15, 23, 42);
-_G.Dark = Color3.fromRGB(15, 23, 42);
-_G.Third = Color3.fromRGB(15, 23, 42);
+_G.Primary = Color3.fromRGB(100, 100, 100);
+_G.Dark = Color3.fromRGB(22, 22, 26);
+_G.Third = Color3.fromRGB(30, 90, 202);
 function CreateRounded(Parent, Size)
 	local Rounded = Instance.new("UICorner");
 	Rounded.Name = "Rounded";
@@ -108,7 +108,7 @@ function Update:Notify(desc)
 	OutlineFrame.Name = "OutlineFrame";
 	OutlineFrame.Parent = NotificationFrame;
 	OutlineFrame.ClipsDescendants = true;
-	OutlineFrame.BackgroundColor3 = Color3.fromRGB(120, 170, 255);
+	OutlineFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30);
 	OutlineFrame.AnchorPoint = Vector2.new(0.5, 1);
 	OutlineFrame.BackgroundTransparency = 0.4;
 	OutlineFrame.Position = UDim2.new(0.5, 0, -0.2, 0);
@@ -1610,5 +1610,5 @@ function Update:Window(Config)
 	return uitab;
 end;
 -- 30, 90, 202 Color Blue
--- 120727887371733 Logo
+-- 120727887371733
 return Update;
