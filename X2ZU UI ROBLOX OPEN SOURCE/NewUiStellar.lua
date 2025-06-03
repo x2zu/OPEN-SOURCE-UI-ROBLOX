@@ -63,9 +63,15 @@ OutlineButton.Size = UDim2.new(0, 50, 0, 50);
 CreateRounded(OutlineButton, 12);
 local ImageButton = Instance.new("ImageButton");
 ImageButton.Parent = OutlineButton;
-ImageButton.Position = UDim2.new(0.5, 0, 0.5, 0);
-ImageButton.Size = UDim2.new(0, 40, 0, 40);
-ImageButton.AnchorPoint = Vector2.new(0.5, 0.5);
+
+ImageButton.Size = UDim2.new(1, 0, 1, 0);
+ImageButton.Position = UDim2.new(0, 40, 0, 40);;
+ImageButton.AnchorPoint = Vector2.new(0.5, 0.5)
+
+-- ImageButton.Position = UDim2.new(0.5, 0, 0.5, 0);
+-- ImageButton.Size = UDim2.new(0, 40, 0, 40);
+-- ImageButton.AnchorPoint = Vector2.new(0.5, 0.5);
+
 ImageButton.BackgroundColor3 = _G.Dark;
 ImageButton.ImageColor3 = Color3.fromRGB(250, 250, 250);
 ImageButton.ImageTransparency = 0;
@@ -1553,7 +1559,7 @@ function Update:Window(Config)
 			Sep1.Size = UDim2.new(0, 20, 0, 36);
 			Sep1.Font = Enum.Font.GothamBold;
 			Sep1.RichText = true;
-			Sep1.Text = "✧<font color=\"rgb(30, 90, 202)\">✧</font>";
+			Sep1.Text = "X2<font color=\"rgb(30, 90, 202)\">X2</font>";
 			Sep1.TextColor3 = Color3.fromRGB(255, 255, 255);
 			Sep1.TextSize = 14;
 			Sep2.Name = "Sep2";
