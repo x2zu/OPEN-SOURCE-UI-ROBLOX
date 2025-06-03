@@ -65,7 +65,7 @@ local ImageButton = Instance.new("ImageButton");
 ImageButton.Parent = OutlineButton;
 
 ImageButton.Size = UDim2.new(1, 0, 1, 0);
-ImageButton.Position = UDim2.new(0, 40, 0, 40);;
+ImageButton.Position = UDim2.new(0, 40, 0, 40);
 ImageButton.AnchorPoint = Vector2.new(0.5, 0.5)
 
 -- ImageButton.Position = UDim2.new(0.5, 0, 0.5, 0);
