@@ -1,5 +1,5 @@
-if (game:GetService("CoreGui")):FindFirstChild("BSMT") and (game:GetService("CoreGui")):FindFirstChild("ScreenGui") then
-	(game:GetService("CoreGui")).BSMT:Destroy();
+if (game:GetService("CoreGui")):FindFirstChild("STELLAR") and (game:GetService("CoreGui")):FindFirstChild("ScreenGui") then
+	(game:GetService("CoreGui")).STELLAR:Destroy();
 	(game:GetService("CoreGui")).ScreenGui:Destroy();
 end;
 _G.Primary = Color3.fromRGB(100, 100, 100);
@@ -75,7 +75,7 @@ ImageButton.AutoButtonColor = false;
 MakeDraggable(ImageButton, OutlineButton);
 CreateRounded(ImageButton, 10);
 ImageButton.MouseButton1Click:connect(function()
-	(game.CoreGui:FindFirstChild("BSMT")).Enabled = not (game.CoreGui:FindFirstChild("BSMT")).Enabled;
+	(game.CoreGui:FindFirstChild("STELLAR")).Enabled = not (game.CoreGui:FindFirstChild("STELLAR")).Enabled;
 end);
 local NotificationFrame = Instance.new("ScreenGui");
 NotificationFrame.Name = "NotificationFrame";
@@ -134,7 +134,7 @@ function Update:Notify(desc)
 	Title.Position = UDim2.new(0, 55, 0, 14);
 	Title.Size = UDim2.new(0, 10, 0, 20);
 	Title.Font = Enum.Font.GothamBold;
-	Title.Text = "BSMT";
+	Title.Text = "STELLAR";
 	Title.TextColor3 = Color3.fromRGB(255, 255, 255);
 	Title.TextSize = 16;
 	Title.TextXAlignment = Enum.TextXAlignment.Left;
@@ -184,7 +184,7 @@ function Update:StartLoad()
 	MainLoaderFrame.BorderSizePixel = 0;
 	local TitleLoader = Instance.new("TextLabel");
 	TitleLoader.Parent = MainLoaderFrame;
-	TitleLoader.Text = "BSMT";
+	TitleLoader.Text = "STELLAR";
 	TitleLoader.Font = Enum.Font.FredokaOne;
 	TitleLoader.TextSize = 50;
 	TitleLoader.TextColor3 = Color3.fromRGB(255, 255, 255);
@@ -260,16 +260,16 @@ local SettingsLib = {
 };
 (getgenv()).LoadConfig = function()
 	if readfile and writefile and isfile and isfolder then
-		if not isfolder("BSMT") then
-			makefolder("BSMT");
+		if not isfolder("STELLAR") then
+			makefolder("STELLAR");
 		end;
-		if not isfolder("BSMT/Library/") then
-			makefolder("BSMT/Library/");
+		if not isfolder("STELLAR/Library/") then
+			makefolder("STELLAR/Library/");
 		end;
-		if not isfile(("BSMT/Library/" .. game.Players.LocalPlayer.Name .. ".json")) then
-			writefile("BSMT/Library/" .. game.Players.LocalPlayer.Name .. ".json", (game:GetService("HttpService")):JSONEncode(SettingsLib));
+		if not isfile(("STELLAR/Library/" .. game.Players.LocalPlayer.Name .. ".json")) then
+			writefile("STELLAR/Library/" .. game.Players.LocalPlayer.Name .. ".json", (game:GetService("HttpService")):JSONEncode(SettingsLib));
 		else
-			local Decode = (game:GetService("HttpService")):JSONDecode(readfile("BSMT/Library/" .. game.Players.LocalPlayer.Name .. ".json"));
+			local Decode = (game:GetService("HttpService")):JSONDecode(readfile("STELLAR/Library/" .. game.Players.LocalPlayer.Name .. ".json"));
 			for i, v in pairs(Decode) do
 				SettingsLib[i] = v;
 			end;
@@ -281,15 +281,15 @@ local SettingsLib = {
 end;
 (getgenv()).SaveConfig = function()
 	if readfile and writefile and isfile and isfolder then
-		if not isfile(("BSMT/Library/" .. game.Players.LocalPlayer.Name .. ".json")) then
+		if not isfile(("STELLAR/Library/" .. game.Players.LocalPlayer.Name .. ".json")) then
 			(getgenv()).Load();
 		else
-			local Decode = (game:GetService("HttpService")):JSONDecode(readfile("BSMT/Library/" .. game.Players.LocalPlayer.Name .. ".json"));
+			local Decode = (game:GetService("HttpService")):JSONDecode(readfile("STELLAR/Library/" .. game.Players.LocalPlayer.Name .. ".json"));
 			local Array = {};
 			for i, v in pairs(SettingsLib) do
 				Array[i] = v;
 			end;
-			writefile("BSMT/Library/" .. game.Players.LocalPlayer.Name .. ".json", (game:GetService("HttpService")):JSONEncode(Array));
+			writefile("STELLAR/Library/" .. game.Players.LocalPlayer.Name .. ".json", (game:GetService("HttpService")):JSONEncode(Array));
 		end;
 	else
 		return warn("Status : Undetected Executor");
@@ -320,13 +320,13 @@ function Update:Window(Config)
 	local currentpage = "";
 	local keybind = keybind or Enum.KeyCode.RightControl;
 	local yoo = string.gsub(tostring(keybind), "Enum.KeyCode.", "");
-	local BSMT = Instance.new("ScreenGui");
-	BSMT.Name = "BSMT";
-	BSMT.Parent = game.CoreGui;
-	BSMT.DisplayOrder = 999;
+	local STELLAR = Instance.new("ScreenGui");
+	STELLAR.Name = "STELLAR";
+	STELLAR.Parent = game.CoreGui;
+	STELLAR.DisplayOrder = 999;
 	local OutlineMain = Instance.new("Frame");
 	OutlineMain.Name = "OutlineMain";
-	OutlineMain.Parent = BSMT;
+	OutlineMain.Parent = STELLAR;
 	OutlineMain.ClipsDescendants = true;
 	OutlineMain.AnchorPoint = Vector2.new(0.5, 0.5);
 	OutlineMain.BackgroundColor3 = Color3.fromRGB(30, 30, 30);
@@ -378,7 +378,7 @@ function Update:Window(Config)
 	NameHub.AnchorPoint = Vector2.new(0, 0.5);
 	NameHub.Size = UDim2.new(0, 1, 0, 25);
 	NameHub.Font = Enum.Font.GothamBold;
-	NameHub.Text = "BSMT";
+	NameHub.Text = "STELLAR";
 	NameHub.TextSize = 20;
 	NameHub.TextColor3 = Color3.fromRGB(255, 255, 255);
 	NameHub.TextXAlignment = Enum.TextXAlignment.Left;
@@ -411,7 +411,7 @@ function Update:Window(Config)
 	CloseButton.ImageColor3 = Color3.fromRGB(245, 245, 245);
 	CreateRounded(CloseButton, 3);
 	CloseButton.MouseButton1Click:connect(function()
-		(game.CoreGui:FindFirstChild("BSMT")).Enabled = not (game.CoreGui:FindFirstChild("BSMT")).Enabled;
+		(game.CoreGui:FindFirstChild("STELLAR")).Enabled = not (game.CoreGui:FindFirstChild("STELLAR")).Enabled;
 	end);
 	local ResizeButton = Instance.new("ImageButton");
 	ResizeButton.Name = "ResizeButton";
@@ -608,8 +608,8 @@ function Update:Window(Config)
 		(getgenv()).SaveConfig();
 	end);
 	CreateButton("Reset Config", function()
-		if isfolder("BSMT") then
-			delfolder("BSMT");
+		if isfolder("STELLAR") then
+			delfolder("STELLAR");
 		end;
 		Update:Notify("Config has been reseted!");
 	end);
@@ -672,7 +672,7 @@ function Update:Window(Config)
 	MakeDraggable(Top, OutlineMain);
 	UserInputService.InputBegan:Connect(function(input)
 		if input.KeyCode == Enum.KeyCode.Insert then
-			(game.CoreGui:FindFirstChild("BSMT")).Enabled = not (game.CoreGui:FindFirstChild("BSMT")).Enabled;
+			(game.CoreGui:FindFirstChild("STELLAR")).Enabled = not (game.CoreGui:FindFirstChild("STELLAR")).Enabled;
 		end;
 	end);
 	local Dragging = false;
