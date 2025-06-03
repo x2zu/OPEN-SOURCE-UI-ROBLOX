@@ -1,5 +1,5 @@
-if (game:GetService("CoreGui")):FindFirstChild("Stellar") and (game:GetService("CoreGui")):FindFirstChild("ScreenGui") then
-	(game:GetService("CoreGui")).Stellar:Destroy();
+if (game:GetService("CoreGui")):FindFirstChild("STELLAR") and (game:GetService("CoreGui")):FindFirstChild("ScreenGui") then
+	(game:GetService("CoreGui")).STELLAR:Destroy();
 	(game:GetService("CoreGui")).ScreenGui:Destroy();
 end;
 _G.Primary = Color3.fromRGB(100, 100, 100);
@@ -70,12 +70,12 @@ ImageButton.BackgroundColor3 = _G.Dark;
 ImageButton.ImageColor3 = Color3.fromRGB(250, 250, 250);
 ImageButton.ImageTransparency = 0;
 ImageButton.BackgroundTransparency = 0;
-ImageButton.Image = "rbxassetid://120727887371733";
+ImageButton.Image = "rbxassetid://105741900808357";
 ImageButton.AutoButtonColor = false;
 MakeDraggable(ImageButton, OutlineButton);
 CreateRounded(ImageButton, 10);
 ImageButton.MouseButton1Click:connect(function()
-	(game.CoreGui:FindFirstChild("Stellar")).Enabled = not (game.CoreGui:FindFirstChild("Stellar")).Enabled;
+	(game.CoreGui:FindFirstChild("STELLAR")).Enabled = not (game.CoreGui:FindFirstChild("STELLAR")).Enabled;
 end);
 local NotificationFrame = Instance.new("ScreenGui");
 NotificationFrame.Name = "NotificationFrame";
@@ -127,7 +127,7 @@ function Update:Notify(desc)
 	Image.BackgroundTransparency = 1;
 	Image.Position = UDim2.new(0, 8, 0, 8);
 	Image.Size = UDim2.new(0, 45, 0, 45);
-	Image.Image = "rbxassetid://120727887371733";
+	Image.Image = "rbxassetid://105741900808357";
 	Title.Parent = Frame;
 	Title.BackgroundColor3 = _G.Primary;
 	Title.BackgroundTransparency = 1;
@@ -157,23 +157,119 @@ function Update:Notify(desc)
 		title
 	});
 end;
-
+function Update:StartLoad()
+	local Loader = Instance.new("ScreenGui");
+	Loader.Parent = game.CoreGui;
+	Loader.ZIndexBehavior = Enum.ZIndexBehavior.Global;
+	Loader.DisplayOrder = 1000;
+	local LoaderFrame = Instance.new("Frame");
+	LoaderFrame.Name = "LoaderFrame";
+	LoaderFrame.Parent = Loader;
+	LoaderFrame.ClipsDescendants = true;
+	LoaderFrame.BackgroundColor3 = Color3.fromRGB(5, 5, 5);
+	LoaderFrame.BackgroundTransparency = 0;
+	LoaderFrame.AnchorPoint = Vector2.new(0.5, 0.5);
+	LoaderFrame.Position = UDim2.new(0.5, 0, 0.5, 0);
+	LoaderFrame.Size = UDim2.new(1.5, 0, 1.5, 0);
+	LoaderFrame.BorderSizePixel = 0;
+	local MainLoaderFrame = Instance.new("Frame");
+	MainLoaderFrame.Name = "MainLoaderFrame";
+	MainLoaderFrame.Parent = LoaderFrame;
+	MainLoaderFrame.ClipsDescendants = true;
+	MainLoaderFrame.BackgroundColor3 = Color3.fromRGB(5, 5, 5);
+	MainLoaderFrame.BackgroundTransparency = 0;
+	MainLoaderFrame.AnchorPoint = Vector2.new(0.5, 0.5);
+	MainLoaderFrame.Position = UDim2.new(0.5, 0, 0.5, 0);
+	MainLoaderFrame.Size = UDim2.new(0.5, 0, 0.5, 0);
+	MainLoaderFrame.BorderSizePixel = 0;
+	local TitleLoader = Instance.new("TextLabel");
+	TitleLoader.Parent = MainLoaderFrame;
+	TitleLoader.Text = "STELLAR";
+	TitleLoader.Font = Enum.Font.FredokaOne;
+	TitleLoader.TextSize = 50;
+	TitleLoader.TextColor3 = Color3.fromRGB(255, 255, 255);
+	TitleLoader.BackgroundTransparency = 1;
+	TitleLoader.AnchorPoint = Vector2.new(0.5, 0.5);
+	TitleLoader.Position = UDim2.new(0.5, 0, 0.3, 0);
+	TitleLoader.Size = UDim2.new(0.8, 0, 0.2, 0);
+	TitleLoader.TextTransparency = 0;
+	local DescriptionLoader = Instance.new("TextLabel");
+	DescriptionLoader.Parent = MainLoaderFrame;
+	DescriptionLoader.Text = "Loading..";
+	DescriptionLoader.Font = Enum.Font.Gotham;
+	DescriptionLoader.TextSize = 15;
+	DescriptionLoader.TextColor3 = Color3.fromRGB(255, 255, 255);
+	DescriptionLoader.BackgroundTransparency = 1;
+	DescriptionLoader.AnchorPoint = Vector2.new(0.5, 0.5);
+	DescriptionLoader.Position = UDim2.new(0.5, 0, 0.6, 0);
+	DescriptionLoader.Size = UDim2.new(0.8, 0, 0.2, 0);
+	DescriptionLoader.TextTransparency = 0;
+	local LoadingBarBackground = Instance.new("Frame");
+	LoadingBarBackground.Parent = MainLoaderFrame;
+	LoadingBarBackground.BackgroundColor3 = Color3.fromRGB(50, 50, 50);
+	LoadingBarBackground.AnchorPoint = Vector2.new(0.5, 0.5);
+	LoadingBarBackground.Position = UDim2.new(0.5, 0, 0.7, 0);
+	LoadingBarBackground.Size = UDim2.new(0.7, 0, 0.05, 0);
+	LoadingBarBackground.ClipsDescendants = true;
+	LoadingBarBackground.BorderSizePixel = 0;
+	LoadingBarBackground.ZIndex = 2;
+	local LoadingBar = Instance.new("Frame");
+	LoadingBar.Parent = LoadingBarBackground;
+	LoadingBar.BackgroundColor3 = Color3.fromRGB(30, 90, 202);
+	LoadingBar.Size = UDim2.new(0, 0, 1, 0);
+	LoadingBar.ZIndex = 3;
+	CreateRounded(LoadingBarBackground, 20);
+	CreateRounded(LoadingBar, 20);
+	local tweenService = game:GetService("TweenService");
+	local dotCount = 0;
+	local running = true;
+	local barTweenInfoPart1 = TweenInfo.new(0.5, Enum.EasingStyle.Linear, Enum.EasingDirection.Out);
+	local barTweenPart1 = tweenService:Create(LoadingBar, barTweenInfoPart1, {
+		Size = UDim2.new(0.25, 0, 1, 0)
+	});
+	local barTweenInfoPart2 = TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out);
+	local barTweenPart2 = tweenService:Create(LoadingBar, barTweenInfoPart2, {
+		Size = UDim2.new(1, 0, 1, 0)
+	});
+	barTweenPart1:Play();
+	function Update:Loaded()
+		barTweenPart2:Play();
+	end;
+	barTweenPart1.Completed:Connect(function()
+		running = true;
+		barTweenPart2.Completed:Connect(function()
+			wait(1);
+			running = false;
+			DescriptionLoader.Text = "Loaded!";
+			wait(0.5);
+			Loader:Destroy();
+		end);
+	end);
+	spawn(function()
+		while running do
+			dotCount = (dotCount + 1) % 4;
+			local dots = string.rep(".", dotCount);
+			DescriptionLoader.Text = "Please wait" .. dots;
+			wait(0.5);
+		end;
+	end);
+end;
 local SettingsLib = {
 	SaveSettings = true,
-	LoadAnimation = false -- Loading Animation make true for active {[@x2zu]}
+	LoadAnimation = true
 };
 (getgenv()).LoadConfig = function()
 	if readfile and writefile and isfile and isfolder then
-		if not isfolder("Stellar") then
-			makefolder("Stellar");
+		if not isfolder("STELLAR") then
+			makefolder("STELLAR");
 		end;
-		if not isfolder("Stellar/Library/") then
-			makefolder("Stellar/Library/");
+		if not isfolder("STELLAR/Library/") then
+			makefolder("STELLAR/Library/");
 		end;
-		if not isfile(("Stellar/Library/" .. game.Players.LocalPlayer.Name .. ".json")) then
-			writefile("Stellar/Library/" .. game.Players.LocalPlayer.Name .. ".json", (game:GetService("HttpService")):JSONEncode(SettingsLib));
+		if not isfile(("STELLAR/Library/" .. game.Players.LocalPlayer.Name .. ".json")) then
+			writefile("STELLAR/Library/" .. game.Players.LocalPlayer.Name .. ".json", (game:GetService("HttpService")):JSONEncode(SettingsLib));
 		else
-			local Decode = (game:GetService("HttpService")):JSONDecode(readfile("Stellar/Library/" .. game.Players.LocalPlayer.Name .. ".json"));
+			local Decode = (game:GetService("HttpService")):JSONDecode(readfile("STELLAR/Library/" .. game.Players.LocalPlayer.Name .. ".json"));
 			for i, v in pairs(Decode) do
 				SettingsLib[i] = v;
 			end;
@@ -185,15 +281,15 @@ local SettingsLib = {
 end;
 (getgenv()).SaveConfig = function()
 	if readfile and writefile and isfile and isfolder then
-		if not isfile(("Stellar/Library/" .. game.Players.LocalPlayer.Name .. ".json")) then
+		if not isfile(("STELLAR/Library/" .. game.Players.LocalPlayer.Name .. ".json")) then
 			(getgenv()).Load();
 		else
-			local Decode = (game:GetService("HttpService")):JSONDecode(readfile("Stellar/Library/" .. game.Players.LocalPlayer.Name .. ".json"));
+			local Decode = (game:GetService("HttpService")):JSONDecode(readfile("STELLAR/Library/" .. game.Players.LocalPlayer.Name .. ".json"));
 			local Array = {};
 			for i, v in pairs(SettingsLib) do
 				Array[i] = v;
 			end;
-			writefile("Stellar/Library/" .. game.Players.LocalPlayer.Name .. ".json", (game:GetService("HttpService")):JSONEncode(Array));
+			writefile("STELLAR/Library/" .. game.Players.LocalPlayer.Name .. ".json", (game:GetService("HttpService")):JSONEncode(Array));
 		end;
 	else
 		return warn("Status : Undetected Executor");
@@ -224,13 +320,13 @@ function Update:Window(Config)
 	local currentpage = "";
 	local keybind = keybind or Enum.KeyCode.RightControl;
 	local yoo = string.gsub(tostring(keybind), "Enum.KeyCode.", "");
-	local Stellar = Instance.new("ScreenGui");
-	Stellar.Name = "STELLAR";
-	Stellar.Parent = game.CoreGui;
-	Stellar.DisplayOrder = 999;
+	local STELLAR = Instance.new("ScreenGui");
+	STELLAR.Name = "STELLAR";
+	STELLAR.Parent = game.CoreGui;
+	STELLAR.DisplayOrder = 999;
 	local OutlineMain = Instance.new("Frame");
 	OutlineMain.Name = "OutlineMain";
-	OutlineMain.Parent = Stellar;
+	OutlineMain.Parent = STELLAR;
 	OutlineMain.ClipsDescendants = true;
 	OutlineMain.AnchorPoint = Vector2.new(0.5, 0.5);
 	OutlineMain.BackgroundColor3 = Color3.fromRGB(30, 30, 30);
@@ -315,7 +411,7 @@ function Update:Window(Config)
 	CloseButton.ImageColor3 = Color3.fromRGB(245, 245, 245);
 	CreateRounded(CloseButton, 3);
 	CloseButton.MouseButton1Click:connect(function()
-		(game.CoreGui:FindFirstChild("Stellar")).Enabled = not (game.CoreGui:FindFirstChild("Stellar")).Enabled;
+		(game.CoreGui:FindFirstChild("STELLAR")).Enabled = not (game.CoreGui:FindFirstChild("STELLAR")).Enabled;
 	end);
 	local ResizeButton = Instance.new("ImageButton");
 	ResizeButton.Name = "ResizeButton";
@@ -512,8 +608,8 @@ function Update:Window(Config)
 		(getgenv()).SaveConfig();
 	end);
 	CreateButton("Reset Config", function()
-		if isfolder("Stellar") then
-			delfolder("Stellar");
+		if isfolder("STELLAR") then
+			delfolder("STELLAR");
 		end;
 		Update:Notify("Config has been reseted!");
 	end);
@@ -576,7 +672,7 @@ function Update:Window(Config)
 	MakeDraggable(Top, OutlineMain);
 	UserInputService.InputBegan:Connect(function(input)
 		if input.KeyCode == Enum.KeyCode.Insert then
-			(game.CoreGui:FindFirstChild("Stellar")).Enabled = not (game.CoreGui:FindFirstChild("Stellar")).Enabled;
+			(game.CoreGui:FindFirstChild("STELLAR")).Enabled = not (game.CoreGui:FindFirstChild("STELLAR")).Enabled;
 		end;
 	end);
 	local Dragging = false;
@@ -1457,7 +1553,7 @@ function Update:Window(Config)
 			Sep1.Size = UDim2.new(0, 20, 0, 36);
 			Sep1.Font = Enum.Font.GothamBold;
 			Sep1.RichText = true;
-			Sep1.Text = "X2<font color=\"rgb(30, 90, 202)\">X2</font>";
+			Sep1.Text = "X2<font color=\"rgb(30, 90, 202)\">X2/font>";
 			Sep1.TextColor3 = Color3.fromRGB(255, 255, 255);
 			Sep1.TextSize = 14;
 			Sep2.Name = "Sep2";
@@ -1513,6 +1609,4 @@ function Update:Window(Config)
 	end;
 	return uitab;
 end;
--- 30, 90, 202 Color Blue
--- 120727887371733
 return Update;
