@@ -158,102 +158,96 @@ function Update:Notify(desc)
 	});
 end;
 function Update:StartLoad()
-	local Loader = Instance.new("ScreenGui");
-	Loader.Parent = game.CoreGui;
-	Loader.ZIndexBehavior = Enum.ZIndexBehavior.Global;
-	Loader.DisplayOrder = 1000;
-	local LoaderFrame = Instance.new("Frame");
-	LoaderFrame.Name = "LoaderFrame";
-	LoaderFrame.Parent = Loader;
-	LoaderFrame.ClipsDescendants = true;
-	LoaderFrame.BackgroundColor3 = Color3.fromRGB(5, 5, 5);
-	LoaderFrame.BackgroundTransparency = 0;
-	LoaderFrame.AnchorPoint = Vector2.new(0.5, 0.5);
-	LoaderFrame.Position = UDim2.new(0.5, 0, 0.5, 0);
-	LoaderFrame.Size = UDim2.new(1.5, 0, 1.5, 0);
-	LoaderFrame.BorderSizePixel = 0;
-	local MainLoaderFrame = Instance.new("Frame");
-	MainLoaderFrame.Name = "MainLoaderFrame";
-	MainLoaderFrame.Parent = LoaderFrame;
-	MainLoaderFrame.ClipsDescendants = true;
-	MainLoaderFrame.BackgroundColor3 = Color3.fromRGB(5, 5, 5);
-	MainLoaderFrame.BackgroundTransparency = 0;
-	MainLoaderFrame.AnchorPoint = Vector2.new(0.5, 0.5);
-	MainLoaderFrame.Position = UDim2.new(0.5, 0, 0.5, 0);
-	MainLoaderFrame.Size = UDim2.new(0.5, 0, 0.5, 0);
-	MainLoaderFrame.BorderSizePixel = 0;
-	local TitleLoader = Instance.new("TextLabel");
-	TitleLoader.Parent = MainLoaderFrame;
-	TitleLoader.Text = "Stellar";
-	TitleLoader.Font = Enum.Font.FredokaOne;
-	TitleLoader.TextSize = 50;
-	TitleLoader.TextColor3 = Color3.fromRGB(255, 255, 255);
-	TitleLoader.BackgroundTransparency = 1;
-	TitleLoader.AnchorPoint = Vector2.new(0.5, 0.5);
-	TitleLoader.Position = UDim2.new(0.5, 0, 0.3, 0);
-	TitleLoader.Size = UDim2.new(0.8, 0, 0.2, 0);
-	TitleLoader.TextTransparency = 0;
-	local DescriptionLoader = Instance.new("TextLabel");
-	DescriptionLoader.Parent = MainLoaderFrame;
-	DescriptionLoader.Text = "Loading..";
-	DescriptionLoader.Font = Enum.Font.Gotham;
-	DescriptionLoader.TextSize = 15;
-	DescriptionLoader.TextColor3 = Color3.fromRGB(255, 255, 255);
-	DescriptionLoader.BackgroundTransparency = 1;
-	DescriptionLoader.AnchorPoint = Vector2.new(0.5, 0.5);
-	DescriptionLoader.Position = UDim2.new(0.5, 0, 0.6, 0);
-	DescriptionLoader.Size = UDim2.new(0.8, 0, 0.2, 0);
-	DescriptionLoader.TextTransparency = 0;
-	local LoadingBarBackground = Instance.new("Frame");
-	LoadingBarBackground.Parent = MainLoaderFrame;
-	LoadingBarBackground.BackgroundColor3 = Color3.fromRGB(50, 50, 50);
-	LoadingBarBackground.AnchorPoint = Vector2.new(0.5, 0.5);
-	LoadingBarBackground.Position = UDim2.new(0.5, 0, 0.7, 0);
-	LoadingBarBackground.Size = UDim2.new(0.7, 0, 0.05, 0);
-	LoadingBarBackground.ClipsDescendants = true;
-	LoadingBarBackground.BorderSizePixel = 0;
-	LoadingBarBackground.ZIndex = 2;
-	local LoadingBar = Instance.new("Frame");
-	LoadingBar.Parent = LoadingBarBackground;
-	LoadingBar.BackgroundColor3 = Color3.fromRGB(30, 90, 202);
-	LoadingBar.Size = UDim2.new(0, 0, 1, 0);
-	LoadingBar.ZIndex = 3;
-	CreateRounded(LoadingBarBackground, 20);
-	CreateRounded(LoadingBar, 20);
-	local tweenService = game:GetService("TweenService");
-	local dotCount = 0;
-	local running = true;
-	local barTweenInfoPart1 = TweenInfo.new(0.5, Enum.EasingStyle.Linear, Enum.EasingDirection.Out);
-	local barTweenPart1 = tweenService:Create(LoadingBar, barTweenInfoPart1, {
-		Size = UDim2.new(0.25, 0, 1, 0)
-	});
-	local barTweenInfoPart2 = TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out);
-	local barTweenPart2 = tweenService:Create(LoadingBar, barTweenInfoPart2, {
-		Size = UDim2.new(1, 0, 1, 0)
-	});
-	barTweenPart1:Play();
-	function Update:Loaded()
-		barTweenPart2:Play();
-	end;
-	barTweenPart1.Completed:Connect(function()
-		running = true;
-		barTweenPart2.Completed:Connect(function()
-			wait(1);
-			running = false;
-			DescriptionLoader.Text = "Loaded!";
-			wait(0.5);
-			Loader:Destroy();
-		end);
-	end);
-	spawn(function()
-		while running do
-			dotCount = (dotCount + 1) % 4;
-			local dots = string.rep(".", dotCount);
-			DescriptionLoader.Text = "Please wait" .. dots;
-			wait(0.5);
-		end;
-	end);
-end;
+	local TweenService = game:GetService("TweenService")
+	local Lighting = game:GetService("Lighting")
+	local player = game.Players.LocalPlayer
+
+	-- Efek Blur
+	local blur = Instance.new("BlurEffect", Lighting)
+	blur.Size = 0
+	TweenService:Create(blur, TweenInfo.new(0.5), {Size = 24}):Play()
+
+	-- Buat ScreenGui
+	local Loader = Instance.new("ScreenGui")
+	Loader.Name = "StellarLoader"
+	Loader.Parent = player:WaitForChild("PlayerGui")
+	Loader.ResetOnSpawn = false
+	Loader.IgnoreGuiInset = true
+	Loader.ZIndexBehavior = Enum.ZIndexBehavior.Global
+	Loader.DisplayOrder = 1000
+
+	-- Frame utama
+	local frame = Instance.new("Frame", Loader)
+	frame.Size = UDim2.new(1, 0, 1, 0)
+	frame.BackgroundTransparency = 1
+
+	-- Background gelap semi transparan
+	local bg = Instance.new("Frame", frame)
+	bg.Size = UDim2.new(1, 0, 1, 0)
+	bg.BackgroundColor3 = Color3.fromRGB(10, 10, 20)
+	bg.BackgroundTransparency = 1
+	bg.ZIndex = 0
+	TweenService:Create(bg, TweenInfo.new(0.5), {BackgroundTransparency = 0.3}):Play()
+
+	-- Kata "STELLAR"
+	local word = "STELLAR"
+	local letters = {}
+
+	-- Fungsi tween keluar dan bersihkan
+	local function tweenOutAndDestroy()
+		for _, label in ipairs(letters) do
+			TweenService:Create(label, TweenInfo.new(0.3), {TextTransparency = 1, TextSize = 20}):Play()
+		end
+		TweenService:Create(bg, TweenInfo.new(0.5), {BackgroundTransparency = 1}):Play()
+		TweenService:Create(blur, TweenInfo.new(0.5), {Size = 0}):Play()
+		wait(0.6)
+		Loader:Destroy()
+		blur:Destroy()
+	end
+
+	-- Loop munculkan huruf satu per satu dengan efek zoom tanpa suara
+	for i = 1, #word do
+		local char = word:sub(i, i)
+
+		local label = Instance.new("TextLabel")
+		label.Text = char
+		label.Font = Enum.Font.GothamBlack
+		label.TextColor3 = Color3.new(1, 1, 1)
+		label.TextStrokeTransparency = 1 -- tanpa outline
+		label.TextTransparency = 1
+		label.TextScaled = false
+		label.TextSize = 20 -- start kecil untuk zoom effect
+		label.Size = UDim2.new(0, 60, 0, 60)
+		label.AnchorPoint = Vector2.new(0.5, 0.5)
+		label.Position = UDim2.new(0.5, (i - (#word / 2 + 0.5)) * 65, 0.5, 0)
+		label.BackgroundTransparency = 1
+		label.Parent = frame
+
+		-- Gradient biru muda
+		local gradient = Instance.new("UIGradient")
+		gradient.Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(100, 170, 255)), -- biru muda cerah
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 100, 160))   -- biru muda gelap
+		})
+		gradient.Rotation = 90
+		gradient.Parent = label
+
+		-- Tween muncul dan zoom in (tanpa suara)
+		local tweenIn = TweenService:Create(label, TweenInfo.new(0.3), {TextTransparency = 0, TextSize = 60})
+		tweenIn:Play()
+
+		table.insert(letters, label)
+		wait(0.25)
+	end
+
+	-- Tunggu sebentar sebelum tween keluar otomatis
+	wait(2)
+
+	tweenOutAndDestroy()
+end
+function Update:Loaded()
+	barTweenPart2:Play();
+end
 local SettingsLib = {
 	SaveSettings = true,
 	LoadAnimation = true
