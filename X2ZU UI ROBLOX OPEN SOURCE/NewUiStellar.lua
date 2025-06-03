@@ -108,7 +108,7 @@ function Update:Notify(desc)
 	OutlineFrame.Name = "OutlineFrame";
 	OutlineFrame.Parent = NotificationFrame;
 	OutlineFrame.ClipsDescendants = true;
-	OutlineFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30);
+	OutlineFrame.BackgroundColor3 = Color3.fromRGB(120, 170, 255);
 	OutlineFrame.AnchorPoint = Vector2.new(0.5, 1);
 	OutlineFrame.BackgroundTransparency = 0.4;
 	OutlineFrame.Position = UDim2.new(0.5, 0, -0.2, 0);
