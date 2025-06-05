@@ -1067,6 +1067,308 @@ stroke.Parent = OutlineMain
 				pcall(callback, toggled);
 			end;
 		end;
+		function main:DropdownMulti(text, option, initialValues, callback)
+    local isdropping = false
+    local selectedItems = {}
+    if type(initialValues) == "table" then
+        for _, v in ipairs(initialValues) do
+            selectedItems[v] = true
+        end
+    end
+
+    local Dropdown = Instance.new("Frame")
+    local DropdownFrameScroll = Instance.new("Frame")
+    local UICorner = Instance.new("UICorner")
+    local UICorner_4 = Instance.new("UICorner")
+    local DropTitle = Instance.new("TextLabel")
+    local DropScroll = Instance.new("ScrollingFrame")
+    local UIListLayout = Instance.new("UIListLayout")
+    local UIPadding = Instance.new("UIPadding")
+    local SelectItems = Instance.new("TextButton")
+    local ArrowDown = Instance.new("ImageLabel")
+
+    Dropdown.Name = "Dropdown"
+    Dropdown.Parent = MainFramePage
+    Dropdown.BackgroundColor3 = _G.Primary
+    Dropdown.BackgroundTransparency = 0.8
+    Dropdown.ClipsDescendants = false
+    Dropdown.Size = UDim2.new(1, 0, 0, 40)
+    UICorner.CornerRadius = UDim.new(0, 5)
+    UICorner.Parent = Dropdown
+
+    DropTitle.Name = "DropTitle"
+    DropTitle.Parent = Dropdown
+    DropTitle.BackgroundColor3 = _G.Primary
+    DropTitle.BackgroundTransparency = 1
+    DropTitle.Size = UDim2.new(1, 0, 0, 30)
+    DropTitle.Font = Enum.Font.Cartoon
+    DropTitle.Text = text
+    DropTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    DropTitle.TextSize = 15
+    DropTitle.TextXAlignment = Enum.TextXAlignment.Left
+    DropTitle.Position = UDim2.new(0, 15, 0, 5)
+    DropTitle.AnchorPoint = Vector2.new(0, 0)
+
+    SelectItems.Name = "SelectItems"
+    SelectItems.Parent = Dropdown
+    SelectItems.BackgroundColor3 = Color3.fromRGB(24, 24, 26)
+    SelectItems.TextColor3 = Color3.fromRGB(255, 255, 255)
+    SelectItems.BackgroundTransparency = 0
+    SelectItems.Position = UDim2.new(1, -5, 0, 5)
+    SelectItems.Size = UDim2.new(0, 150, 0, 30)
+    SelectItems.AnchorPoint = Vector2.new(1, 0)
+    SelectItems.Font = Enum.Font.GothamMedium
+    SelectItems.AutoButtonColor = false
+    SelectItems.TextSize = 9
+    SelectItems.ZIndex = 1
+    SelectItems.ClipsDescendants = true
+    SelectItems.Text = " Select Items"
+    SelectItems.TextXAlignment = Enum.TextXAlignment.Left
+
+    ArrowDown.Name = "ArrowDown"
+    ArrowDown.Parent = Dropdown
+    ArrowDown.BackgroundColor3 = _G.Primary
+    ArrowDown.BackgroundTransparency = 1
+    ArrowDown.AnchorPoint = Vector2.new(1, 0)
+    ArrowDown.Position = UDim2.new(1, -160, 0, 10)
+    ArrowDown.Size = UDim2.new(0, 20, 0, 20)
+    ArrowDown.Image = "rbxassetid://10709790948"
+    ArrowDown.ImageTransparency = 0
+    ArrowDown.ImageColor3 = Color3.fromRGB(255, 255, 255)
+
+    CreateRounded(SelectItems, 5)
+    CreateRounded(DropScroll, 5)
+
+    DropdownFrameScroll.Name = "DropdownFrameScroll"
+    DropdownFrameScroll.Parent = Dropdown
+    DropdownFrameScroll.BackgroundColor3 = Color3.fromRGB(24, 24, 26)
+    DropdownFrameScroll.BackgroundTransparency = 0
+    DropdownFrameScroll.ClipsDescendants = true
+    DropdownFrameScroll.Size = UDim2.new(1, 0, 0, 100)
+    DropdownFrameScroll.Position = UDim2.new(0, 5, 0, 40)
+    DropdownFrameScroll.Visible = false
+    DropdownFrameScroll.AnchorPoint = Vector2.new(0, 0)
+    UICorner_4.Parent = DropdownFrameScroll
+    UICorner_4.CornerRadius = UDim.new(0, 5)
+
+    DropScroll.Name = "DropScroll"
+    DropScroll.Parent = DropdownFrameScroll
+    DropScroll.ScrollingDirection = Enum.ScrollingDirection.Y
+    DropScroll.Active = true
+    DropScroll.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    DropScroll.BackgroundTransparency = 1
+    DropScroll.BorderSizePixel = 0
+    DropScroll.Position = UDim2.new(0, 0, 0, 10)
+    DropScroll.Size = UDim2.new(1, 0, 0, 80)
+    DropScroll.AnchorPoint = Vector2.new(0, 0)
+    DropScroll.ClipsDescendants = true
+    DropScroll.ScrollBarThickness = 3
+    DropScroll.ZIndex = 3
+
+    local PaddingDrop = Instance.new("UIPadding")
+    PaddingDrop.PaddingLeft = UDim.new(0, 10)
+    PaddingDrop.PaddingRight = UDim.new(0, 10)
+    PaddingDrop.Parent = DropScroll
+    PaddingDrop.Name = "PaddingDrop"
+
+    UIListLayout.Parent = DropScroll
+    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    UIListLayout.Padding = UDim.new(0, 1)
+
+    UIPadding.Parent = DropScroll
+    UIPadding.PaddingLeft = UDim.new(0, 5)
+
+    local function updateSelectText()
+        local selectedList = {}
+        for k, v in pairs(selectedItems) do
+            if v then
+                table.insert(selectedList, k)
+            end
+        end
+        if #selectedList == 0 then
+            SelectItems.Text = " Select Items"
+        else
+            SelectItems.Text = " " .. table.concat(selectedList, ", ")
+        end
+    end
+
+    -- Create item buttons
+    for i, v in ipairs(option) do
+        local Item = Instance.new("TextButton")
+        local UICorner_5 = Instance.new("UICorner")
+        local ItemPadding = Instance.new("UIPadding")
+
+        Item.Name = "Item"
+        Item.Parent = DropScroll
+        Item.BackgroundColor3 = _G.Primary
+        Item.BackgroundTransparency = 1
+        Item.Size = UDim2.new(1, 0, 0, 30)
+        Item.Font = Enum.Font.Nunito
+        Item.Text = tostring(v)
+        Item.TextColor3 = Color3.fromRGB(255, 255, 255)
+        Item.TextSize = 13
+        Item.TextTransparency = 0.5
+        Item.TextXAlignment = Enum.TextXAlignment.Left
+        Item.ZIndex = 4
+        ItemPadding.Parent = Item
+        ItemPadding.PaddingLeft = UDim.new(0, 8)
+        UICorner_5.Parent = Item
+        UICorner_5.CornerRadius = UDim.new(0, 5)
+
+        -- Checkmark Frame
+        local Checkmark = Instance.new("Frame")
+        Checkmark.Name = "Checkmark"
+        Checkmark.Parent = Item
+        Checkmark.BackgroundColor3 = _G.Third
+        Checkmark.BackgroundTransparency = selectedItems[v] and 0 or 1
+        Checkmark.Size = UDim2.new(0, 10, 0, 10)
+        Checkmark.Position = UDim2.new(1, -20, 0.5, -5)
+        Checkmark.AnchorPoint = Vector2.new(0, 0)
+        Checkmark.ZIndex = 5
+        local CheckmarkCorner = Instance.new("UICorner")
+        CheckmarkCorner.CornerRadius = UDim.new(0, 999)
+        CheckmarkCorner.Parent = Checkmark
+
+        Item.MouseButton1Click:Connect(function()
+            if selectedItems[v] then
+                selectedItems[v] = nil
+                Checkmark.BackgroundTransparency = 1
+                Item.TextTransparency = 0.5
+                Item.BackgroundTransparency = 1
+            else
+                selectedItems[v] = true
+                Checkmark.BackgroundTransparency = 0
+                Item.TextTransparency = 0
+                Item.BackgroundTransparency = 0.8
+            end
+            updateSelectText()
+            -- Call callback with list of selected values
+            local selectedList = {}
+            for k, sel in pairs(selectedItems) do
+                if sel then
+                    table.insert(selectedList, k)
+                end
+            end
+            callback(selectedList)
+        end)
+
+        -- Set initial selected state visually
+        if selectedItems[v] then
+            Item.BackgroundTransparency = 0.8
+            Item.TextTransparency = 0
+            Checkmark.BackgroundTransparency = 0
+        end
+    end
+
+    DropScroll.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y)
+    updateSelectText()
+
+    SelectItems.MouseButton1Click:Connect(function()
+        if isdropping == false then
+            isdropping = true
+            DropdownFrameScroll.Visible = true
+            TweenService:Create(DropdownFrameScroll, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                Size = UDim2.new(1, -10, 0, 100)
+            }):Play()
+            TweenService:Create(Dropdown, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                Size = UDim2.new(1, 0, 0, 145)
+            }):Play()
+            TweenService:Create(ArrowDown, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                Rotation = 180
+            }):Play()
+        else
+            isdropping = false
+            TweenService:Create(DropdownFrameScroll, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                Size = UDim2.new(1, -10, 0, 0)
+            }):Play()
+            TweenService:Create(Dropdown, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                Size = UDim2.new(1, 0, 0, 40)
+            }):Play()
+            TweenService:Create(ArrowDown, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                Rotation = 0
+            }):Play()
+            wait(0.3)
+            DropdownFrameScroll.Visible = false
+        end
+    end)
+
+    local dropfunc = {}
+
+    function dropfunc:Add(t)
+        local Item = Instance.new("TextButton")
+        local UICorner_5 = Instance.new("UICorner")
+        local ItemPadding = Instance.new("UIPadding")
+
+        Item.Name = "Item"
+        Item.Parent = DropScroll
+        Item.BackgroundColor3 = _G.Primary
+        Item.BackgroundTransparency = 1
+        Item.Size = UDim2.new(1, 0, 0, 30)
+        Item.Font = Enum.Font.Nunito
+        Item.Text = tostring(t)
+        Item.TextColor3 = Color3.fromRGB(255, 255, 255)
+        Item.TextSize = 13
+        Item.TextTransparency = 0.5
+        Item.TextXAlignment = Enum.TextXAlignment.Left
+        Item.ZIndex = 4
+        ItemPadding.Parent = Item
+        ItemPadding.PaddingLeft = UDim.new(0, 8)
+        UICorner_5.Parent = Item
+        UICorner_5.CornerRadius = UDim.new(0, 5)
+
+        local Checkmark = Instance.new("Frame")
+        Checkmark.Name = "Checkmark"
+        Checkmark.Parent = Item
+        Checkmark.BackgroundColor3 = _G.Third
+        Checkmark.BackgroundTransparency = 1
+        Checkmark.Size = UDim2.new(0, 10, 0, 10)
+        Checkmark.Position = UDim2.new(1, -20, 0.5, -5)
+        Checkmark.AnchorPoint = Vector2.new(0, 0)
+        Checkmark.ZIndex = 5
+        local CheckmarkCorner = Instance.new("UICorner")
+        CheckmarkCorner.CornerRadius = UDim.new(0, 999)
+        CheckmarkCorner.Parent = Checkmark
+
+        Item.MouseButton1Click:Connect(function()
+            local txt = Item.Text
+            if selectedItems[txt] then
+                selectedItems[txt] = nil
+                Checkmark.BackgroundTransparency = 1
+                Item.TextTransparency = 0.5
+                Item.BackgroundTransparency = 1
+            else
+                selectedItems[txt] = true
+                Checkmark.BackgroundTransparency = 0
+                Item.TextTransparency = 0
+                Item.BackgroundTransparency = 0.8
+            end
+            updateSelectText()
+            local selectedList = {}
+            for k, sel in pairs(selectedItems) do
+                if sel then
+                    table.insert(selectedList, k)
+                end
+            end
+            callback(selectedList)
+        end)
+
+        DropScroll.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y)
+    end
+
+    function dropfunc:Clear()
+        selectedItems = {}
+        SelectItems.Text = " Select Items"
+        isdropping = false
+        DropdownFrameScroll.Visible = false
+        for i, v in pairs(DropScroll:GetChildren()) do
+            if v:IsA("TextButton") then
+                v:Destroy()
+            end
+        end
+    end
+
+    return dropfunc
+end
 		function main:Dropdown(text, option, var, callback)
 			local isdropping = false;
 			local Dropdown = Instance.new("Frame");
