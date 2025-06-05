@@ -1427,9 +1427,10 @@ end
 				SelectedItems.Parent = Item;
 				SelectedItems.BackgroundColor3 = _G.Third;
 				SelectedItems.BackgroundTransparency = 1;
-				SelectedItems.Size = UDim2.new(0, 3, 0.4, 0);
-				SelectedItems.Position = UDim2.new(0, -8, 0.5, 0);
-				SelectedItems.AnchorPoint = Vector2.new(0, 0.5);
+				SelectedItems.Size = UDim2.new(0, 2, 0, 16) -- ubah disini ya mek
+				SelectedItems.Position = UDim2.new(0, 0, 0.5, 0)
+				SelectedItems.AnchorPoint = Vector2.new(0, 0.5)
+
 				SelectedItems.ZIndex = 4;
 				CRNRitems.Parent = SelectedItems;
 				CRNRitems.CornerRadius = UDim.new(0, 999);
