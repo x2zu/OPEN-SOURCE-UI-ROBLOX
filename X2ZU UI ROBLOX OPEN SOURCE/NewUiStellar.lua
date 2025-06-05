@@ -1215,19 +1215,16 @@ stroke.Parent = OutlineMain
         UICorner_5.Parent = Item
         UICorner_5.CornerRadius = UDim.new(0, 5)
 
-        -- Checkmark Frame
+        -- Checkmark Frame jadi panel merah memanjang di samping kanan
         local Checkmark = Instance.new("Frame")
         Checkmark.Name = "Checkmark"
         Checkmark.Parent = Item
-        Checkmark.BackgroundColor3 = _G.Third
+        Checkmark.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- merah
         Checkmark.BackgroundTransparency = selectedItems[v] and 0 or 1
-        Checkmark.Size = UDim2.new(0, 10, 0, 10)
-        Checkmark.Position = UDim2.new(1, -20, 0.5, -5)
-        Checkmark.AnchorPoint = Vector2.new(0, 0)
+        Checkmark.Size = UDim2.new(0, 5, 1, 0) -- lebarnya 5 pixel, tinggi sama dengan item
+        Checkmark.Position = UDim2.new(1, -5, 0, 0) -- pas di samping kanan
+        Checkmark.AnchorPoint = Vector2.new(1, 0) -- anchor kanan atas
         Checkmark.ZIndex = 5
-        local CheckmarkCorner = Instance.new("UICorner")
-        CheckmarkCorner.CornerRadius = UDim.new(0, 999)
-        CheckmarkCorner.Parent = Checkmark
 
         Item.MouseButton1Click:Connect(function()
             if selectedItems[v] then
@@ -1242,7 +1239,6 @@ stroke.Parent = OutlineMain
                 Item.BackgroundTransparency = 0.8
             end
             updateSelectText()
-            -- Call callback with list of selected values
             local selectedList = {}
             for k, sel in pairs(selectedItems) do
                 if sel then
@@ -1319,15 +1315,12 @@ stroke.Parent = OutlineMain
         local Checkmark = Instance.new("Frame")
         Checkmark.Name = "Checkmark"
         Checkmark.Parent = Item
-        Checkmark.BackgroundColor3 = _G.Third
+        Checkmark.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
         Checkmark.BackgroundTransparency = 1
-        Checkmark.Size = UDim2.new(0, 10, 0, 10)
-        Checkmark.Position = UDim2.new(1, -20, 0.5, -5)
-        Checkmark.AnchorPoint = Vector2.new(0, 0)
+        Checkmark.Size = UDim2.new(0, 5, 1, 0)
+        Checkmark.Position = UDim2.new(1, -5, 0, 0)
+        Checkmark.AnchorPoint = Vector2.new(1, 0)
         Checkmark.ZIndex = 5
-        local CheckmarkCorner = Instance.new("UICorner")
-        CheckmarkCorner.CornerRadius = UDim.new(0, 999)
-        CheckmarkCorner.Parent = Checkmark
 
         Item.MouseButton1Click:Connect(function()
             local txt = Item.Text
@@ -1355,20 +1348,19 @@ stroke.Parent = OutlineMain
         DropScroll.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y)
     end
 
-    function dropfunc:Clear()
-        selectedItems = {}
-        SelectItems.Text = " Select Items"
-        isdropping = false
-        DropdownFrameScroll.Visible = false
-        for i, v in pairs(DropScroll:GetChildren()) do
-            if v:IsA("TextButton") then
-                v:Destroy()
+    function dropfunc:Get()
+        local selectedList = {}
+        for k, v in pairs(selectedItems) do
+            if v then
+                table.insert(selectedList, k)
             end
         end
+        return selectedList
     end
 
-    return dropfunc
+    return Dropdown, dropfunc
 end
+
 		function main:Dropdown(text, option, var, callback)
 			local isdropping = false;
 			local Dropdown = Instance.new("Frame");
