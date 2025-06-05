@@ -324,13 +324,28 @@ function Update:Window(Config)
 	STELLAR.Name = "STELLAR";
 	STELLAR.Parent = game.CoreGui;
 	STELLAR.DisplayOrder = 999;
-	local OutlineMain = Instance.new("Frame");
-	OutlineMain.Name = "OutlineMain";
-	OutlineMain.Parent = STELLAR;
-	OutlineMain.ClipsDescendants = true;
-	OutlineMain.AnchorPoint = Vector2.new(0.5, 0.5);
-	OutlineMain.BackgroundColor3 = Color3.fromRGB(30, 30, 30);
-	OutlineMain.BackgroundTransparency = 0.4;
+local OutlineMain = Instance.new("Frame")
+OutlineMain.Name = "OutlineMain"
+OutlineMain.Parent = STELLAR
+OutlineMain.ClipsDescendants = true
+OutlineMain.AnchorPoint = Vector2.new(0.5, 0.5)
+OutlineMain.BackgroundColor3 = Color3.fromRGB(10, 10, 30) 
+OutlineMain.BackgroundTransparency = 0.4
+OutlineMain.Size = UDim2.new(0, 200, 0, 100) 
+
+local gradient = Instance.new("UIGradient")
+gradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(5, 10, 40)),  
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(15, 40, 70)) 
+}
+gradient.Rotation = 45
+gradient.Parent = OutlineMain
+local stroke = Instance.new("UIStroke")
+stroke.Color = Color3.fromRGB(180, 220, 255)
+stroke.Transparency = 0.7
+stroke.Thickness = 1.5
+stroke.Parent = OutlineMain
+
 	OutlineMain.Position = UDim2.new(0.5, 0, 0.45, 0);
 	OutlineMain.Size = UDim2.new(0, 0, 0, 0);
 	CreateRounded(OutlineMain, 15);
