@@ -1067,7 +1067,7 @@ stroke.Parent = OutlineMain
 				pcall(callback, toggled);
 			end;
 		end;
-	function main:DropdownMulti(text, option, initialValues, callback)
+		function main:DropdownMulti(text, option, initialValues, callback)
     local isdropping = false
     local selectedItems = {}
     if type(initialValues) == "table" then
@@ -1185,10 +1185,15 @@ stroke.Parent = OutlineMain
                 table.insert(selectedList, k)
             end
         end
-        SelectItems.Text = #selectedList == 0 and " Select Items" or " " .. table.concat(selectedList, ", ")
+        if #selectedList == 0 then
+            SelectItems.Text = " Select Items"
+        else
+            SelectItems.Text = " " .. table.concat(selectedList, ", ")
+        end
     end
 
-    local function createItem(v)
+    -- Create item buttons
+    for i, v in ipairs(option) do
         local Item = Instance.new("TextButton")
         local UICorner_5 = Instance.new("UICorner")
         local ItemPadding = Instance.new("UIPadding")
@@ -1205,27 +1210,34 @@ stroke.Parent = OutlineMain
         Item.TextTransparency = 0.5
         Item.TextXAlignment = Enum.TextXAlignment.Left
         Item.ZIndex = 4
-
         ItemPadding.Parent = Item
         ItemPadding.PaddingLeft = UDim.new(0, 8)
         UICorner_5.Parent = Item
         UICorner_5.CornerRadius = UDim.new(0, 5)
 
+        -- Checkmark Frame jadi panel merah memanjang di samping kanan
         local Checkmark = Instance.new("Frame")
         Checkmark.Name = "Checkmark"
         Checkmark.Parent = Item
-        Checkmark.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+        Checkmark.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- merah
         Checkmark.BackgroundTransparency = selectedItems[v] and 0 or 1
-        Checkmark.Size = UDim2.new(0, 2, 1, 0)
-        Checkmark.Position = UDim2.new(0, 0, 0, 0)
-        Checkmark.AnchorPoint = Vector2.new(0, 0)
+        Checkmark.Size = UDim2.new(0, 5, 1, 0) -- lebarnya 5 pixel, tinggi sama dengan item
+        Checkmark.Position = UDim2.new(1, -5, 0, 0) -- pas di samping kanan
+        Checkmark.AnchorPoint = Vector2.new(1, 0) -- anchor kanan atas
         Checkmark.ZIndex = 5
 
         Item.MouseButton1Click:Connect(function()
-            selectedItems[v] = not selectedItems[v]
-            Checkmark.BackgroundTransparency = selectedItems[v] and 0 or 1
-            Item.TextTransparency = selectedItems[v] and 0 or 0.5
-            Item.BackgroundTransparency = selectedItems[v] and 0.8 or 1
+            if selectedItems[v] then
+                selectedItems[v] = nil
+                Checkmark.BackgroundTransparency = 1
+                Item.TextTransparency = 0.5
+                Item.BackgroundTransparency = 1
+            else
+                selectedItems[v] = true
+                Checkmark.BackgroundTransparency = 0
+                Item.TextTransparency = 0
+                Item.BackgroundTransparency = 0.8
+            end
             updateSelectText()
             local selectedList = {}
             for k, sel in pairs(selectedItems) do
@@ -1236,6 +1248,7 @@ stroke.Parent = OutlineMain
             callback(selectedList)
         end)
 
+        -- Set initial selected state visually
         if selectedItems[v] then
             Item.BackgroundTransparency = 0.8
             Item.TextTransparency = 0
@@ -1243,16 +1256,12 @@ stroke.Parent = OutlineMain
         end
     end
 
-    for _, v in ipairs(option) do
-        createItem(v)
-    end
-
     DropScroll.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y)
     updateSelectText()
 
     SelectItems.MouseButton1Click:Connect(function()
-        isdropping = not isdropping
-        if isdropping then
+        if isdropping == false then
+            isdropping = true
             DropdownFrameScroll.Visible = true
             TweenService:Create(DropdownFrameScroll, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
                 Size = UDim2.new(1, -10, 0, 100)
@@ -1264,6 +1273,7 @@ stroke.Parent = OutlineMain
                 Rotation = 180
             }):Play()
         else
+            isdropping = false
             TweenService:Create(DropdownFrameScroll, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
                 Size = UDim2.new(1, -10, 0, 0)
             }):Play()
@@ -1273,19 +1283,68 @@ stroke.Parent = OutlineMain
             TweenService:Create(ArrowDown, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
                 Rotation = 0
             }):Play()
-            task.delay(0.3, function()
-                DropdownFrameScroll.Visible = false
-            end)
+            wait(0.3)
+            DropdownFrameScroll.Visible = false
         end
     end)
 
     local dropfunc = {}
 
     function dropfunc:Add(t)
-        if not selectedItems[t] then
-            selectedItems[t] = false
-        end
-        createItem(t)
+        local Item = Instance.new("TextButton")
+        local UICorner_5 = Instance.new("UICorner")
+        local ItemPadding = Instance.new("UIPadding")
+
+        Item.Name = "Item"
+        Item.Parent = DropScroll
+        Item.BackgroundColor3 = _G.Primary
+        Item.BackgroundTransparency = 1
+        Item.Size = UDim2.new(1, 0, 0, 30)
+        Item.Font = Enum.Font.Nunito
+        Item.Text = tostring(t)
+        Item.TextColor3 = Color3.fromRGB(255, 255, 255)
+        Item.TextSize = 13
+        Item.TextTransparency = 0.5
+        Item.TextXAlignment = Enum.TextXAlignment.Left
+        Item.ZIndex = 4
+        ItemPadding.Parent = Item
+        ItemPadding.PaddingLeft = UDim.new(0, 8)
+        UICorner_5.Parent = Item
+        UICorner_5.CornerRadius = UDim.new(0, 5)
+
+        local Checkmark = Instance.new("Frame")
+        Checkmark.Name = "Checkmark"
+        Checkmark.Parent = Item
+        Checkmark.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+        Checkmark.BackgroundTransparency = 1
+        Checkmark.Size = UDim2.new(0, 5, 1, 0)
+        Checkmark.Position = UDim2.new(1, -5, 0, 0)
+        Checkmark.AnchorPoint = Vector2.new(1, 0)
+        Checkmark.ZIndex = 5
+
+        Item.MouseButton1Click:Connect(function()
+            local txt = Item.Text
+            if selectedItems[txt] then
+                selectedItems[txt] = nil
+                Checkmark.BackgroundTransparency = 1
+                Item.TextTransparency = 0.5
+                Item.BackgroundTransparency = 1
+            else
+                selectedItems[txt] = true
+                Checkmark.BackgroundTransparency = 0
+                Item.TextTransparency = 0
+                Item.BackgroundTransparency = 0.8
+            end
+            updateSelectText()
+            local selectedList = {}
+            for k, sel in pairs(selectedItems) do
+                if sel then
+                    table.insert(selectedList, k)
+                end
+            end
+            callback(selectedList)
+        end)
+
         DropScroll.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y)
     end
 
@@ -1427,10 +1486,9 @@ end
 				SelectedItems.Parent = Item;
 				SelectedItems.BackgroundColor3 = _G.Third;
 				SelectedItems.BackgroundTransparency = 1;
-				SelectedItems.Size = UDim2.new(0, 2, 0, 16) -- ubah disini ya mek
-				SelectedItems.Position = UDim2.new(0, 0, 0.5, 0)
-				SelectedItems.AnchorPoint = Vector2.new(0, 0.5)
-
+				SelectedItems.Size = UDim2.new(0, 3, 0.4, 0);
+				SelectedItems.Position = UDim2.new(0, -8, 0.5, 0);
+				SelectedItems.AnchorPoint = Vector2.new(0, 0.5);
 				SelectedItems.ZIndex = 4;
 				CRNRitems.Parent = SelectedItems;
 				CRNRitems.CornerRadius = UDim.new(0, 999);
