@@ -100,63 +100,75 @@ spawn(function()
 end);
 local Update = {};
 function Update:Notify(desc)
-	local Frame = Instance.new("Frame");
-	local Image = Instance.new("ImageLabel");
-	local Title = Instance.new("TextLabel");
-	local Desc = Instance.new("TextLabel");
-	local OutlineFrame = Instance.new("Frame");
-	OutlineFrame.Name = "OutlineFrame";
-	OutlineFrame.Parent = NotificationFrame;
-	OutlineFrame.ClipsDescendants = true;
-	OutlineFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30);
-	OutlineFrame.AnchorPoint = Vector2.new(0.5, 1);
-	OutlineFrame.BackgroundTransparency = 0.4;
-	OutlineFrame.Position = UDim2.new(0.5, 0, -0.2, 0);
-	OutlineFrame.Size = UDim2.new(0, 412, 0, 72);
-	Frame.Name = "Frame";
-	Frame.Parent = OutlineFrame;
-	Frame.ClipsDescendants = true;
-	Frame.AnchorPoint = Vector2.new(0.5, 0.5);
-	Frame.BackgroundColor3 = _G.Dark;
-	Frame.BackgroundTransparency = 0.1;
-	Frame.Position = UDim2.new(0.5, 0, 0.5, 0);
-	Frame.Size = UDim2.new(0, 400, 0, 60);
-	Image.Name = "Icon";
-	Image.Parent = Frame;
-	Image.BackgroundColor3 = Color3.fromRGB(255, 255, 255);
-	Image.BackgroundTransparency = 1;
-	Image.Position = UDim2.new(0, 8, 0, 8);
-	Image.Size = UDim2.new(0, 45, 0, 45);
-	Image.Image = "rbxassetid://105059922903197";
-	Title.Parent = Frame;
-	Title.BackgroundColor3 = _G.Primary;
-	Title.BackgroundTransparency = 1;
-	Title.Position = UDim2.new(0, 55, 0, 14);
-	Title.Size = UDim2.new(0, 10, 0, 20);
-	Title.Font = Enum.Font.GothamBold;
-	Title.Text = "STELLAR";
-	Title.TextColor3 = Color3.fromRGB(255, 255, 255);
-	Title.TextSize = 16;
-	Title.TextXAlignment = Enum.TextXAlignment.Left;
-	Desc.Parent = Frame;
-	Desc.BackgroundColor3 = _G.Primary;
-	Desc.BackgroundTransparency = 1;
-	Desc.Position = UDim2.new(0, 55, 0, 33);
-	Desc.Size = UDim2.new(0, 10, 0, 10);
-	Desc.Font = Enum.Font.GothamSemibold;
-	Desc.TextTransparency = 0.3;
-	Desc.Text = desc;
-	Desc.TextColor3 = Color3.fromRGB(200, 200, 200);
-	Desc.TextSize = 12;
-	Desc.TextXAlignment = Enum.TextXAlignment.Left;
-	CreateRounded(Frame, 10);
-	CreateRounded(OutlineFrame, 12);
-	OutlineFrame:TweenPosition(UDim2.new(0.5, 0, 0.1 + (#NotificationList) * 0.1, 0), "Out", "Quad", 0.4, true);
+	local Frame = Instance.new("Frame")
+	local Image = Instance.new("ImageLabel")
+	local Title = Instance.new("TextLabel")
+	local Desc = Instance.new("TextLabel")
+	local OutlineFrame = Instance.new("Frame")
+
+	OutlineFrame.Name = "OutlineFrame"
+	OutlineFrame.Parent = NotificationFrame
+	OutlineFrame.ClipsDescendants = true
+	OutlineFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	OutlineFrame.AnchorPoint = Vector2.new(0.5, 1)
+	OutlineFrame.BackgroundTransparency = 0.2
+	OutlineFrame.Position = UDim2.new(0.5, 0, -0.2, 0)
+	OutlineFrame.Size = UDim2.new(0, 420, 0, 80)
+
+	Frame.Name = "Frame"
+	Frame.Parent = OutlineFrame
+	Frame.ClipsDescendants = true
+	Frame.AnchorPoint = Vector2.new(0.5, 0.5)
+	Frame.BackgroundColor3 = _G.Dark
+	Frame.BackgroundTransparency = 0.05
+	Frame.Position = UDim2.new(0.5, 0, 0.5, 0)
+	Frame.Size = UDim2.new(0, 410, 0, 70)
+
+	Image.Name = "Icon"
+	Image.Parent = Frame
+	Image.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Image.BackgroundTransparency = 1
+	Image.Position = UDim2.new(0, 12, 0.5, -18)
+	Image.Size = UDim2.new(0, 36, 0, 36)
+	Image.Image = "rbxassetid://105059922903197"
+
+	Title.Name = "Title"
+	Title.Parent = Frame
+	Title.BackgroundTransparency = 1
+	Title.Position = UDim2.new(0, 60, 0, 12)
+	Title.Size = UDim2.new(1, -70, 0, 20)
+	Title.Font = Enum.Font.GothamBold
+	Title.Text = "STELLAR"
+	Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Title.TextSize = 16
+	Title.TextXAlignment = Enum.TextXAlignment.Left
+
+	Desc.Name = "Desc"
+	Desc.Parent = Frame
+	Desc.BackgroundTransparency = 1
+	Desc.Position = UDim2.new(0, 60, 0, 34)
+	Desc.Size = UDim2.new(1, -70, 0, 20)
+	Desc.Font = Enum.Font.GothamSemibold
+	Desc.TextTransparency = 0.15
+	Desc.Text = desc
+	Desc.TextColor3 = Color3.fromRGB(200, 200, 200)
+	Desc.TextSize = 13
+	Desc.TextWrapped = true
+	Desc.TextXAlignment = Enum.TextXAlignment.Left
+
+	CreateRounded(Frame, 10)
+	CreateRounded(OutlineFrame, 12)
+
+	-- Lebih renggang antara notifikasi
+	local yOffset = 0.12 + (#NotificationList * 0.12)
+	OutlineFrame:TweenPosition(UDim2.new(0.5, 0, yOffset, 0), "Out", "Quad", 0.35, true)
+
 	table.insert(NotificationList, {
 		OutlineFrame,
-		title
-	});
-end;
+		Title
+	})
+end
+
 function Update:StartLoad()
 	local Loader = Instance.new("ScreenGui");
 	Loader.Parent = game.CoreGui;
