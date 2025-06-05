@@ -1535,50 +1535,70 @@ function Update:Window(Config)
 		end;
 		function main:Seperator(text)
 			local Seperator = Instance.new("Frame");
-			local Sep1 = Instance.new("TextLabel");
-			local Sep2 = Instance.new("TextLabel");
-			local Sep3 = Instance.new("TextLabel");
-			local SepRadius = Instance.new("UICorner");
-			Seperator.Name = "Seperator";
-			Seperator.Parent = MainFramePage;
-			Seperator.BackgroundColor3 = _G.Primary;
-			Seperator.BackgroundTransparency = 1;
-			Seperator.Size = UDim2.new(1, 0, 0, 36);
-			Sep1.Name = "Sep1";
-			Sep1.Parent = Seperator;
-			Sep1.BackgroundColor3 = Color3.fromRGB(255, 255, 255);
-			Sep1.BackgroundTransparency = 1;
-			Sep1.AnchorPoint = Vector2.new(0, 0.5);
-			Sep1.Position = UDim2.new(0, 0, 0.5, 0);
-			Sep1.Size = UDim2.new(0, 20, 0, 36);
-			Sep1.Font = Enum.Font.GothamBold;
-			Sep1.RichText = true;
-			Sep1.Text = "X2<font color=\"rgb(255, 0, 0)\">X2</font>";
-			Sep1.TextColor3 = Color3.fromRGB(255, 255, 255);
-			Sep1.TextSize = 14;
-			Sep2.Name = "Sep2";
-			Sep2.Parent = Seperator;
-			Sep2.BackgroundColor3 = Color3.fromRGB(255, 255, 255);
-			Sep2.BackgroundTransparency = 1;
-			Sep2.AnchorPoint = Vector2.new(0.5, 0.5);
-			Sep2.Position = UDim2.new(0.5, 0, 0.5, 0);
-			Sep2.Size = UDim2.new(1, 0, 0, 36);
-			Sep2.Font = Enum.Font.GothamBold;
-			Sep2.Text = text;
-			Sep2.TextColor3 = Color3.fromRGB(255, 255, 255);
-			Sep2.TextSize = 14;
-			Sep3.Name = "Sep3";
-			Sep3.Parent = Seperator;
-			Sep3.BackgroundColor3 = Color3.fromRGB(255, 255, 255);
-			Sep3.BackgroundTransparency = 1;
-			Sep3.AnchorPoint = Vector2.new(1, 0.5);
-			Sep3.Position = UDim2.new(1, 0, 0.5, 0);
-			Sep3.Size = UDim2.new(0, 20, 0, 36);
-			Sep3.Font = Enum.Font.GothamBold;
-			Sep3.RichText = true;
-			Sep3.Text = "<font color=\"rgb(255, 0, 0)\">X2</font>X2";
-			Sep3.TextColor3 = Color3.fromRGB(255, 255, 255);
-			Sep3.TextSize = 14;
+local Sep1 = Instance.new("TextLabel");
+local Sep2 = Instance.new("TextLabel");
+local Sep3 = Instance.new("TextLabel");
+local SepRadius = Instance.new("UICorner");
+
+Seperator.Name = "Seperator";
+Seperator.Parent = MainFramePage;
+Seperator.BackgroundColor3 = _G.Primary;
+Seperator.BackgroundTransparency = 1;
+Seperator.Size = UDim2.new(1, 0, 0, 36);
+
+-- Sep1: Garis Kiri
+Sep1.Name = "Sep1";
+Sep1.Parent = Seperator;
+Sep1.BackgroundColor3 = Color3.fromRGB(255, 255, 255);
+Sep1.BackgroundTransparency = 0;
+Sep1.AnchorPoint = Vector2.new(0, 0.5);
+Sep1.Position = UDim2.new(0, 0, 0.5, 0);
+Sep1.Size = UDim2.new(0.15, 0, 0, 1);
+Sep1.BorderSizePixel = 0;
+Sep1.Text = "";
+local Grad1 = Instance.new("UIGradient");
+Grad1.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, _G.Dark),
+	ColorSequenceKeypoint.new(0.4, _G.Primary),
+	ColorSequenceKeypoint.new(0.5, _G.Primary),
+	ColorSequenceKeypoint.new(0.6, _G.Primary),
+	ColorSequenceKeypoint.new(1, _G.Dark)
+});
+Grad1.Parent = Sep1;
+
+-- Sep2: Teks Tengah
+Sep2.Name = "Sep2";
+Sep2.Parent = Seperator;
+Sep2.BackgroundColor3 = Color3.fromRGB(255, 255, 255);
+Sep2.BackgroundTransparency = 1;
+Sep2.AnchorPoint = Vector2.new(0.5, 0.5);
+Sep2.Position = UDim2.new(0.5, 0, 0.5, 0);
+Sep2.Size = UDim2.new(1, 0, 0, 36);
+Sep2.Font = Enum.Font.GothamBold;
+Sep2.Text = text;
+Sep2.TextColor3 = Color3.fromRGB(255, 255, 255);
+Sep2.TextSize = 14;
+
+-- Sep3: Garis Kanan
+Sep3.Name = "Sep3";
+Sep3.Parent = Seperator;
+Sep3.BackgroundColor3 = Color3.fromRGB(255, 255, 255);
+Sep3.BackgroundTransparency = 0;
+Sep3.AnchorPoint = Vector2.new(1, 0.5);
+Sep3.Position = UDim2.new(1, 0, 0.5, 0);
+Sep3.Size = UDim2.new(0.15, 0, 0, 1);
+Sep3.BorderSizePixel = 0;
+Sep3.Text = "";
+local Grad3 = Instance.new("UIGradient");
+Grad3.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, _G.Dark),
+	ColorSequenceKeypoint.new(0.4, _G.Primary),
+	ColorSequenceKeypoint.new(0.5, _G.Primary),
+	ColorSequenceKeypoint.new(0.6, _G.Primary),
+	ColorSequenceKeypoint.new(1, _G.Dark)
+});
+Grad3.Parent = Sep3;
+
 		end;
 		function main:Line()
 			local Linee = Instance.new("Frame");
