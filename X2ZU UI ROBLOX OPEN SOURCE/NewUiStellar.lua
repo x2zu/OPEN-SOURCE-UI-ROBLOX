@@ -1052,211 +1052,276 @@ function Update:Window(Config)
 				pcall(callback, toggled);
 			end;
 		end;
-		function main:Dropdown(text, options, selectedList, callback, MultiSelect)
-	local Dropdown = Instance.new("Frame")
-	local UICorner = Instance.new("UICorner")
-	local UIStroke = Instance.new("UIStroke")
-	local Title = Instance.new("TextLabel")
-	local DropdownFrame = Instance.new("Frame")
-	local DropShadow = Instance.new("ImageLabel")
-	local DropdownFrameScroll = Instance.new("Frame")
-	local DropScroll = Instance.new("ScrollingFrame")
-	local UIListLayout = Instance.new("UIListLayout")
-	local SelectItems = Instance.new("TextLabel")
-	local ArrowDown = Instance.new("ImageButton")
-
-	Dropdown.Name = "Dropdown"
-	Dropdown.BackgroundColor3 = Color3.fromRGB(23, 23, 23)
-	Dropdown.ClipsDescendants = true
-	Dropdown.Position = UDim2.new(0.0536577627, 0, 0.508264482, 0)
-	Dropdown.Size = UDim2.new(1, 0, 0, 40)
-	Dropdown.Parent = TabFrame
-
-	UICorner.CornerRadius = UDim.new(0, 6)
-	UICorner.Parent = Dropdown
-
-	UIStroke.Color = Color3.fromRGB(65, 65, 65)
-	UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	UIStroke.LineJoinMode = Enum.LineJoinMode.Round
-	UIStroke.Thickness = 1
-	UIStroke.Parent = Dropdown
-
-	Title.Name = "Title"
-	Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	Title.BackgroundTransparency = 1.000
-	Title.Position = UDim2.new(0.0268456378, 0, 0, 0)
-	Title.Size = UDim2.new(0, 133, 0, 35)
-	Title.Font = Enum.Font.Gotham
-	Title.Text = text or "Dropdown"
-	Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Title.TextSize = 14.000
-	Title.TextTransparency = 0.500
-	Title.TextXAlignment = Enum.TextXAlignment.Left
-	Title.Parent = Dropdown
-
-	DropdownFrame.Name = "DropdownFrame"
-	DropdownFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-	DropdownFrame.BackgroundColor3 = Color3.fromRGB(23, 23, 23)
-	DropdownFrame.Position = UDim2.new(0.5, 0, 0.725000024, 0)
-	DropdownFrame.Size = UDim2.new(1, -10, 0, 25)
-	DropdownFrame.ZIndex = 2
-	DropdownFrame.Parent = Dropdown
-
-	DropShadow.Name = "DropShadow"
-	DropShadow.Image = "rbxassetid://6015897843"
-	DropShadow.ImageTransparency = 0.500
-	DropShadow.ScaleType = Enum.ScaleType.Slice
-	DropShadow.SliceCenter = Rect.new(49, 49, 450, 450)
-	DropShadow.Size = UDim2.new(1, 0, 1, 0)
-	DropShadow.ZIndex = 0
-	DropShadow.Parent = DropdownFrame
-
-	DropdownFrameScroll.Name = "DropdownFrameScroll"
-	DropdownFrameScroll.AnchorPoint = Vector2.new(0.5, 0)
-	DropdownFrameScroll.BackgroundColor3 = Color3.fromRGB(23, 23, 23)
-	DropdownFrameScroll.Position = UDim2.new(0.5, 0, 1, 0)
-	DropdownFrameScroll.Size = UDim2.new(1, -10, 0, 0)
-	DropdownFrameScroll.Visible = false
-	DropdownFrameScroll.ZIndex = 2
-	DropdownFrameScroll.Parent = Dropdown
-
-	DropScroll.Name = "DropScroll"
-	DropScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
-	DropScroll.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	DropScroll.BackgroundTransparency = 1.000
-	DropScroll.BorderSizePixel = 0
-	DropScroll.ScrollBarThickness = 0
-	DropScroll.ScrollingDirection = Enum.ScrollingDirection.Y
-	DropScroll.Size = UDim2.new(1, 0, 1, 0)
-	DropScroll.Parent = DropdownFrameScroll
-
-	UIListLayout.Parent = DropScroll
-	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-
-	SelectItems.Name = "SelectItems"
-	SelectItems.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	SelectItems.BackgroundTransparency = 1.000
-	SelectItems.Size = UDim2.new(1, 0, 1, 0)
-	SelectItems.Font = Enum.Font.Gotham
-	SelectItems.Text = "   Select Items"
-	SelectItems.TextColor3 = Color3.fromRGB(255, 255, 255)
-	SelectItems.TextSize = 14.000
-	SelectItems.TextTransparency = 0.000
-	SelectItems.TextXAlignment = Enum.TextXAlignment.Left
-	SelectItems.Parent = DropdownFrame
-
-	ArrowDown.Name = "ArrowDown"
-	ArrowDown.AnchorPoint = Vector2.new(0, 0.5)
-	ArrowDown.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	ArrowDown.BackgroundTransparency = 1.000
-	ArrowDown.Position = UDim2.new(1, -25, 0.5, 0)
-	ArrowDown.Size = UDim2.new(0, 15, 0, 15)
-	ArrowDown.Image = "rbxassetid://14668723618"
-	ArrowDown.ImageColor3 = Color3.fromRGB(255, 255, 255)
-	ArrowDown.ImageTransparency = 0.500
-	ArrowDown.Parent = DropdownFrame
-
-	local selectedItems = {}
-	local isDropping = false
-
-	local function updateSelectText()
-		if #selectedItems == 0 then
-			SelectItems.Text = "   Select Items"
-		else
-			if MultiSelect then
-				SelectItems.Text = "   " .. table.concat(selectedItems, ", ")
-			else
-				SelectItems.Text = "   " .. selectedItems[1]
-			end
-		end
-	end
-
-	for _, v in ipairs(options) do
-		local item = Instance.new("TextButton")
-		item.Name = "Item"
-		item.Parent = DropScroll
-		item.BackgroundTransparency = 1
-		item.Text = v
-		item.Size = UDim2.new(1, -6, 0, 20)
-		item.Font = Enum.Font.Gotham
-		item.TextColor3 = Color3.fromRGB(255, 255, 255)
-		item.TextSize = 14.000
-		item.TextTransparency = 0.5
-
-		local selectedMark = Instance.new("Frame")
-		selectedMark.Name = "SelectedItems"
-		selectedMark.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		selectedMark.BackgroundTransparency = 1
-		selectedMark.Size = UDim2.new(0, 6, 1, 0)
-		selectedMark.Parent = item
-
-		item.MouseButton1Click:Connect(function()
-			local name = item.Text
-
-			if MultiSelect then
-				local found = table.find(selectedItems, name)
-				if found then
-					table.remove(selectedItems, found)
-					item.BackgroundTransparency = 1
-					item.TextTransparency = 0.5
-					selectedMark.BackgroundTransparency = 1
+		function main:Dropdown(text, option, var, callback)
+			local isdropping = false;
+			local Dropdown = Instance.new("Frame");
+			local DropdownFrameScroll = Instance.new("Frame");
+			local UICorner = Instance.new("UICorner");
+			local UICorner_2 = Instance.new("UICorner");
+			local UICorner_3 = Instance.new("UICorner");
+			local UICorner_4 = Instance.new("UICorner");
+			local DropTitle = Instance.new("TextLabel");
+			local DropScroll = Instance.new("ScrollingFrame");
+			local UIListLayout = Instance.new("UIListLayout");
+			local UIPadding = Instance.new("UIPadding");
+			local DropButton = Instance.new("TextButton");
+			local HideButton = Instance.new("TextButton");
+			local SelectItems = Instance.new("TextButton");
+			local DropImage = Instance.new("ImageLabel");
+			local UIStroke = Instance.new("UIStroke");
+			Dropdown.Name = "Dropdown";
+			Dropdown.Parent = MainFramePage;
+			Dropdown.BackgroundColor3 = _G.Primary;
+			Dropdown.BackgroundTransparency = 0.8;
+			Dropdown.ClipsDescendants = false;
+			Dropdown.Size = UDim2.new(1, 0, 0, 40);
+			UICorner.CornerRadius = UDim.new(0, 5);
+			UICorner.Parent = Dropdown;
+			DropTitle.Name = "DropTitle";
+			DropTitle.Parent = Dropdown;
+			DropTitle.BackgroundColor3 = _G.Primary;
+			DropTitle.BackgroundTransparency = 1;
+			DropTitle.Size = UDim2.new(1, 0, 0, 30);
+			DropTitle.Font = Enum.Font.Cartoon;
+			DropTitle.Text = text;
+			DropTitle.TextColor3 = Color3.fromRGB(255, 255, 255);
+			DropTitle.TextSize = 15;
+			DropTitle.TextXAlignment = Enum.TextXAlignment.Left;
+			DropTitle.Position = UDim2.new(0, 15, 0, 5);
+			DropTitle.AnchorPoint = Vector2.new(0, 0);
+			SelectItems.Name = "SelectItems";
+			SelectItems.Parent = Dropdown;
+			SelectItems.BackgroundColor3 = Color3.fromRGB(24, 24, 26);
+			SelectItems.TextColor3 = Color3.fromRGB(255, 255, 255);
+			SelectItems.BackgroundTransparency = 0;
+			SelectItems.Position = UDim2.new(1, -5, 0, 5);
+			SelectItems.Size = UDim2.new(0, 100, 0, 30);
+			SelectItems.AnchorPoint = Vector2.new(1, 0);
+			SelectItems.Font = Enum.Font.GothamMedium;
+			SelectItems.AutoButtonColor = false;
+			SelectItems.TextSize = 9;
+			SelectItems.ZIndex = 1;
+			SelectItems.ClipsDescendants = true;
+			SelectItems.Text = "   Select Items";
+			SelectItems.TextXAlignment = Enum.TextXAlignment.Left;
+			local ArrowDown = Instance.new("ImageLabel");
+			ArrowDown.Name = "ArrowDown";
+			ArrowDown.Parent = Dropdown;
+			ArrowDown.BackgroundColor3 = _G.Primary;
+			ArrowDown.BackgroundTransparency = 1;
+			ArrowDown.AnchorPoint = Vector2.new(1, 0);
+			ArrowDown.Position = UDim2.new(1, -110, 0, 10);
+			ArrowDown.Size = UDim2.new(0, 20, 0, 20);
+			ArrowDown.Image = "rbxassetid://10709790948";
+			ArrowDown.ImageTransparency = 0;
+			ArrowDown.ImageColor3 = Color3.fromRGB(255, 255, 255);
+			CreateRounded(SelectItems, 5);
+			CreateRounded(DropScroll, 5);
+			DropdownFrameScroll.Name = "DropdownFrameScroll";
+			DropdownFrameScroll.Parent = Dropdown;
+			DropdownFrameScroll.BackgroundColor3 = Color3.fromRGB(24, 24, 26);
+			DropdownFrameScroll.BackgroundTransparency = 0;
+			DropdownFrameScroll.ClipsDescendants = true;
+			DropdownFrameScroll.Size = UDim2.new(1, 0, 0, 100);
+			DropdownFrameScroll.Position = UDim2.new(0, 5, 0, 40);
+			DropdownFrameScroll.Visible = false;
+			DropdownFrameScroll.AnchorPoint = Vector2.new(0, 0);
+			UICorner_4.Parent = DropdownFrameScroll;
+			UICorner_4.CornerRadius = UDim.new(0, 5);
+			DropScroll.Name = "DropScroll";
+			DropScroll.Parent = DropdownFrameScroll;
+			DropScroll.ScrollingDirection = Enum.ScrollingDirection.Y;
+			DropScroll.Active = true;
+			DropScroll.BackgroundColor3 = Color3.fromRGB(255, 255, 255);
+			DropScroll.BackgroundTransparency = 1;
+			DropScroll.BorderSizePixel = 0;
+			DropScroll.Position = UDim2.new(0, 0, 0, 10);
+			DropScroll.Size = UDim2.new(1, 0, 0, 80);
+			DropScroll.AnchorPoint = Vector2.new(0, 0);
+			DropScroll.ClipsDescendants = true;
+			DropScroll.ScrollBarThickness = 3;
+			DropScroll.ZIndex = 3;
+			local PaddingDrop = Instance.new("UIPadding");
+			PaddingDrop.PaddingLeft = UDim.new(0, 10);
+			PaddingDrop.PaddingRight = UDim.new(0, 10);
+			PaddingDrop.Parent = DropScroll;
+			PaddingDrop.Name = "PaddingDrop";
+			UIListLayout.Parent = DropScroll;
+			UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder;
+			UIListLayout.Padding = UDim.new(0, 1);
+			UIPadding.Parent = DropScroll;
+			UIPadding.PaddingLeft = UDim.new(0, 5);
+			for i, v in next, option do
+				local Item = Instance.new("TextButton");
+				local CRNRitems = Instance.new("UICorner");
+				local UICorner_5 = Instance.new("UICorner");
+				local ItemPadding = Instance.new("UIPadding");
+				Item.Name = "Item";
+				Item.Parent = DropScroll;
+				Item.BackgroundColor3 = _G.Primary;
+				Item.BackgroundTransparency = 1;
+				Item.Size = UDim2.new(1, 0, 0, 30);
+				Item.Font = Enum.Font.Nunito;
+				Item.Text = tostring(v);
+				Item.TextColor3 = Color3.fromRGB(255, 255, 255);
+				Item.TextSize = 13;
+				Item.TextTransparency = 0.5;
+				Item.TextXAlignment = Enum.TextXAlignment.Left;
+				Item.ZIndex = 4;
+				ItemPadding.Parent = Item;
+				ItemPadding.PaddingLeft = UDim.new(0, 8);
+				UICorner_5.Parent = Item;
+				UICorner_5.CornerRadius = UDim.new(0, 5);
+				local SelectedItems = Instance.new("Frame");
+				SelectedItems.Name = "SelectedItems";
+				SelectedItems.Parent = Item;
+				SelectedItems.BackgroundColor3 = _G.Third;
+				SelectedItems.BackgroundTransparency = 1;
+				SelectedItems.Size = UDim2.new(0, 3, 0.4, 0);
+				SelectedItems.Position = UDim2.new(0, -8, 0.5, 0);
+				SelectedItems.AnchorPoint = Vector2.new(0, 0.5);
+				SelectedItems.ZIndex = 4;
+				CRNRitems.Parent = SelectedItems;
+				CRNRitems.CornerRadius = UDim.new(0, 999);
+				if var then
+					pcall(callback, var);
+					SelectItems.Text = "   " .. var;
+					activeItem = tostring(var);
+					for i, v in next, DropScroll:GetChildren() do
+						if v:IsA("TextButton") then
+							local SelectedItems = v:FindFirstChild("SelectedItems");
+							if activeItem == v.Text then
+								v.BackgroundTransparency = 0.8;
+								v.TextTransparency = 0;
+								if SelectedItems then
+									SelectedItems.BackgroundTransparency = 0;
+								end;
+							end;
+						end;
+					end;
+				end;
+				Item.MouseButton1Click:Connect(function()
+					SelectItems.ClipsDescendants = true;
+					callback(Item.Text);
+					activeItem = Item.Text;
+					for i, v in next, DropScroll:GetChildren() do
+						if v:IsA("TextButton") then
+							local SelectedItems = v:FindFirstChild("SelectedItems");
+							if activeItem == v.Text then
+								v.BackgroundTransparency = 0.8;
+								v.TextTransparency = 0;
+								if SelectedItems then
+									SelectedItems.BackgroundTransparency = 0;
+								end;
+							else
+								v.BackgroundTransparency = 1;
+								v.TextTransparency = 0.5;
+								if SelectedItems then
+									SelectedItems.BackgroundTransparency = 1;
+								end;
+							end;
+						end;
+					end;
+					SelectItems.Text = "   " .. Item.Text;
+				end);
+			end;
+			DropScroll.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y);
+			SelectItems.MouseButton1Click:Connect(function()
+				if isdropping == false then
+					isdropping = true;
+					(TweenService:Create(DropdownFrameScroll, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+						Size = UDim2.new(1, -10, 0, 100),
+						Visible = true
+					})):Play();
+					(TweenService:Create(Dropdown, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+						Size = UDim2.new(1, 0, 0, 145)
+					})):Play();
+                    (TweenService:Create(ArrowDown, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                        Rotation = 180
+                    })):Play();
 				else
-					table.insert(selectedItems, name)
-					item.BackgroundTransparency = 0.8
-					item.TextTransparency = 0
-					selectedMark.BackgroundTransparency = 0
-				end
-				updateSelectText()
-				callback(selectedItems)
-			else
-				selectedItems = { name }
-				for _, btn in ipairs(DropScroll:GetChildren()) do
-					if btn:IsA("TextButton") then
-						btn.BackgroundTransparency = 1
-						btn.TextTransparency = 0.5
-						local sm = btn:FindFirstChild("SelectedItems")
-						if sm then sm.BackgroundTransparency = 1 end
-					end
-				end
-				item.BackgroundTransparency = 0.8
-				item.TextTransparency = 0
-				selectedMark.BackgroundTransparency = 0
-				updateSelectText()
-				callback(name)
-				isDropping = false
-				TweenService:Create(DropdownFrameScroll, TweenInfo.new(0.3), { Size = UDim2.new(1, -10, 0, 0) }):Play()
-				TweenService:Create(Dropdown, TweenInfo.new(0.3), { Size = UDim2.new(1, 0, 0, 40) }):Play()
-				TweenService:Create(ArrowDown, TweenInfo.new(0.3), { Rotation = 0 }):Play()
-				task.delay(0.3, function()
-					if not isDropping then
-						DropdownFrameScroll.Visible = false
-					end
-				end)
-			end
-		end)
-	end
-
-	ArrowDown.MouseButton1Click:Connect(function()
-		isDropping = not isDropping
-		DropdownFrameScroll.Visible = true
-		local newSize = isDropping and UDim2.new(1, -10, 0, 100) or UDim2.new(1, -10, 0, 0)
-		local arrowRotation = isDropping and 180 or 0
-		local dropdownSize = isDropping and UDim2.new(1, 0, 0, 130) or UDim2.new(1, 0, 0, 40)
-
-		TweenService:Create(DropdownFrameScroll, TweenInfo.new(0.3), { Size = newSize }):Play()
-		TweenService:Create(Dropdown, TweenInfo.new(0.3), { Size = dropdownSize }):Play()
-		TweenService:Create(ArrowDown, TweenInfo.new(0.3), { Rotation = arrowRotation }):Play()
-
-		if not isDropping then
-			task.delay(0.3, function()
-				if not isDropping then
-					DropdownFrameScroll.Visible = false
-				end
-			end)
-		end
-	end)
-end
-
+					isdropping = false;
+					(TweenService:Create(DropdownFrameScroll, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+						Size = UDim2.new(1, -10, 0, 0),
+						Visible = false
+					})):Play();
+					(TweenService:Create(Dropdown, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+						Size = UDim2.new(1, 0, 0, 40)
+					})):Play();
+                    (TweenService:Create(ArrowDown, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                        Rotation = 0
+                    })):Play();
+				end;
+			end);
+			local dropfunc = {};
+			function dropfunc:Add(t)
+				local Item = Instance.new("TextButton");
+				local CRNRitems = Instance.new("UICorner");
+				local UICorner_5 = Instance.new("UICorner");
+				local ItemPadding = Instance.new("UIPadding");
+				Item.Name = "Item";
+				Item.Parent = DropScroll;
+				Item.BackgroundColor3 = _G.Primary;
+				Item.BackgroundTransparency = 1;
+				Item.Size = UDim2.new(1, 0, 0, 30);
+				Item.Font = Enum.Font.Nunito;
+				Item.Text = tostring(t);
+				Item.TextColor3 = Color3.fromRGB(255, 255, 255);
+				Item.TextSize = 13;
+				Item.TextTransparency = 0.5;
+				Item.TextXAlignment = Enum.TextXAlignment.Left;
+				Item.ZIndex = 4;
+				ItemPadding.Parent = Item;
+				ItemPadding.PaddingLeft = UDim.new(0, 8);
+				UICorner_5.Parent = Item;
+				UICorner_5.CornerRadius = UDim.new(0, 5);
+				local SelectedItems = Instance.new("Frame");
+				SelectedItems.Name = "SelectedItems";
+				SelectedItems.Parent = Item;
+				SelectedItems.BackgroundColor3 = _G.Third;
+				SelectedItems.BackgroundTransparency = 1;
+				SelectedItems.Size = UDim2.new(0, 3, 0.4, 0);
+				SelectedItems.Position = UDim2.new(0, -8, 0.5, 0);
+				SelectedItems.AnchorPoint = Vector2.new(0, 0.5);
+				SelectedItems.ZIndex = 4;
+				CRNRitems.Parent = SelectedItems;
+				CRNRitems.CornerRadius = UDim.new(0, 999);
+				Item.MouseButton1Click:Connect(function()
+					callback(Item.Text);
+					activeItem = Item.Text;
+					for i, v in next, DropScroll:GetChildren() do
+						if v:IsA("TextButton") then
+							local SelectedItems = v:FindFirstChild("SelectedItems");
+							if activeItem == v.Text then
+								v.BackgroundTransparency = 0.8;
+								v.TextTransparency = 0;
+								if SelectedItems then
+									SelectedItems.BackgroundTransparency = 0;
+								end;
+							else
+								v.BackgroundTransparency = 1;
+								v.TextTransparency = 0.5;
+								if SelectedItems then
+									SelectedItems.BackgroundTransparency = 1;
+								end;
+							end;
+						end;
+					end;
+					SelectItems.Text = "   " .. Item.Text;
+				end);
+			end;
+			function dropfunc:Clear()
+				SelectItems.Text = "   Select Items";
+				isdropping = false;
+				DropdownFrameScroll.Visible = false;
+				for i, v in next, DropScroll:GetChildren() do
+					if v:IsA("TextButton") then
+						v:Destroy();
+					end;
+				end;
+			end;
+			return dropfunc;
+		end;
 		function main:Slider(text, min, max, set, callback)
 			local Slider = Instance.new("Frame");
 			local slidercorner = Instance.new("UICorner");
