@@ -4,7 +4,7 @@ local InterfaceManager = {} do
 	InterfaceManager.Folder = "FluentRenewedSettings"
 
     InterfaceManager.Settings = {
-        Theme = "Dark",
+        Theme = "Viow Arabian Mix",
         Acrylic = true,
         Transparency = true,
         MenuKeybind = Enum.KeyCode.RightControl
