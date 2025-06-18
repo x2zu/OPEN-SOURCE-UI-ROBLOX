@@ -2,7 +2,7 @@
 -- Discord Server x2zu best skid discord open source script everrrrrrrrrrrrrr : https://discord.gg/FmMuvkaWvG / discord.gg/x2zu Owner: @x2zu muhauhauhauhua
 
 
-local x2zuLibrary = loadstring(game:HttpGet("paste ur url in here nigga don't be stupid and don't pretend that this ui is yours nigga"))()
+local x2zuLibrary = loadstring(game:HttpGet("paste ur url in here nigga don't be stupid"))()
 
 local Window = x2zuLibrary:CreateWindow({Title = "x2zu"})
 
@@ -37,7 +37,7 @@ do
 	local RightSide = Tab1:AddSection({Title = "Right"})
 	
 	LeftSide:AddParagraph({
-		Title = "Create by x2zu",
+		Title = "lolnigga",
 		Content = "A tool to help users to grind without getting bored of it.\n\nFully automated."
 	})
 	
