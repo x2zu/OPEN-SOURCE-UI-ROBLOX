@@ -264,42 +264,56 @@ function Library:Load(cfgs)
 			ToggleVisibility()
 		end
 	end)
+local top_frame = Create("Frame", {
+    Size = UDim2.new(1, 0, 0, 40),
+    ZIndex = 9,
+    Parent = canvas_group,
+    BorderSizePixel = 0,
+}, {
+    Create("UIGradient", {
+        Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(35, 35, 45)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(55, 55, 75)),
+        }),
+        Rotation = 0,
+    }),
+    Create("UIStroke", {
+        ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+        Color = Color3.fromRGB(60, 60, 70),
+        Thickness = 1,
+    }),
+    Create("ImageLabel", {
+        Image = "rbxassetid://1316045217",
+        ImageColor3 = Color3.fromRGB(0, 0, 0),
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1, 10, 1, 10),
+        Position = UDim2.new(0, -5, 0, -5),
+        ZIndex = 0,
+    })
+})
 
-	local top_frame = Create("Frame", {
-		ThemeProps = {
-			BackgroundColor3 = "maincolor",
-		},
-		BorderColor3 = Color3.fromRGB(39, 39, 42),
-		Size = UDim2.new(1, 0, 0, 40),
-		ZIndex = 9,
-		Parent = canvas_group,
-	}, {
-		Create("UIStroke", {
-			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-			ThemeProps = {
-				Color = "bordercolor",
-			},
-			Thickness = 1,
-		}),
-	})
+local titleIcon = Create("ImageLabel", {
+    Image = "rbxassetid://10723415903",
+    BackgroundTransparency = 1,
+    Size = UDim2.new(0, 18, 0, 18),
+    Position = UDim2.new(0, 10, 0.5, -9),
+    ZIndex = 10,
+    Parent = top_frame,
+})
 
-	local title = Create("TextLabel", {
-		Font = Enum.Font.GothamMedium,
-		RichText = true,
-		Text = cfgs.Title,
-		ThemeProps = {
-			TextColor3 = "titlecolor",
-			BackgroundColor3 = "maincolor",
-		},
-		BorderSizePixel = 0,
-		TextSize = 15,
-		TextXAlignment = Enum.TextXAlignment.Left,
-		BackgroundTransparency = 1,
-		Position = UDim2.new(0, 14, 0, 0),
-		Size = UDim2.new(0, 200, 0, 40),
-		ZIndex = 10,
-		Parent = top_frame,
-	})
+local title = Create("TextLabel", {
+    Font = Enum.Font.GothamMedium,
+    RichText = true,
+    Text = cfgs.Title,
+    TextColor3 = Color3.fromRGB(235, 235, 235),
+    BackgroundTransparency = 1,
+    TextSize = 15,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    Position = UDim2.new(0, 34, 0, 0),
+    Size = UDim2.new(0, 200, 0, 40),
+    ZIndex = 10,
+    Parent = top_frame,
+})
 
 	local minimizebtn = Create("TextButton", {
 		Text = "",
