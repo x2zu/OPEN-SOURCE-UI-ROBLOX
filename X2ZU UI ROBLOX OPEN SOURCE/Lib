@@ -1257,7 +1257,7 @@ function TabModule:New(Title, Parent)
 		PlaceholderText = "Search elements...",
 		TextXAlignment = Enum.TextXAlignment.Left,
 		Text = "",
-		Font = Enum.Font.Gotham,
+		Font = Enum.Font.GothamBold,
 		TextSize = 14,
 		BackgroundTransparency = 1,
 		ThemeProps = {
