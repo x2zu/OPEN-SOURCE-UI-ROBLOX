@@ -1606,49 +1606,71 @@ Element.__index = Element
 Element.__type = "Button"
 
 local ButtonStyles = {
-	Primary = {
-		TextColor3 = Color3.fromRGB(9, 9, 9),
-		BackgroundColor3 = CurrentThemeProps.primarycolor,
-		BackgroundTransparency = 0,
-		BorderColor3 = Color3.fromRGB(0, 0, 0),
-		BorderSizePixel = 0,
-		HoverConfig = {
-			BackgroundTransparency = 0.1,
-		},
-		FocusConfig = {
-			BackgroundTransparency = 0.2,
-		},
-	},
-	Ghost = {
-		TextColor3 = Color3.fromRGB(244, 244, 244),
-		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-		BackgroundTransparency = 1,
-		BorderColor3 = Color3.fromRGB(0, 0, 0),
-		BorderSizePixel = 0,
-		HoverConfig = {
-			BackgroundTransparency = 0.98,
-		},
-		FocusConfig = {
-			BackgroundTransparency = 0.94,
-		},
-	},
-	Outline = {
-		TextColor3 = Color3.fromRGB(244, 244, 244),
-		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-		BackgroundTransparency = 1,
-		BorderColor3 = Color3.fromRGB(0, 0, 0),
-		BorderSizePixel = 1,
-		UIStroke = {
-			Color = Color3.fromRGB(39, 39, 42),
-			Thickness = 1,
-		},
-		HoverConfig = {
-			BackgroundTransparency = 0.94,
-		},
-		FocusConfig = {
-			BackgroundTransparency = 0.98,
-		},
-	},
+    Primary = {
+        TextColor3 = Color3.fromRGB(9, 9, 9),
+        BackgroundColor3 = CurrentThemeProps.primarycolor,
+        BackgroundTransparency = 0,
+        BorderColor3 = Color3.fromRGB(0, 0, 0),
+        BorderSizePixel = 0,
+        HoverConfig = { BackgroundTransparency = 0.1 },
+        FocusConfig = { BackgroundTransparency = 0.2 },
+    },
+    Ghost = {
+        TextColor3 = Color3.fromRGB(244, 244, 244),
+        BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+        BackgroundTransparency = 1,
+        BorderColor3 = Color3.fromRGB(0, 0, 0),
+        BorderSizePixel = 0,
+        HoverConfig = { BackgroundTransparency = 0.98 },
+        FocusConfig = { BackgroundTransparency = 0.94 },
+    },
+    Outline = {
+        TextColor3 = Color3.fromRGB(244, 244, 244),
+        BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+        BackgroundTransparency = 1,
+        BorderColor3 = Color3.fromRGB(0, 0, 0),
+        BorderSizePixel = 1,
+        UIStroke = { Color = Color3.fromRGB(39, 39, 42), Thickness = 1 },
+        HoverConfig = { BackgroundTransparency = 0.94 },
+        FocusConfig = { BackgroundTransparency = 0.98 },
+    },
+
+    -- 🌈 Gradient Style
+    Gradient = {
+        TextColor3 = Color3.fromRGB(255, 255, 255),
+        BackgroundColor3 = Color3.fromRGB(255, 0, 0), -- hanya base
+        BackgroundTransparency = 0,
+        BorderSizePixel = 0,
+        Gradient = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 100)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 150, 255)),
+        }),
+        HoverConfig = { BackgroundTransparency = 0 },
+        FocusConfig = { BackgroundTransparency = 0.05 },
+    },
+
+    -- 💡 Neon Style
+    Neon = {
+        TextColor3 = Color3.fromRGB(255, 255, 255),
+        BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+        BackgroundTransparency = 0.1,
+        BorderSizePixel = 0,
+        NeonGlow = Color3.fromRGB(0, 255, 150),
+        HoverConfig = { BackgroundTransparency = 0 },
+        FocusConfig = { BackgroundTransparency = 0.05 },
+    },
+
+    -- 🪟 Glassmorphism Style
+    Glass = {
+        TextColor3 = Color3.fromRGB(255, 255, 255),
+        BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+        BackgroundTransparency = 0.8,
+        BorderSizePixel = 0,
+        Blur = true,
+        UIStroke = { Color = Color3.fromRGB(255, 255, 255), Thickness = 1 },
+        HoverConfig = { BackgroundTransparency = 0.7 },
+        FocusConfig = { BackgroundTransparency = 0.65 },
+    },
 }
 
 local function ApplyTweens(button, config, uiStroke)
@@ -1704,6 +1726,36 @@ local function CreateButton(style, text, parent)
 			Archivable = true,
 		}),
 	})
+	
+-- Jika ada gradient
+if config.Gradient then
+    Create("UIGradient", {
+        Color = config.Gradient,
+        Rotation = 90,
+        Parent = button,
+    })
+end
+
+-- Jika ada efek neon
+if config.NeonGlow then
+    local glow = Instance.new("ImageLabel")
+    glow.Image = "rbxassetid://5028857084"
+    glow.ImageColor3 = config.NeonGlow
+    glow.Size = UDim2.new(1, 20, 1, 20)
+    glow.Position = UDim2.new(0, -10, 0, -10)
+    glow.BackgroundTransparency = 1
+    glow.ZIndex = 0
+    glow.Parent = button
+end
+
+-- Jika Glassmorphism
+if config.Blur then
+    local blur = Instance.new("UIStroke")
+    blur.Color = Color3.fromRGB(255, 255, 255)
+    blur.Transparency = 0.7
+    blur.Thickness = 1
+    blur.Parent = button
+end
 
 	if config.UIStroke then
 		Create("UIStroke", {
