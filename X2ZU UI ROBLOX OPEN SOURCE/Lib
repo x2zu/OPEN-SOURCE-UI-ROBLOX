@@ -427,23 +427,24 @@ function Library:Load(cfgs)
         TabModule:SelectTab(Tab)
     end
 
-    Library:AddTheme("DarkPink", {
-        maincolor = Color3.fromRGB(35, 0, 20),
-        titlecolor = Color3.fromRGB(255, 192, 203),
-        descriptioncolor = Color3.fromRGB(255, 170, 200),
-        bordercolor = Color3.fromRGB(255, 105, 180),
-        scrollcolor = Color3.fromRGB(255, 150, 200),
-        togglebg = Color3.fromRGB(50, 0, 25),
-        toggleborderr = Color3.fromRGB(255, 105, 180),
-        primarycolor = Color3.fromRGB(255, 105, 180),
-        elementbackground = Color3.fromRGB(45, 0, 25),
-        elementdescription = Color3.fromRGB(255, 182, 193),
-        onTextBtn = Color3.fromRGB(255, 192, 203),
-        offTextBtn = Color3.fromRGB(180, 130, 140),
-        onBgLineBtn = Color3.fromRGB(255, 105, 180),
-        offBgLineBtn = Color3.fromRGB(100, 50, 60),
-    })
-    Library:SetTheme("DarkPink")
+Library:AddTheme("DarkPink", {
+    maincolor = Color3.fromRGB(25, 25, 35),    
+    titlecolor = Color3.fromRGB(255, 182, 193),   
+    descriptioncolor = Color3.fromRGB(200, 200, 210), 
+    bordercolor = Color3.fromRGB(255, 105, 180),  
+    scrollcolor = Color3.fromRGB(180, 100, 140), 
+    togglebg = Color3.fromRGB(40, 40, 50),       
+    toggleborderr = Color3.fromRGB(255, 105, 180),
+    primarycolor = Color3.fromRGB(255, 105, 180), 
+    elementbackground = Color3.fromRGB(30, 30, 40), 
+    elementdescription = Color3.fromRGB(200, 200, 210), 
+    onTextBtn = Color3.fromRGB(255, 192, 203),    
+    offTextBtn = Color3.fromRGB(180, 180, 190),  
+    onBgLineBtn = Color3.fromRGB(255, 105, 180),  
+    offBgLineBtn = Color3.fromRGB(80, 80, 90),    
+})
+Library:SetTheme("DarkPink")
+
 
     return Tabs
 end
