@@ -3121,46 +3121,15 @@ function Element:New(Idx, Config)
     }
 
 local ToggleFrame = require(Components.element)("        " .. Config.Title, Config.Description, self.Container)
-local titleLabel = ToggleFrame.topbox:FindFirstChild("Title", true)
+local titleLabel = ToggleFrame.topbox:FindFirstChild("Title", true) 
 
--- Risky: warna kuning
 if Config.Risky and titleLabel and titleLabel:IsA("TextLabel") then
     titleLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
 end
 
--- Patched: disable toggle
-if Config.Patched then
-
-    ToggleFrame.Frame.Active = false
-    ToggleFrame.Frame.Selectable = false
-    if ToggleFrame.Frame:IsA("TextButton") or ToggleFrame.Frame:IsA("ImageButton") then
-        ToggleFrame.Frame.AutoButtonColor = false
-    end
-    
-
-    if titleLabel and titleLabel:IsA("TextLabel") then
-        titleLabel.TextColor3 = Color3.fromRGB(160, 160, 160) 
-    end
-    ToggleFrame.Frame.BackgroundTransparency = 0.4
-    ToggleFrame.Frame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-
-
-    local toggleBox = ToggleFrame.topbox:FindFirstChildOfClass("Frame")
-    if toggleBox then
-        toggleBox.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-        toggleBox.BackgroundTransparency = 0.3
-    end
-
-
-    local patchedLabel = Instance.new("TextLabel")
-    patchedLabel.Text = "[Patched]"
-    patchedLabel.Font = Enum.Font.GothamBold
-    patchedLabel.TextSize = 12
-    patchedLabel.TextColor3 = Color3.fromRGB(200, 80, 80)
-    patchedLabel.BackgroundTransparency = 1
-    patchedLabel.Position = UDim2.new(1, 5, 0.5, -6)
-    patchedLabel.AnchorPoint = Vector2.new(0, 0.5)
-    patchedLabel.Parent = ToggleFrame.topbox
+if Config.Patched and titleLabel and titleLabel:IsA("TextLabel") then
+    titleLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+    titleLabel.Text = Config.Title .. " [Patched]"
 end
 
 
