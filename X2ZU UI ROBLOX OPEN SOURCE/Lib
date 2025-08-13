@@ -3228,6 +3228,26 @@ end
 function tools.AddTheme(themeName, themeProps)
 	themes[themeName] = themeProps
 end
+function Library:AddTheme(name, colors)
+    self.Themes = self.Themes or {}
+    self.Themes[name] = colors
+end
+
+function Library:SetTheme(name)
+    if self.Themes and self.Themes[name] then
+        self.Theme = self.Themes[name]
+        -- Update semua elemen yang punya ThemeProps
+        for _, obj in pairs(self.Objects or {}) do
+            if obj.ThemeProps then
+                for prop, themeKey in pairs(obj.ThemeProps) do
+                    if self.Theme[themeKey] then
+                        obj[prop] = self.Theme[themeKey]
+                    end
+                end
+            end
+        end
+    end
+end
 
 function tools.isMobile()
     return UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled and not UserInputService.MouseEnabled
