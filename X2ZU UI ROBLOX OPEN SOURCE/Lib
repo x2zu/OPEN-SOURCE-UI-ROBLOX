@@ -3123,14 +3123,20 @@ function Element:New(Idx, Config)
 local ToggleFrame = require(Components.element)("        " .. Config.Title, Config.Description, self.Container)
 local titleLabel = ToggleFrame.topbox:FindFirstChild("Title", true) 
 
+
 if Config.Risky and titleLabel and titleLabel:IsA("TextLabel") then
     titleLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
 end
 
+
 if Config.Patched and titleLabel and titleLabel:IsA("TextLabel") then
     titleLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
     titleLabel.Text = "[Patched]"
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Left 
+    titleLabel.TextTruncate = Enum.TextTruncate.AtEnd    
+    titleLabel.Size = UDim2.new(0, 200, 1, 0)            
 end
+
 
 
     local box_frame = Create("Frame", {
