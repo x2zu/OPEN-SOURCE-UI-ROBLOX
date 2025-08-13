@@ -1412,6 +1412,26 @@ function TabModule:New(Title, Parent)
 	-- setmetatable(Tab, Elements)
 	return Tab
 end
+function Tab:AddDivider()
+    local dividerFrame = Create("Frame", {
+        Size = UDim2.new(1, -10, 0, 1),
+        Position = UDim2.new(0, 5, 0, 0),
+        BackgroundColor3 = Color3.fromRGB(200, 200, 200),
+        BorderSizePixel = 0,
+        Parent = self.section_holder,
+    })
+
+    Create("UIGradient", {
+        Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(180, 60, 110)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(220, 120, 160)),
+        }),
+        Rotation = 0,
+        Parent = dividerFrame,
+    })
+
+    return dividerFrame
+end
 
 function TabModule:SelectTab(Tab)
     TabModule.SelectedTab = Tab
