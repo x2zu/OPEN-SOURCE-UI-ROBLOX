@@ -162,289 +162,292 @@ end
 function Library:Dialog(config)
     return require(Components.dialog):Create(config, self.LoadedWindow)
 end
-
 function Library:Load(cfgs)
 
-	cfgs = cfgs or {}
-	cfgs.Title = cfgs.Title or "Window"
-	cfgs.ToggleButton = cfgs.ToggleButton or ""
-	cfgs.BindGui = cfgs.BindGui or Enum.KeyCode.RightControl
+    cfgs = cfgs or {}
+    cfgs.Title = cfgs.Title or "Window"
+    cfgs.ToggleButton = cfgs.ToggleButton or ""
+    cfgs.BindGui = cfgs.BindGui or Enum.KeyCode.RightControl
 
-	if Library.Window then
-		print("Cannot create more than one window.")
-		GUI:Destroy()
-	end
-	
-	Library.Window = GUI
+    if Library.Window then
+        print("Cannot create more than one window.")
+        GUI:Destroy()
+    end
+    
+    Library.Window = GUI
 
-	local canvas_group = Create("CanvasGroup", {
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		-- BackgroundColor3 = Color3.fromRGB(9, 9, 9),
-		ThemeProps = {
-			BackgroundColor3 = "maincolor",
-		},
-		Position = UDim2.new(0.5, 0, 0.3, 0),
-		Size = UDim2.new(0, 650, 0, 400),
-		Parent = GUI,
-		Visible = false
-	}, {
-		Create("UICorner", {
-			CornerRadius = UDim.new(0, 6),
-		}),
-	})
-
-	-- shared.Window = canvas_group
-
-	if isMobile then
-		canvas_group.Size = UDim2.new(0.8, 0, 0.8, 0)
-	end
-
-	local togglebtn = Create("ImageButton", {
-		AnchorPoint = Vector2.new(0.5, 0),
-		AutoButtonColor = false,
-		ThemeProps = {
-			BackgroundColor3 = "maincolor",
-		},
-		Position = UDim2.new(0.5, 8, 0, 0),
-		Size = UDim2.new(0, 45, 0, 45),
-		Parent = GUI,
-		Image = cfgs.ToggleButton,
-	}, {
-		Create("UICorner", {
-			CornerRadius = UDim.new(0, 6),
-		}),
-		Create("UIStroke", {
-			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-			ThemeProps = {
-				Color = "bordercolor",
-			},
-			Enabled = true,
-			LineJoinMode = Enum.LineJoinMode.Round,
-			Thickness = 1,
-			Archivable = true,
-		}),
-	})
-
-	local function ToggleVisibility()
-		local isVisible = canvas_group.Visible
-		local endPosition = isVisible and UDim2.new(0.5, 0, -1, 0) or UDim2.new(0.5, 0, 0.5, 0)
-		local fadeTo = isVisible and 1 or 0
-	
-		local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
-	
-		local positionTween = TweenService:Create(canvas_group, tweenInfo, { Position = endPosition })
-		-- local fadeTween = TweenService:Create(canvas_group, tweenInfo, { BackgroundTransparency = fadeTo })
-		-- local toggleFadeTween = TweenService:Create(togglebtn, tweenInfo, { BackgroundTransparency = fadeTo })
-		-- local toggleFadeSTween = TweenService:Create(togglebtn.UIStroke, tweenInfo, { Transparency = fadeTo })
-	
-		canvas_group.Visible = true
-		togglebtn.Visible = false
-	
-		positionTween:Play()
-		-- fadeTween:Play()
-		-- toggleFadeTween:Play()
-		-- toggleFadeSTween:Play()
-		
-	
-		positionTween.Completed:Connect(function()
-			if isVisible then
-				canvas_group.Visible = false
-				togglebtn.Visible = true
-			end
-		end)
-	end
-
-	ToggleVisibility()
-	-- ToggleVisibility()
-
-	MakeDraggable(togglebtn, togglebtn)
-	AddConnection(togglebtn.MouseButton1Click, ToggleVisibility)
-	AddConnection(UserInputService.InputBegan, function(value)
-		if value.KeyCode == cfgs.BindGui then
-			ToggleVisibility()
-		end
-	end)
-local top_frame = Create("Frame", {
-    ThemeProps = {
-        BackgroundColor3 = "maincolor",
-    },
-    BorderColor3 = Color3.fromRGB(39, 39, 42),
-    Size = UDim2.new(1, 0, 0, 40),
-    ZIndex = 9,
-    Parent = canvas_group,
-}, {
-    Create("UIStroke", {
-        ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+    local canvas_group = Create("CanvasGroup", {
+        AnchorPoint = Vector2.new(0.5, 0.5),
         ThemeProps = {
-            Color = "bordercolor",
+            BackgroundColor3 = "maincolor",
         },
-        Thickness = 1,
-    }),
-})
+        Position = UDim2.new(0.5, 0, 0.3, 0),
+        Size = UDim2.new(0, 650, 0, 400),
+        Parent = GUI,
+        Visible = false
+    }, {
+        Create("UICorner", {
+            CornerRadius = UDim.new(0, 6),
+        }),
+    })
 
-local titleIcon = Create("ImageLabel", {
-    Image = "rbxassetid://105059922903197",
-    BackgroundTransparency = 1,
-    Size = UDim2.new(0, 18, 0, 18),
-    Position = UDim2.new(0, 10, 0.5, -9),
-    ZIndex = 10,
-    Parent = top_frame,
-})
+    if isMobile then
+        canvas_group.Size = UDim2.new(0.8, 0, 0.8, 0)
+    end
 
-local title = Create("TextLabel", {
-    Font = Enum.Font.GothamMedium,
-    RichText = true,
-    Text = cfgs.Title,
-    ThemeProps = {
-        TextColor3 = "titlecolor",
-        BackgroundColor3 = "maincolor",
-    },
-    BorderSizePixel = 0,
-    TextSize = 15,
-    TextXAlignment = Enum.TextXAlignment.Left,
-    BackgroundTransparency = 1,
-    Position = UDim2.new(0, 34, 0, 0),
-    Size = UDim2.new(0, 200, 0, 40),
-    ZIndex = 10,
-    Parent = top_frame,
-})
+    local togglebtn = Create("ImageButton", {
+        AnchorPoint = Vector2.new(0.5, 0),
+        AutoButtonColor = false,
+        ThemeProps = {
+            BackgroundColor3 = "maincolor",
+        },
+        Position = UDim2.new(0.5, 8, 0, 0),
+        Size = UDim2.new(0, 45, 0, 45),
+        Parent = GUI,
+        Image = cfgs.ToggleButton,
+    }, {
+        Create("UICorner", {
+            CornerRadius = UDim.new(0, 6),
+        }),
+        Create("UIStroke", {
+            ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+            ThemeProps = {
+                Color = "bordercolor",
+            },
+            Enabled = true,
+            LineJoinMode = Enum.LineJoinMode.Round,
+            Thickness = 1,
+            Archivable = true,
+        }),
+    })
 
-	local minimizebtn = Create("TextButton", {
-		Text = "",
-		BackgroundTransparency = 1,
-		ThemeProps = {
-			BackgroundColor3 = "maincolor",
-		},
-		BorderSizePixel = 0,
-		AnchorPoint = Vector2.new(1, 0.5),
-		Position = UDim2.new(1, -36, 0.5, 0),
-		Size = UDim2.new(0, 28, 0, 28),
-		ZIndex = 10,
-		Parent = top_frame,
-	}, {
-		Create("ImageLabel", {
-			Image = "rbxassetid://15269257100",
-			ImageRectOffset = Vector2.new(514, 257),
-			ImageRectSize = Vector2.new(256, 256),
-			AnchorPoint = Vector2.new(0.5, 0.5),
-			BackgroundTransparency = 1,
-			Position = UDim2.new(0.5, 0, 0.5, 0),
-			Size = UDim2.new(1, -10, 1, -10),
-			ThemeProps = {
-				BackgroundColor3 = "maincolor",
-			},
-			BorderSizePixel = 0,
-			ZIndex = 11,
-		}),
-	})
+    local function ToggleVisibility()
+        local isVisible = canvas_group.Visible
+        local endPosition = isVisible and UDim2.new(0.5, 0, -1, 0) or UDim2.new(0.5, 0, 0.5, 0)
+        local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
+        local positionTween = TweenService:Create(canvas_group, tweenInfo, { Position = endPosition })
 
-	local closebtn = Create("TextButton", {
-		Text = "",
-		BackgroundTransparency = 1,
-		ThemeProps = {
-			BackgroundColor3 = "maincolor",
-		},
-		BorderSizePixel = 0,
-		AnchorPoint = Vector2.new(1, 0.5),
-		Position = UDim2.new(1, -8, 0.5, 0),
-		Size = UDim2.new(0, 28, 0, 28),
-		ZIndex = 10,
-		Parent = top_frame,
-	}, {
-		Create("ImageLabel", {
-			Image = "rbxassetid://15269329696",
-			ImageRectOffset = Vector2.new(0, 514),
-			ImageRectSize = Vector2.new(256, 256),
-			AnchorPoint = Vector2.new(0.5, 0.5),
-			BackgroundTransparency = 1,
-			Position = UDim2.new(0.5, 0, 0.5, 0),
-			Size = UDim2.new(1, -10, 1, -10),
-			ThemeProps = {
-				BackgroundColor3 = "maincolor",
-			},
-			BorderSizePixel = 0,
-			ZIndex = 11,
-		}),
-	})
+        canvas_group.Visible = true
+        togglebtn.Visible = false
+        positionTween:Play()
+        
+        positionTween.Completed:Connect(function()
+            if isVisible then
+                canvas_group.Visible = false
+                togglebtn.Visible = true
+            end
+        end)
+    end
 
-	AddConnection(minimizebtn.MouseButton1Click, ToggleVisibility)
-	AddConnection(closebtn.MouseButton1Click, function()
-		canvas_group:Destroy()
-		togglebtn:Destroy()
-	end)
+    ToggleVisibility()
 
-	local tab_frame = Create("Frame", {
-		BackgroundTransparency = 1,
-		ThemeProps = {
-			BackgroundColor3 = "maincolor",
-		},
-		BorderSizePixel = 0,
-		BorderColor3 = Color3.fromRGB(39, 39, 42),
-		Position = UDim2.new(0, 0, 0, 40),
-		Size = UDim2.new(0, 140, 1, -40),
-		Parent = canvas_group,
-	}, {
-		Create("UIStroke", {
-			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-			-- Color = Color3.fromRGB(39, 39, 42),
-			ThemeProps = {
-				Color = "bordercolor",
-			},
-			Thickness = 1,
-		}),
-	})
+    MakeDraggable(togglebtn, togglebtn)
+    AddConnection(togglebtn.MouseButton1Click, ToggleVisibility)
+    AddConnection(UserInputService.InputBegan, function(value)
+        if value.KeyCode == cfgs.BindGui then
+            ToggleVisibility()
+        end
+    end)
 
-	local TabHolder = Create("ScrollingFrame", {
-		ThemeProps = {
-			ScrollBarImageColor3 = "scrollcolor",
-			BackgroundColor3 = "maincolor",
-		},
-		ScrollBarThickness = 2,
-		ScrollBarImageTransparency = 1,
-		CanvasSize = UDim2.new(0, 0, 0, 0),
-		BackgroundTransparency = 1,
-		BorderSizePixel = 0,
-		Size = UDim2.new(1, 0, 1, 0),
-		Parent = tab_frame,
-	}, {
-		Create("UIPadding", {
-			PaddingBottom = UDim.new(0, 6),
-			PaddingTop = UDim.new(0, 0),
-		}),
-		Create("UIListLayout", {
-			SortOrder = Enum.SortOrder.LayoutOrder,
-		}),
-	})
+    local top_frame = Create("Frame", {
+        ThemeProps = {
+            BackgroundColor3 = "maincolor",
+        },
+        BorderColor3 = Color3.fromRGB(39, 39, 42),
+        Size = UDim2.new(1, 0, 0, 40),
+        ZIndex = 9,
+        Parent = canvas_group,
+    }, {
+        Create("UIStroke", {
+            ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+            ThemeProps = {
+                Color = "bordercolor",
+            },
+            Thickness = 1,
+        }),
+    })
 
-	AddConnection(TabHolder.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"), function()
-		TabHolder.CanvasSize = UDim2.new(0, 0, 0, TabHolder.UIListLayout.AbsoluteContentSize.Y + 28)
-	end)
+    local titleIcon = Create("ImageLabel", {
+        Image = "rbxassetid://105059922903197",
+        BackgroundTransparency = 1,
+        Size = UDim2.new(0, 18, 0, 18),
+        Position = UDim2.new(0, 10, 0.5, -9),
+        ZIndex = 10,
+        Parent = top_frame,
+    })
 
-	AddScrollAnim(TabHolder)
+    local title = Create("TextLabel", {
+        Font = Enum.Font.GothamMedium,
+        RichText = true,
+        Text = cfgs.Title,
+        ThemeProps = {
+            TextColor3 = "titlecolor",
+            BackgroundColor3 = "maincolor",
+        },
+        BorderSizePixel = 0,
+        TextSize = 15,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 34, 0, 0),
+        Size = UDim2.new(0, 200, 0, 40),
+        ZIndex = 10,
+        Parent = top_frame,
+    })
 
-	local containerFolder = Create("Folder", {
-		Parent = canvas_group,
-	})
+    local minimizebtn = Create("TextButton", {
+        Text = "",
+        BackgroundTransparency = 1,
+        ThemeProps = {
+            BackgroundColor3 = "maincolor",
+        },
+        BorderSizePixel = 0,
+        AnchorPoint = Vector2.new(1, 0.5),
+        Position = UDim2.new(1, -36, 0.5, 0),
+        Size = UDim2.new(0, 28, 0, 28),
+        ZIndex = 10,
+        Parent = top_frame,
+    }, {
+        Create("ImageLabel", {
+            Image = "rbxassetid://15269257100",
+            ImageRectOffset = Vector2.new(514, 257),
+            ImageRectSize = Vector2.new(256, 256),
+            AnchorPoint = Vector2.new(0.5, 0.5),
+            BackgroundTransparency = 1,
+            Position = UDim2.new(0.5, 0, 0.5, 0),
+            Size = UDim2.new(1, -10, 1, -10),
+            ThemeProps = {
+                BackgroundColor3 = "maincolor",
+            },
+            BorderSizePixel = 0,
+            ZIndex = 11,
+        }),
+    })
 
-	if not isMobile then
-		MakeDraggable(top_frame, canvas_group)
-	end
+    local closebtn = Create("TextButton", {
+        Text = "",
+        BackgroundTransparency = 1,
+        ThemeProps = {
+            BackgroundColor3 = "maincolor",
+        },
+        BorderSizePixel = 0,
+        AnchorPoint = Vector2.new(1, 0.5),
+        Position = UDim2.new(1, -8, 0.5, 0),
+        Size = UDim2.new(0, 28, 0, 28),
+        ZIndex = 10,
+        Parent = top_frame,
+    }, {
+        Create("ImageLabel", {
+            Image = "rbxassetid://15269329696",
+            ImageRectOffset = Vector2.new(0, 514),
+            ImageRectSize = Vector2.new(256, 256),
+            AnchorPoint = Vector2.new(0.5, 0.5),
+            BackgroundTransparency = 1,
+            Position = UDim2.new(0.5, 0, 0.5, 0),
+            Size = UDim2.new(1, -10, 1, -10),
+            ThemeProps = {
+                BackgroundColor3 = "maincolor",
+            },
+            BorderSizePixel = 0,
+            ZIndex = 11,
+        }),
+    })
 
-	Library.LoadedWindow = canvas_group
+    AddConnection(minimizebtn.MouseButton1Click, ToggleVisibility)
+    AddConnection(closebtn.MouseButton1Click, function()
+        canvas_group:Destroy()
+        togglebtn:Destroy()
+    end)
 
-	local Tabs = {}
+    local tab_frame = Create("Frame", {
+        BackgroundTransparency = 1,
+        ThemeProps = {
+            BackgroundColor3 = "maincolor",
+        },
+        BorderSizePixel = 0,
+        BorderColor3 = Color3.fromRGB(39, 39, 42),
+        Position = UDim2.new(0, 0, 0, 40),
+        Size = UDim2.new(0, 140, 1, -40),
+        Parent = canvas_group,
+    }, {
+        Create("UIStroke", {
+            ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+            ThemeProps = {
+                Color = "bordercolor",
+            },
+            Thickness = 1,
+        }),
+    })
 
-	local TabModule = require(Components.tab):Init(containerFolder)
-	function Tabs:AddTab(title)
-		return TabModule:New(title, TabHolder)
-	end
-	function Tabs:SelectTab(Tab)
-		Tab = Tab or 1
-		TabModule:SelectTab(Tab)
-	end
+    local TabHolder = Create("ScrollingFrame", {
+        ThemeProps = {
+            ScrollBarImageColor3 = "scrollcolor",
+            BackgroundColor3 = "maincolor",
+        },
+        ScrollBarThickness = 2,
+        ScrollBarImageTransparency = 1,
+        CanvasSize = UDim2.new(0, 0, 0, 0),
+        BackgroundTransparency = 1,
+        BorderSizePixel = 0,
+        Size = UDim2.new(1, 0, 1, 0),
+        Parent = tab_frame,
+    }, {
+        Create("UIPadding", {
+            PaddingBottom = UDim.new(0, 6),
+            PaddingTop = UDim.new(0, 0),
+        }),
+        Create("UIListLayout", {
+            SortOrder = Enum.SortOrder.LayoutOrder,
+        }),
+    })
 
-	return Tabs
+    AddConnection(TabHolder.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"), function()
+        TabHolder.CanvasSize = UDim2.new(0, 0, 0, TabHolder.UIListLayout.AbsoluteContentSize.Y + 28)
+    end)
+
+    AddScrollAnim(TabHolder)
+
+    local containerFolder = Create("Folder", {
+        Parent = canvas_group,
+    })
+
+    if not isMobile then
+        MakeDraggable(top_frame, canvas_group)
+    end
+
+    Library.LoadedWindow = canvas_group
+
+    local Tabs = {}
+
+    local TabModule = require(Components.tab):Init(containerFolder)
+    function Tabs:AddTab(title)
+        return TabModule:New(title, TabHolder)
+    end
+    function Tabs:SelectTab(Tab)
+        Tab = Tab or 1
+        TabModule:SelectTab(Tab)
+    end
+
+    Library:AddTheme("DarkPink", {
+        maincolor = Color3.fromRGB(35, 0, 20),
+        titlecolor = Color3.fromRGB(255, 192, 203),
+        descriptioncolor = Color3.fromRGB(255, 170, 200),
+        bordercolor = Color3.fromRGB(255, 105, 180),
+        scrollcolor = Color3.fromRGB(255, 150, 200),
+        togglebg = Color3.fromRGB(50, 0, 25),
+        toggleborderr = Color3.fromRGB(255, 105, 180),
+        primarycolor = Color3.fromRGB(255, 105, 180),
+        elementbackground = Color3.fromRGB(45, 0, 25),
+        elementdescription = Color3.fromRGB(255, 182, 193),
+        onTextBtn = Color3.fromRGB(255, 192, 203),
+        offTextBtn = Color3.fromRGB(180, 130, 140),
+        onBgLineBtn = Color3.fromRGB(255, 105, 180),
+        offBgLineBtn = Color3.fromRGB(100, 50, 60),
+    })
+    Library:SetTheme("DarkPink")
+
+    return Tabs
 end
+
 return Library
 
 end)() end,
