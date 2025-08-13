@@ -3121,6 +3121,9 @@ function Element:New(Idx, Config)
     }
 
     local ToggleFrame = require(Components.element)("        " .. Config.Title, Config.Description, self.Container)
+	local titleLabel = ToggleFrame.topbox:FindFirstChild("Title")
+if Config.Risky and titleLabel then
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
 
     local box_frame = Create("Frame", {
         ThemeProps = {
