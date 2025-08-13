@@ -3131,10 +3131,6 @@ end
 
 if Config.Patched and titleLabel and titleLabel:IsA("TextLabel") then
     titleLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
-    titleLabel.Text = "[Patched]"
-    titleLabel.TextXAlignment = Enum.TextXAlignment.Left 
-    titleLabel.TextTruncate = Enum.TextTruncate.AtEnd    
-    titleLabel.Size = UDim2.new(0, 200, 1, 0)            
 end
 
 
