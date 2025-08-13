@@ -3129,7 +3129,7 @@ end
 
 if Config.Patched and titleLabel and titleLabel:IsA("TextLabel") then
     titleLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
-    titleLabel.Text = Config.Title .. " [Patched]"
+    titleLabel.Text = "[Patched]"
 end
 
 
