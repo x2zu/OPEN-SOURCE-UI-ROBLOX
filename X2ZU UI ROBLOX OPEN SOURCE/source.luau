@@ -4913,21 +4913,21 @@ function Compkiller:SetTheme(name)
 			["Toggle"] = Color3.new(0, 0.613793, 0.220119),
 			HighStrokeColor = Color3.new(0, 0.241379, 0.186445),
 		};
-	elseif name == "Default" then
-		Compkiller.Colors = {
-			Highlight = Color3.fromRGB(17, 238, 253),
-			Toggle = Color3.fromRGB(14, 203, 213),
-			Risky = Color3.fromRGB(251, 255, 39),
-			BGDBColor = Color3.fromRGB(22, 24, 29),
-			BlockColor = Color3.fromRGB(28, 29, 34),
-			StrokeColor = Color3.fromRGB(37, 38, 43),
-			SwitchColor = Color3.fromRGB(255, 255, 255),
-			DropColor = Color3.fromRGB(33, 35, 39),
-			MouseEnter = Color3.fromRGB(55, 58, 65),
-			BlockBackground = Color3.fromRGB(39, 40, 47),
-			LineColor = Color3.fromRGB(65, 65, 65),
-			HighStrokeColor = Color3.fromRGB(55, 56, 63),
-		};
+elseif name == "Stellar" then
+	Compkiller.Colors = {
+		Highlight = Color3.fromRGB(255, 105, 180), -- Neon Pink
+		Toggle = Color3.fromRGB(255, 105, 180), -- Toggle Pink
+		Risky = Color3.fromRGB(255, 80, 120), -- Risky lebih merah muda
+		BGDBColor = Color3.fromRGB(20, 20, 25), -- Background gelap
+		BlockColor = Color3.fromRGB(30, 30, 35), -- Panel block abu gelap
+		StrokeColor = Color3.fromRGB(70, 70, 75), -- Outline abu tipis
+		SwitchColor = Color3.fromRGB(255, 140, 200), -- Switch pink muda
+		DropColor = Color3.fromRGB(200, 80, 150), -- Dropdown pink tua
+		MouseEnter = Color3.fromRGB(255, 150, 200), -- Hover jadi pink terang
+		BlockBackground = Color3.fromRGB(35, 35, 40), -- Block background abu gelap
+		LineColor = Color3.fromRGB(180, 180, 190), -- Garis abu terang
+		HighStrokeColor = Color3.fromRGB(255, 105, 180), -- Outline aktif neon pink
+	};
 	elseif name == "Dark Blue" then
 		Compkiller.Colors = {
 			["BGDBColor"] = Color3.new(0.0393817, 0.0754204, 0.165517),
