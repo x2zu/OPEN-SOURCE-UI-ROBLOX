@@ -4896,85 +4896,23 @@ end;
 function Compkiller:GetTheme()
 	return Compkiller.Colors;
 end;
-
 function Compkiller:SetTheme(name)
-	if name == "Dark Green" then
+	if name == "Stellar" then
 		Compkiller.Colors = {
-			["BGDBColor"] = Color3.new(0.0429964, 0.110345, 0.0727226),
-			["BlockBackground"] = Color3.new(0.159287, 0.234483, 0.201811),
-			["BlockColor"] = Color3.new(0, 0.137931, 0.0951249),
-			["DropColor"] = Color3.new(0, 0.227586, 0.100452),
-			["Highlight"] = Color3.new(0.0666667, 0.992157, 0.628343),
-			["LineColor"] = Color3.new(0.263258, 0.372414, 0.329504),
-			["MouseEnter"] = Color3.new(0, 0.841379, 0.51063),
-			["Risky"] = Color3.new(1, 0.398296, 0.152941),
-			["StrokeColor"] = Color3.new(0.132342, 0.241379, 0.198517),
-			["SwitchColor"] = Color3.new(0.927586, 1, 0.980523),
-			["Toggle"] = Color3.new(0, 0.613793, 0.220119),
-			HighStrokeColor = Color3.new(0, 0.241379, 0.186445),
-		};
-elseif name == "Stellar" then
-	Compkiller.Colors = {
-		Highlight = Color3.fromRGB(255, 105, 180), -- Neon Pink (highlight utama)
-		Toggle = Color3.fromRGB(255, 105, 180),    -- Toggle aktif pakai neon pink
-		Risky = Color3.fromRGB(255, 80, 120),      -- Risky merah muda
-		BGDBColor = Color3.fromRGB(18, 18, 22),    -- Background gelap pekat
-		BlockColor = Color3.fromRGB(28, 29, 34),   -- Panel block abu gelap
-		StrokeColor = Color3.fromRGB(45, 46, 52),  -- Outline abu netral
-		SwitchColor = Color3.fromRGB(230, 230, 230), -- Switch putih abu, biar ga norak
-		DropColor = Color3.fromRGB(35, 37, 43),    -- Dropdown abu gelap
-		MouseEnter = Color3.fromRGB(60, 62, 70),   -- Hover abu soft
-		BlockBackground = Color3.fromRGB(32, 33, 39), -- Background block
-		LineColor = Color3.fromRGB(100, 100, 110), -- Garis abu medium
-		HighStrokeColor = Color3.fromRGB(255, 105, 180), -- Outline aktif tetap neon pink
-	};
-
-	elseif name == "Dark Blue" then
-		Compkiller.Colors = {
-			["BGDBColor"] = Color3.new(0.0393817, 0.0754204, 0.165517),
-			["BlockBackground"] = Color3.new(0, 0.0618311, 0.172414),
-			["BlockColor"] = Color3.new(0, 0.0172414, 0.103448),
-			["DropColor"] = Color3.new(0, 0.0965518, 0.289655),
-			["HighStrokeColor"] = Color3.new(0, 0.132604, 0.234483),
-			["Highlight"] = Color3.new(0.0666667, 0.781528, 0.992157),
-			["LineColor"] = Color3.new(0, 0.110345, 0.275862),
-			["MouseEnter"] = Color3.new(0, 0.606896, 1),
-			["Risky"] = Color3.new(0.0310345, 0.819572, 1),
-			["StrokeColor"] = Color3.new(0, 0.119857, 0.248276),
-			["SwitchColor"] = Color3.new(1, 1, 1),
-			["Toggle"] = Color3.new(0.054902, 0.463935, 0.835294)
+			Highlight = Color3.fromRGB(255, 105, 180), 
+			Toggle = Color3.fromRGB(255, 105, 180),  
+			Risky = Color3.fromRGB(255, 80, 120),    
+			BGDBColor = Color3.fromRGB(18, 18, 22),    
+			BlockColor = Color3.fromRGB(28, 29, 34),   
+			StrokeColor = Color3.fromRGB(45, 46, 52),
+			SwitchColor = Color3.fromRGB(230, 230, 230), 
+			DropColor = Color3.fromRGB(35, 37, 43),   
+			MouseEnter = Color3.fromRGB(60, 62, 70),   
+			BlockBackground = Color3.fromRGB(32, 33, 39), 
+			LineColor = Color3.fromRGB(100, 100, 110), 
+			HighStrokeColor = Color3.fromRGB(255, 105, 180), 
 		}
-	elseif name == "Purple Rose" then
-		Compkiller.Colors = {
-			["BGDBColor"] = Color3.new(0.0459068, 0.030321, 0.117241),
-			["BlockBackground"] = Color3.new(0.156272, 0.119596, 0.324138),
-			["BlockColor"] = Color3.new(0.0948428, 0.0576457, 0.165517),
-			["DropColor"] = Color3.new(0.131034, 0, 0.0813317),
-			["HighStrokeColor"] = Color3.new(0.136259, 0.101237, 0.296552),
-			["Highlight"] = Color3.new(0.992157, 0.0666667, 0.33474),
-			["LineColor"] = Color3.new(0.20872, 0.137408, 0.372414),
-			["MouseEnter"] = Color3.new(0.365517, 0, 0.120999),
-			["Risky"] = Color3.new(1, 0.6086, 0.152941),
-			["StrokeColor"] = Color3.new(0.148499, 0.137836, 0.248276),
-			["SwitchColor"] = Color3.new(1, 1, 1),
-			["Toggle"] = Color3.new(0.835294, 0.054902, 0.248654)
-		}
-	elseif name == "Skeet" then		
-		Compkiller.Colors = {
-			["BGDBColor"] = Color3.new(0.114578, 0.125191, 0.151724),
-			["BlockBackground"] = Color3.new(0.128181, 0.131124, 0.151724),
-			["BlockColor"] = Color3.new(0.0732699, 0.0760008, 0.0896552),
-			["DropColor"] = Color3.new(0.0809037, 0.0861197, 0.0965517),
-			["HighStrokeColor"] = Color3.new(0.119382, 0.1217, 0.137931),
-			["Highlight"] = Color3.new(0, 0.634483, 0.0700119),
-			["LineColor"] = Color3.new(0.151724, 0.151724, 0.151724),
-			["MouseEnter"] = Color3.new(0.134007, 0.141391, 0.158621),
-			["Risky"] = Color3.new(0.984314, 1, 0.152941),
-			["StrokeColor"] = Color3.new(0.0769798, 0.0790924, 0.0896552),
-			["SwitchColor"] = Color3.new(1, 1, 1),
-			["Toggle"] = Color3.new(0, 0.324138, 0.10283)
-		}
-	end;
+	end
 
 	Compkiller:RefreshCurrentColor()
 end;
