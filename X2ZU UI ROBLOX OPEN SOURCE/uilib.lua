@@ -5,7 +5,8 @@ local MacLib = {
 		return cloneref and cloneref(game:GetService(service)) or game:GetService(service)
 	end
 }
-
+local isMobile = UserInputService.TouchEnabled
+local screenSize = workspace.CurrentCamera.ViewportSize
 --// Services
 local TweenService = MacLib.GetService("TweenService")
 local RunService = MacLib.GetService("RunService")
@@ -160,11 +161,67 @@ function MacLib:Window(Settings)
 	base.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	base.BorderSizePixel = 0
 	base.Position = UDim2.fromScale(0.5, 0.5)
-	base.Size = Settings.Size or UDim2.fromOffset(868, 650)
+	if isMobile then
+    base.Size = UDim2.fromScale(600, 450) -- Hampir memenuhi layar di mobile
+else
+    base.Size = Settings.Size or UDim2.fromOffset(600, 500) -- Default PC
+end
+local baseUIScale = Instance.new("UIScale")
+baseUIScale.Name = "BaseUIScale"
+if isMobile then
+    baseUIScale.Scale = math.min(screenSize.X / 1200, 0.8) -- Skala berdasarkan lebar layar
+end
+baseUIScale.Parent = base
+	if isMobile then
+    local menuButton = Instance.new("TextButton")
+    menuButton.Name = "MobileMenuButton"
+    menuButton.Size = UDim2.fromOffset(40, 40)
+    menuButton.Position = UDim2.fromOffset(10, 10)
+    menuButton.Text = "☰"
+    menuButton.Parent = base
+    menuButton.ZIndex = 10
 
-	local baseUIScale = Instance.new("UIScale")
-	baseUIScale.Name = "BaseUIScale"
-	baseUIScale.Parent = base
+    menuButton.MouseButton1Click:Connect(function()
+        sidebar.Visible = not sidebar.Visible
+    end)
+end
+	if isMobile then
+    sidebar.Size = UDim2.fromScale(0.7, 1) -- Lebar 70% di mobile
+    sidebar.Position = UDim2.fromScale(-0.7, 0) -- Sembunyi di luar layar
+    sidebar.Visible = false
+end
+	if isMobile then
+    elementsScrollingUIListLayout.FillDirection = Enum.FillDirection.Vertical
+else
+    elementsScrollingUIListLayout.FillDirection = Enum.FillDirection.Horizontal
+end
+	local function getResponsiveFontSize(baseSize)
+    if isMobile then
+        return baseSize * (screenSize.X / 1200)
+    end
+    return baseSize
+end
+	title.TextSize = getResponsiveFontSize(18)
+	if isMobile then
+    buttonInteract.Size = UDim2.fromOffset(150, 50)
+end
+	if isMobile then
+    minSidebarWidth = 150
+    maxSidebarWidth = screenSize.X * 0.8
+end
+	if isMobile then
+    notification.Size = UDim2.fromScale(0.9, 0)
+else
+    notification.Size = UDim2.fromOffset(Settings.SizeX or 250, 0)
+end
+	if isMobile then
+    elementsScrolling.ScrollBarThickness = 6
+else
+    elementsScrolling.ScrollBarThickness = 1
+end
+	if isMobile then
+    interact.Size = UDim2.fromScale(1, 0.1) -- 10% tinggi window
+end
 
 	local baseUICorner = Instance.new("UICorner")
 	baseUICorner.Name = "BaseUICorner"
@@ -6134,3 +6191,4 @@ function MacLib:Demo()
 end
 
 return MacLib
+
