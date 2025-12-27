@@ -434,61 +434,64 @@ function MacLib:Window(Settings)
 	globalSettingsButton.MouseLeave:Connect(function()
 		ChangeGlobalSettingsButtonState("Default")
 	end)
--- TITLE
-local title = Instance.new("TextLabel")
-title.Name = "Title"
-title.FontFace = Font.new(
-    assets.interFont,
-    Enum.FontWeight.SemiBold,
-    Enum.FontStyle.Normal
-)
 
-title.Text = tostring(Settings.Title or "")
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.RichText = true
-title.TextSize = 15
-title.TextTransparency = 0.1
-title.TextTruncate = Enum.TextTruncate.SplitWord
-title.TextXAlignment = Enum.TextXAlignment.Left
-title.TextYAlignment = Enum.TextYAlignment.Top
-title.AutomaticSize = Enum.AutomaticSize.Y
-title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-title.BackgroundTransparency = 1
-title.BorderColor3 = Color3.fromRGB(0, 0, 0)
-title.BorderSizePixel = 0
-title.Size = UDim2.new(1, -20, 0, 0)
-title.Parent = titleFrame
+	local titleFrame = Instance.new("Frame")
+	titleFrame.Name = "TitleFrame"
+	titleFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	titleFrame.BackgroundTransparency = 1
+	titleFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	titleFrame.BorderSizePixel = 0
+	titleFrame.Size = UDim2.fromScale(1, 1)
+	titleFrame.Position  = UDim2.fromScale (0.2, 0)
 
+	local title = Instance.new("TextLabel")
+	title.Name = "Title"
+	title.FontFace = Font.new(
+		assets.interFont,
+		Enum.FontWeight.SemiBold,
+		Enum.FontStyle.Normal
+	)
+	title.Text = Settings.Title
+	title.TextColor3 = Color3.fromRGB(255, 255, 255)
+	title.RichText = true
+	title.TextSize = 15
+	title.TextTransparency = 0.1
+	title.TextTruncate = Enum.TextTruncate.SplitWord
+	title.TextXAlignment = Enum.TextXAlignment.Left
+	title.TextYAlignment = Enum.TextYAlignment.Top
+	title.AutomaticSize = Enum.AutomaticSize.Y
+	title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	title.BackgroundTransparency = 1
+	title.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	title.BorderSizePixel = 0
+	title.Size = UDim2.new(1, -20, 0, 0)
+	title.Parent = titleFrame
 
--- SUBTITLE
-local subtitle = Instance.new("TextLabel")
-subtitle.Name = "Subtitle"
-subtitle.FontFace = Font.new(
-    assets.interFont,
-    Enum.FontWeight.Medium,
-    Enum.FontStyle.Normal
-)
-
-local sub = Settings.Subtitle
-subtitle.Text = tostring(sub or "")
-subtitle.Visible = sub ~= nil and sub ~= ""
-
-subtitle.RichText = true
-subtitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-subtitle.TextSize = 12
-subtitle.TextTransparency = 0.7
-subtitle.TextTruncate = Enum.TextTruncate.SplitWord
-subtitle.TextXAlignment = Enum.TextXAlignment.Left
-subtitle.TextYAlignment = Enum.TextYAlignment.Top
-subtitle.AutomaticSize = Enum.AutomaticSize.Y
-subtitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-subtitle.BackgroundTransparency = 1
-subtitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-subtitle.BorderSizePixel = 0
-subtitle.LayoutOrder = 1
-subtitle.Size = UDim2.new(1, -20, 0, 0)
-subtitle.Parent = titleFrame
-
+	local subtitle = Instance.new("TextLabel")
+	subtitle.Name = "Subtitle"
+	subtitle.FontFace = Font.new(
+		assets.interFont,
+		Enum.FontWeight.Medium,
+		Enum.FontStyle.Normal
+	)
+	subtitle.RichText = true
+	subtitle.Text = Settings.Subtitle
+	subtitle.RichText = true
+	subtitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+	subtitle.TextSize = 12
+	subtitle.TextTransparency = 0.7
+	subtitle.TextTruncate = Enum.TextTruncate.SplitWord
+	subtitle.TextXAlignment = Enum.TextXAlignment.Left
+	subtitle.TextYAlignment = Enum.TextYAlignment.Top
+	subtitle.AutomaticSize = Enum.AutomaticSize.Y
+	subtitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	subtitle.BackgroundTransparency = 1
+	subtitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	subtitle.BorderSizePixel = 0
+	subtitle.LayoutOrder = 1
+	subtitle.Size = UDim2.new(1, -20, 0, 0)
+	subtitle.Visible = true
+	subtitle.Parent = titleFrame
 
 	local titleFrameUIListLayout = Instance.new("UIListLayout")
 	titleFrameUIListLayout.Name = "TitleFrameUIListLayout"
