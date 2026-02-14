@@ -21,7 +21,7 @@ This script is designed to enhance your gameplay experience!
 While it has been carefully optimized, detection is always a possibility in public servers.
 
 If you have suggestions or encounter any issues, feel free to contact
-<font color="rgb(0,170,255)">Discord Nemesis X</font>!
+<font color="rgb(0,170,255)">Discord Nemesis Hub</font>!
 
 <b>Use responsibly and enjoy the features!</b>
 ]],
@@ -649,3 +649,4 @@ If you have suggestions or encounter any issues, feel free to contact
         VirtualUser:ClickButton2(Vector2.new())
     end)
 end
+
