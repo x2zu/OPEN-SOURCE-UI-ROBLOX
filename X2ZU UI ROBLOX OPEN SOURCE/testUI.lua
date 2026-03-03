@@ -63,7 +63,7 @@ local function getColor(colorInput)
 end
 
 -- Variables
-local ConfigFolder = "Velaris UI"
+local ConfigFolder = "NemesisUI"
 local ConfigFile = ""
 local ConfigData = {}
 local Elements = {}
@@ -283,7 +283,7 @@ function Chloex:MakeNotify(NotifyConfig)
     NotifyConfig.Title = NotifyConfig.Title or "Chloe X"
     NotifyConfig.Description = NotifyConfig.Description or "Notification"
     NotifyConfig.Content = NotifyConfig.Content or "Content"
-    NotifyConfig.Color = getColor(NotifyConfig.Color or "Default")
+    NotifyConfig.Color = getColor(NotifyConfig.Color or "Periwinkle Purple")
     NotifyConfig.Time = NotifyConfig.Time or 0.5
     NotifyConfig.Delay = NotifyConfig.Delay or 5
     NotifyConfig.Icon = NotifyConfig.Icon or ""
@@ -638,11 +638,11 @@ end
 
 function Chloex:Window(GuiConfig)
     GuiConfig               = GuiConfig or {}
-    GuiConfig.Title         = GuiConfig.Title or "Chloe X"
-    GuiConfig.Footer        = GuiConfig.Footer or "Chloee :3"
+    GuiConfig.Title         = GuiConfig.Title or "Nemesis X"
+    GuiConfig.Footer        = GuiConfig.Footer or "Nemesis :3"
     GuiConfig.Content       = GuiConfig.Content or ""
     GuiConfig.ShowUser      = GuiConfig.ShowUser or false
-    GuiConfig.Color         = getColor(GuiConfig.Color or "Default")
+    GuiConfig.Color         = getColor(GuiConfig.Color or "Periwinkle Purple")
     GuiConfig["Tab Width"]  = GuiConfig["Tab Width"] or 120
     GuiConfig.Version       = GuiConfig.Version or 1
     GuiConfig.Uitransparent = GuiConfig.Uitransparent or 0
