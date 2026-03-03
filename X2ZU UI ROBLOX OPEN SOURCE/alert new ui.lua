@@ -12,7 +12,15 @@ return function(Window, Tabs)
     local jobId = game.JobId
     local privateServerId = game.PrivateServerId
 
-    -- Perbaikan: gunakan tabel dengan Open = true
+    -- Pastikan tab Info dan Misc ada
+    if not Tabs.Info then
+        Tabs.Info = Window:AddTab({ Name = "Info", Icon = "lucide:info" })
+    end
+    if not Tabs.Misc then
+        Tabs.Misc = Window:AddTab({ Name = "Misc", Icon = "lucide:settings" })
+    end
+
+    -- ==================== INFO SECTION (LANGSUNG TERBUKA) ====================
     local InfoSection = Tabs.Info:AddSection({
         Title = "Nemesis Announcements",
         Open = true
@@ -38,14 +46,15 @@ If you have suggestions or encounter any issues, feel free to contact
         ButtonCallback = function()
             if setclipboard then
                 setclipboard("https://discord.gg/3d4yfAsKSa")
-                Notify("Succesfully copied link!")  -- Ganti nemesis dengan Notify
+                Notify("Succesfully copied link!")
             end
         end
     })
 
+    -- ==================== SERVER JOB ID SECTION (LANGSUNG TERBUKA) ====================
     local InfoSection1 = Tabs.Info:AddSection({
         Title = "Server Job Id",
-        Open = false
+        Open = true
     })
     local thumb, _ = Players:GetUserThumbnailAsync(LocalPlayer.UserId, Enum.ThumbnailType.HeadShot,
         Enum.ThumbnailSize.Size100x100)
@@ -162,14 +171,11 @@ If you have suggestions or encounter any issues, feel free to contact
     InfoSection1:AddButton({
         Title = "Rejoin Server",
         Callback = function()
-            local TeleportService = game:GetService("TeleportService")
-            local Players = game:GetService("Players")
-            local LocalPlayer = Players.LocalPlayer
-
             TeleportService:Teleport(game.PlaceId, LocalPlayer)
         end
     })
 
+    -- ==================== MISC SECTION (LANGSUNG TERBUKA) ====================
     local Misc = Tabs.Misc:AddSection({
         Title = "Utility Player",
         Open = true
@@ -646,7 +652,7 @@ If you have suggestions or encounter any issues, feel free to contact
             end
         end
     })
-    
+
     -- Anti AFK
     local GC = getconnections or get_signal_cons
     if GC then
@@ -663,5 +669,4 @@ If you have suggestions or encounter any issues, feel free to contact
         VirtualUser:CaptureController()
         VirtualUser:ClickButton2(Vector2.new())
     end)
-
 end
