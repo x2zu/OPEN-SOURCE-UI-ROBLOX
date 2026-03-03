@@ -45,7 +45,7 @@ If you have suggestions or encounter any issues, feel free to contact
 
     local InfoSection1 = Tabs.Info:AddSection({
         Title = "Server Job Id",
-        Open = true
+        Open = false
     })
     local thumb, _ = Players:GetUserThumbnailAsync(LocalPlayer.UserId, Enum.ThumbnailType.HeadShot,
         Enum.ThumbnailSize.Size100x100)
@@ -663,4 +663,5 @@ If you have suggestions or encounter any issues, feel free to contact
         VirtualUser:CaptureController()
         VirtualUser:ClickButton2(Vector2.new())
     end)
+
 end
