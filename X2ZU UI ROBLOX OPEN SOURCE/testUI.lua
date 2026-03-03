@@ -63,7 +63,7 @@ local function getColor(colorInput)
 end
 
 -- Variables
-local ConfigFolder = "Velaris UI"
+local ConfigFolder = "Nemesis"
 local ConfigFile = ""
 local ConfigData = {}
 local Elements = {}
@@ -276,9 +276,9 @@ function CircleClick(Button, X, Y)
     end)
 end
 
-local Chloex = {}
+local Nemesis = {}
 
-function Chloex:MakeNotify(NotifyConfig)
+function Nemesis:MakeNotify(NotifyConfig)
     local NotifyConfig = NotifyConfig or {}
     NotifyConfig.Title = NotifyConfig.Title or "Chloe X"
     NotifyConfig.Description = NotifyConfig.Description or "Notification"
@@ -498,13 +498,13 @@ function Chloex:MakeNotify(NotifyConfig)
     return NotifyFunction
 end
 
--- ✅ FIX: Title sekarang pakai ConfigFolder (dari Configname) bukan hardcoded "Velaris UI"
+-- ✅ FIX: Title sekarang pakai ConfigFolder (dari Configname) bukan hardcoded "Nemesis"
 function Nt(msg, delay, color, title, desc, icon)
-    return Chloex:MakeNotify({
+    return Nemesis:MakeNotify({
         Title = title or ConfigFolder,
         Description = desc or "Notification",
         Content = msg or "Content",
-        Color = getColor(color or "Default"),
+        Color = getColor(color or "Periwinkle Purple"),
         Delay = delay or 4,
         Icon = icon or ""
     })
@@ -515,7 +515,7 @@ Notify = Nt
 -- ==================== DIALOG ====================
 local ActiveDialog = nil
 
-function Chloex:Dialog(DialogConfig)
+function Nemesis:Dialog(DialogConfig)
     DialogConfig = DialogConfig or {}
     DialogConfig.Title = DialogConfig.Title or "Dialog"
     DialogConfig.Content = DialogConfig.Content or ""
@@ -636,7 +636,7 @@ function Chloex:Dialog(DialogConfig)
 end
 -- ==================== AKHIR DIALOG ====================
 
-function Chloex:Window(GuiConfig)
+function Nemesis:Window(GuiConfig)
     GuiConfig               = GuiConfig or {}
     GuiConfig.Title         = GuiConfig.Title or "Chloe X"
     GuiConfig.Footer        = GuiConfig.Footer or "Chloee :3"
@@ -647,7 +647,7 @@ function Chloex:Window(GuiConfig)
     GuiConfig.Version       = GuiConfig.Version or 1
     GuiConfig.Uitransparent = GuiConfig.Uitransparent or 0
     GuiConfig.Image         = GuiConfig.Image or "70884221600423"
-    GuiConfig.Configname    = GuiConfig.Configname or "Velaris UI"
+    GuiConfig.Configname    = GuiConfig.Configname or "Nemesis"
     GuiConfig.Size          = GuiConfig.Size or UDim2.fromOffset(640, 400)
     GuiConfig.Search        = GuiConfig.Search ~= nil and GuiConfig.Search or false
 
@@ -1520,7 +1520,7 @@ function Chloex:Window(GuiConfig)
 
     Close.Activated:Connect(function()
         CircleClick(Close, Mouse.X, Mouse.Y)
-        Chloex:Dialog({
+        Nemesis:Dialog({
             Title = GuiConfig.Configname .. " Window",
             Content = "Do you want to close this window?\nYou will not be able to open it again",
             Buttons = {
@@ -2181,6 +2181,6 @@ function Chloex:Window(GuiConfig)
     return Tabs
 end
 
-VelarisUI = Chloex
+Nemesis = NemesisHUB
 
-return Chloex
+return Nemesis
