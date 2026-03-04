@@ -12,7 +12,6 @@ return function(Window, Tabs)
     local jobId = game.JobId
     local privateServerId = game.PrivateServerId
 
-    -- Pastikan tab Info dan Misc ada
     if not Tabs.Info then
         Tabs.Info = Window:AddTab({ Name = "Info", Icon = "lucide:info" })
     end
@@ -20,7 +19,6 @@ return function(Window, Tabs)
         Tabs.Misc = Window:AddTab({ Name = "Misc", Icon = "lucide:settings" })
     end
 
-    -- ==================== INFO SECTION (LANGSUNG TERBUKA) ====================
     local InfoSection = Tabs.Info:AddSection({
         Title = "Nemesis Announcements",
         Open = true
@@ -51,7 +49,6 @@ If you have suggestions or encounter any issues, feel free to contact
         end
     })
 
-    -- ==================== SERVER JOB ID SECTION (LANGSUNG TERBUKA) ====================
     local InfoSection1 = Tabs.Info:AddSection({
         Title = "Server Job Id",
         Open = false
@@ -670,4 +667,5 @@ If you have suggestions or encounter any issues, feel free to contact
         VirtualUser:ClickButton2(Vector2.new())
     end)
 end
+
 
