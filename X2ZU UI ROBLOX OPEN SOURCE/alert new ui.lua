@@ -19,36 +19,6 @@ return function(Window, Tabs)
         Tabs.Misc = Window:AddTab({ Name = "Misc", Icon = "lucide:settings" })
     end
 
-    local InfoSection = Tabs.Info:AddSection({
-        Title = "Nemesis Announcements",
-        Open = true
-    })
-
-    InfoSection:AddParagraph({
-        Title = "Nemesis X Alert!",
-        Content = [[
-This script is designed to enhance your gameplay experience!
-While it has been carefully optimized, detection is always a possibility in public servers.
-
-If you have suggestions or encounter any issues, feel free to contact
-<font color="rgb(0,170,255)">Discord Nemesis Hub</font>!
-
-<b>Use responsibly and enjoy the features!</b>
-]],
-    })
-
-    InfoSection:AddParagraph({
-        Title = "Nemesis Discord",
-        Content = "Official link discord Nemesis!",
-        ButtonText = "COPY LINK DISCORD",
-        ButtonCallback = function()
-            if setclipboard then
-                setclipboard("https://discord.gg/3d4yfAsKSa")
-                Notify("Succesfully copied link!")
-            end
-        end
-    })
-
     local InfoSection1 = Tabs.Info:AddSection({
         Title = "Server Job Id",
         Open = false
@@ -649,6 +619,7 @@ If you have suggestions or encounter any issues, feel free to contact
             end
         end
     })
+
 
 
 
