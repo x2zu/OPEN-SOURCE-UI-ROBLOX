@@ -1,9 +1,3 @@
---[[
-    Velaris UI v0.1.5 (Modified)
-    - Tambahan fitur dari alert.lua (Info & Misc tabs)
-    - Notifikasi menggunakan warna purple default (bisa diubah lewat GuiConfig)
-    - Cara pakai ada di bagian bawah
---]]
 
 local HttpService = game:GetService("HttpService")
 local Players     = game:GetService("Players")
@@ -288,7 +282,7 @@ function Chloex:MakeNotify(NotifyConfig)
     NotifyConfig.Title = NotifyConfig.Title or "Chloe X"
     NotifyConfig.Description = NotifyConfig.Description or "Notification"
     NotifyConfig.Content = NotifyConfig.Content or "Content"
-    NotifyConfig.Color = getColor(NotifyConfig.Color or "Default")
+    NotifyConfig.Color = getColor(NotifyConfig.Color or "Periwinkle Purple")
     NotifyConfig.Time = NotifyConfig.Time or 0.5
     NotifyConfig.Delay = NotifyConfig.Delay or 5
     NotifyConfig.Icon = NotifyConfig.Icon or ""
@@ -2852,3 +2846,4 @@ If you have suggestions or encounter any issues, feel free to contact
 end
 
 return Chloex
+
