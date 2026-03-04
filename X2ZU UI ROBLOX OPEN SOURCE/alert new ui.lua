@@ -54,11 +54,11 @@ If you have suggestions or encounter any issues, feel free to contact
     -- ==================== SERVER JOB ID SECTION (LANGSUNG TERBUKA) ====================
     local InfoSection1 = Tabs.Info:AddSection({
         Title = "Server Job Id",
-        Open = true
+        Open = false
     })
     local thumb, _ = Players:GetUserThumbnailAsync(LocalPlayer.UserId, Enum.ThumbnailType.HeadShot,
         Enum.ThumbnailSize.Size100x100)
-    local currentJobId = "CHX-" .. tostring(jobId)
+    local currentJobId = "NEME-" .. tostring(jobId)
 
     InfoSection1:AddPanel({
         Title = "Server Info",
@@ -670,3 +670,4 @@ If you have suggestions or encounter any issues, feel free to contact
         VirtualUser:ClickButton2(Vector2.new())
     end)
 end
+
