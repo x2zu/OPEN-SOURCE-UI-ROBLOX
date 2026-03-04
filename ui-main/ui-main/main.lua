@@ -286,10 +286,10 @@ local Chloex = {}
 
 function Chloex:MakeNotify(NotifyConfig)
     local NotifyConfig = NotifyConfig or {}
-    NotifyConfig.Title = NotifyConfig.Title or "Chloe X"
+    NotifyConfig.Title = NotifyConfig.Title or "Nemesis X"
     NotifyConfig.Description = NotifyConfig.Description or "Notification"
     NotifyConfig.Content = NotifyConfig.Content or "Content"
-    NotifyConfig.Color = getColor(NotifyConfig.Color or "Default")
+    NotifyConfig.Color = getColor(NotifyConfig.Color or "Periwinkle Purple")
     NotifyConfig.Time = NotifyConfig.Time or 0.5
     NotifyConfig.Delay = NotifyConfig.Delay or 5
     NotifyConfig.Icon = NotifyConfig.Icon or ""
