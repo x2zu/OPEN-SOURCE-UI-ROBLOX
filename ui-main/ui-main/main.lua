@@ -1,11 +1,18 @@
--- // Version : 0.1.5 | Position Icon
+--[[
+    Velaris UI v0.1.5 (Modified)
+    - Tambahan fitur dari alert.lua (Info & Misc tabs)
+    - Notifikasi menggunakan warna purple default (bisa diubah lewat GuiConfig)
+    - Cara pakai ada di bagian bawah
+--]]
 
-local HttpService = game:GetService("HttpService") 
+local HttpService = game:GetService("HttpService")
 local Players     = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
-local BASE = "https://raw.githubusercontent.com/Gato290/ui/refs/heads/main/"
-local function load(path) return loadstring(game:HttpGet(BASE .. path))() end
+local BASE = "https://raw.githubusercontent.com/x2zu/OPEN-SOURCE-UI-ROBLOX/main/ui-main/ui-main/"
+local function load(path) 
+    return loadstring(game:HttpGet(BASE .. path))()
+end
 
 -- Modules
 local ColorModule    = load("Elements/color.lua")
@@ -16,7 +23,6 @@ local KeybindModule  = load("Elements/keybind.lua")
 local defaultIcons = load("Icon/defaulticons.lua")
 local lucideIcons  = load("Icon/lucideIcons.lua")
 local solarIcons   = load("Icon/solarIcons.lua")
-
 -- Merge all icons
 local Icons = {}
 for name, id in pairs(defaultIcons) do
@@ -498,7 +504,6 @@ function Chloex:MakeNotify(NotifyConfig)
     return NotifyFunction
 end
 
--- ✅ FIX: Title sekarang pakai ConfigFolder (dari Configname) bukan hardcoded "Velaris UI"
 function Nt(msg, delay, color, title, desc, icon)
     return Chloex:MakeNotify({
         Title = title or ConfigFolder,
@@ -1079,7 +1084,7 @@ function Chloex:Window(GuiConfig)
                 if tabFrame.Name == "Tab" and tabFrame.LayoutOrder == tabLayoutOrder then
                     local tn = tabFrame:FindFirstChild("TabName")
                     if tn then
-                        NameTab.Text = tn.Text:gsub("^| ", "")
+                        NameTab.Text = tn.Text:gsub("^╏ ", "")
                     end
                 end
             end
@@ -1279,7 +1284,7 @@ function Chloex:Window(GuiConfig)
                         if tabFrame.Name == "Tab" and tabFrame.LayoutOrder == tabOrder then
                             local tn = tabFrame:FindFirstChild("TabName")
                             if tn then
-                                tabName = tn.Text:gsub("^| ", "")
+                                tabName = tn.Text:gsub("^╏ ", "")
                             end
                             break
                         end
@@ -1801,7 +1806,7 @@ function Chloex:Window(GuiConfig)
         TabButton.Parent = Tab
 
         TabName.Font = Enum.Font.GothamBold
-        TabName.Text = "| " .. tostring(TabConfig.Name)
+        TabName.Text = "╏ " .. tostring(TabConfig.Name)
         TabName.TextColor3 = Color3.fromRGB(255, 255, 255)
         TabName.TextSize = 13
         TabName.TextXAlignment = Enum.TextXAlignment.Left
