@@ -1,4 +1,4 @@
--- Elements.lua V0.4.2 (All Toggle)
+-- Elements.lua V0.4.3 (All Toggle Fixed)
 
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -1813,7 +1813,7 @@ function Elements:CreateInput(parent, config, countItem, updateSectionSize, Elem
 end
 
 -- ─────────────────────────────────────────────────────────────────────────────
---  CreateDropdown  (V0.4.2 — All Toggle)
+--  CreateDropdown  (V0.4.3 — All Toggle Fixed)
 -- ─────────────────────────────────────────────────────────────────────────────
 function Elements:CreateDropdown(parent, config, countItem, countDropdown, DropdownFolder, MoreBlur, DropdownSelect, DropPageLayout, Elements_Table)
     local cfg = config or {}
@@ -1954,7 +1954,7 @@ function Elements:CreateDropdown(parent, config, countItem, countDropdown, Dropd
     local allToggleActive = false
     local AllRow, AllFeatureFrame, AllCircle, AllUIStroke, AllLabel
 
-    -- setAllVisual HARUS didefinisikan SEBELUM if cfg.Multi block
+    -- Fungsi untuk mengupdate visual toggle All
     local function setAllVisual(state)
         if not cfg.Multi then return end
         allToggleActive = state
@@ -2024,23 +2024,38 @@ function Elements:CreateDropdown(parent, config, countItem, countDropdown, Dropd
         AllButton.Name = "AllButton"
         AllButton.Parent = AllRow
 
-        -- AllButton.Activated menggunakan ScrollSelect,
-        -- tapi Lua closure akan resolve ScrollSelect saat runtime (bukan saat definisi)
+        -- AllButton.Activated handler
         AllButton.Activated:Connect(function()
+            if not cfg.Multi then return end
+            
             allToggleActive = not allToggleActive
             setAllVisual(allToggleActive)
+            
             if allToggleActive then
+                -- Kumpulkan semua nilai dari opsi yang visible
                 local allValues = {}
                 for _, opt in pairs(ScrollSelect:GetChildren()) do
                     if opt.Name == "Option" and opt.Visible then
                         local v = opt:GetAttribute("RealValue")
-                        if v ~= nil and not table.find(allValues, v) then
-                            table.insert(allValues, v)
+                        if v ~= nil then
+                            -- Cegah duplikasi
+                            local found = false
+                            for _, existing in ipairs(allValues) do
+                                if existing == v then
+                                    found = true
+                                    break
+                                end
+                            end
+                            if not found then
+                                table.insert(allValues, v)
+                            end
                         end
                     end
                 end
+                -- Set semua nilai terpilih
                 DropdownFunc:Set(allValues)
             else
+                -- Kosongkan semua pilihan
                 DropdownFunc:Set({})
             end
         end)
@@ -2072,17 +2087,31 @@ function Elements:CreateDropdown(parent, config, countItem, countDropdown, Dropd
     -- syncAllToggle: cek apakah semua visible option sudah terpilih
     local function syncAllToggle()
         if not cfg.Multi then return end
+        
         local anyVisible = false
         local allSelected = true
+        
         for _, opt in pairs(ScrollSelect:GetChildren()) do
             if opt.Name == "Option" and opt.Visible then
                 anyVisible = true
                 local v = opt:GetAttribute("RealValue")
-                if not table.find(DropdownFunc.Value, v) then
+                local found = false
+                
+                if type(DropdownFunc.Value) == "table" then
+                    for _, selected in ipairs(DropdownFunc.Value) do
+                        if selected == v then
+                            found = true
+                            break
+                        end
+                    end
+                end
+                
+                if not found then
                     allSelected = false
                 end
             end
         end
+        
         setAllVisual(anyVisible and allSelected)
     end
 
@@ -2094,6 +2123,8 @@ function Elements:CreateDropdown(parent, config, countItem, countDropdown, Dropd
                 option.Visible = query == "" or string.find(text, query, 1, true) ~= nil
             end
         end
+        -- Sync All toggle setelah search
+        syncAllToggle()
     end)
 
     function DropdownFunc:Clear()
@@ -2166,14 +2197,30 @@ function Elements:CreateDropdown(parent, config, countItem, countDropdown, Dropd
 
         OptionButton.Activated:Connect(function()
             if cfg.Multi then
-                local idx = table.find(DropdownFunc.Value, value)
+                -- Multi select
+                local idx = nil
+                if type(DropdownFunc.Value) == "table" then
+                    for i, v in ipairs(DropdownFunc.Value) do
+                        if v == value then
+                            idx = i
+                            break
+                        end
+                    end
+                end
+                
                 if not idx then
+                    -- Tambahkan
+                    if type(DropdownFunc.Value) ~= "table" then
+                        DropdownFunc.Value = {}
+                    end
                     table.insert(DropdownFunc.Value, value)
                 else
+                    -- Hapus
                     table.remove(DropdownFunc.Value, idx)
                 end
                 DropdownFunc:Set(DropdownFunc.Value)
             else
+                -- Single select
                 if DropdownFunc.Value == value then
                     DropdownFunc:Set(nil)
                 else
@@ -2186,7 +2233,28 @@ function Elements:CreateDropdown(parent, config, countItem, countDropdown, Dropd
     function DropdownFunc:Set(Value)
         if cfg.Multi then
             if type(Value) == "table" then
-                DropdownFunc.Value = Value
+                -- Filter hanya nilai yang valid (ada di opsi)
+                local validValues = {}
+                local validMap = {}
+                
+                -- Buat map dari nilai yang valid
+                for _, opt in pairs(ScrollSelect:GetChildren()) do
+                    if opt.Name == "Option" then
+                        local v = opt:GetAttribute("RealValue")
+                        if v ~= nil then
+                            validMap[v] = true
+                        end
+                    end
+                end
+                
+                -- Filter Value
+                for _, v in ipairs(Value) do
+                    if validMap[v] then
+                        table.insert(validValues, v)
+                    end
+                end
+                
+                DropdownFunc.Value = validValues
             elseif Value == nil then
                 DropdownFunc.Value = {}
             else
@@ -2207,9 +2275,20 @@ function Elements:CreateDropdown(parent, config, countItem, countDropdown, Dropd
         for _, Drop in ScrollSelect:GetChildren() do
             if Drop.Name == "Option" and Drop:FindFirstChild("OptionText") then
                 local v = Drop:GetAttribute("RealValue")
-                local selected = cfg.Multi
-                    and (type(DropdownFunc.Value) == "table" and table.find(DropdownFunc.Value, v) ~= nil)
-                    or (DropdownFunc.Value == v)
+                local selected = false
+                
+                if cfg.Multi then
+                    if type(DropdownFunc.Value) == "table" then
+                        for _, sel in ipairs(DropdownFunc.Value) do
+                            if sel == v then
+                                selected = true
+                                break
+                            end
+                        end
+                    end
+                else
+                    selected = (DropdownFunc.Value == v)
+                end
 
                 local cf = Drop:FindFirstChild("ChooseFrame")
                 local st = cf and cf:FindFirstChild("UIStroke")
