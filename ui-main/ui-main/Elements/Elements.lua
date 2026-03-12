@@ -1,4 +1,4 @@
--- Elements.lua V0.4.3 (All Toggle Fixed)
+-- Elements.lua V0.4.1
 
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -1179,7 +1179,7 @@ function Elements:CreateToggle(parent, config, countItem, updateSectionSize, Ele
     cfg.Callback = cfg.Callback or function() end
     cfg.Badge    = cfg.Badge    or nil
     cfg.Locked   = cfg.Locked   or false
-    cfg.Type     = cfg.Type     or "Toggle"
+    cfg.Type     = cfg.Type     or "Toggle"   -- "Toggle" | "Checkbox"
 
     local configKey = "Toggle_" .. cfg.Title
     if ConfigData[configKey] ~= nil then
@@ -1285,6 +1285,7 @@ function Elements:CreateToggle(parent, config, countItem, updateSectionSize, Ele
     ToggleButton.Name = "ToggleButton"
     ToggleButton.Parent = Toggle
 
+    -- ── Indicator: Toggle (pill) vs Checkbox ─────────────────────────────────
     local FeatureFrame, ToggleCircle, UIStroke8
     local CheckboxFrame, CheckMark
 
@@ -1319,7 +1320,9 @@ function Elements:CreateToggle(parent, config, countItem, updateSectionSize, Ele
         CheckMark.ImageTransparency = 1
         CheckMark.ZIndex = 2
         CheckMark.Parent = CheckboxFrame
+
     else
+        -- Pill toggle (perilaku asli)
         FeatureFrame = Instance.new("Frame")
         FeatureFrame.AnchorPoint = Vector2.new(1, 0.5)
         FeatureFrame.BackgroundTransparency = 0.92
@@ -1345,6 +1348,7 @@ function Elements:CreateToggle(parent, config, countItem, updateSectionSize, Ele
         Instance.new("UICorner", ToggleCircle).CornerRadius = UDim.new(0, 15)
     end
 
+    -- ── Set ───────────────────────────────────────────────────────────────────
     ToggleButton.Activated:Connect(function()
         ToggleFunc:Set(not ToggleFunc.Value)
     end)
@@ -1813,7 +1817,7 @@ function Elements:CreateInput(parent, config, countItem, updateSectionSize, Elem
 end
 
 -- ─────────────────────────────────────────────────────────────────────────────
---  CreateDropdown  (V0.4.3 — All Toggle Fixed)
+--  CreateDropdown
 -- ─────────────────────────────────────────────────────────────────────────────
 function Elements:CreateDropdown(parent, config, countItem, countDropdown, DropdownFolder, MoreBlur, DropdownSelect, DropPageLayout, Elements_Table)
     local cfg = config or {}
@@ -1934,7 +1938,6 @@ function Elements:CreateDropdown(parent, config, countItem, countDropdown, Dropd
     DropdownContainer.BackgroundTransparency = 1
     DropdownContainer.Parent = DropdownFolder
 
-    -- SearchBox
     local SearchBox = Instance.new("TextBox")
     SearchBox.PlaceholderText = "Search"
     SearchBox.Font = Enum.Font.Gotham
@@ -1950,123 +1953,9 @@ function Elements:CreateDropdown(parent, config, countItem, countDropdown, Dropd
     SearchBox.Name = "SearchBox"
     SearchBox.Parent = DropdownContainer
 
-    -- ── ALL TOGGLE ────────────────────────────────────────────────────────────
-    local allToggleActive = false
-    local AllRow, AllFeatureFrame, AllCircle, AllUIStroke, AllLabel
-
-    -- Fungsi untuk mengupdate visual toggle All
-    local function setAllVisual(state)
-        if not cfg.Multi then return end
-        allToggleActive = state
-        if state then
-            TweenService:Create(AllLabel,        TweenInfo.new(0.2), { TextColor3 = GuiConfig.Color }):Play()
-            TweenService:Create(AllCircle,       TweenInfo.new(0.2), { Position = UDim2.new(0, 15, 0, 0) }):Play()
-            TweenService:Create(AllUIStroke,     TweenInfo.new(0.2), { Color = GuiConfig.Color, Transparency = 0 }):Play()
-            TweenService:Create(AllFeatureFrame, TweenInfo.new(0.2), { BackgroundColor3 = GuiConfig.Color, BackgroundTransparency = 0 }):Play()
-        else
-            TweenService:Create(AllLabel,        TweenInfo.new(0.2), { TextColor3 = Color3.fromRGB(230, 230, 230) }):Play()
-            TweenService:Create(AllCircle,       TweenInfo.new(0.2), { Position = UDim2.new(0, 0, 0, 0) }):Play()
-            TweenService:Create(AllUIStroke,     TweenInfo.new(0.2), { Color = Color3.fromRGB(255, 255, 255), Transparency = 0.9 }):Play()
-            TweenService:Create(AllFeatureFrame, TweenInfo.new(0.2), { BackgroundColor3 = Color3.fromRGB(255, 255, 255), BackgroundTransparency = 0.92 }):Play()
-        end
-    end
-
-    if cfg.Multi then
-        AllRow = Instance.new("Frame")
-        AllRow.Name = "AllRow"
-        AllRow.Size = UDim2.new(1, 0, 0, 30)
-        AllRow.Position = UDim2.new(0, 0, 0, 25)
-        AllRow.BackgroundTransparency = 1
-        AllRow.Parent = DropdownContainer
-
-        AllLabel = Instance.new("TextLabel")
-        AllLabel.Font = Enum.Font.GothamBold
-        AllLabel.Text = "All"
-        AllLabel.TextSize = 13
-        AllLabel.TextColor3 = Color3.fromRGB(230, 230, 230)
-        AllLabel.TextXAlignment = Enum.TextXAlignment.Left
-        AllLabel.BackgroundTransparency = 1
-        AllLabel.Position = UDim2.new(0, 8, 0, 8)
-        AllLabel.Size = UDim2.new(1, -55, 0, 13)
-        AllLabel.Name = "AllLabel"
-        AllLabel.Parent = AllRow
-
-        AllFeatureFrame = Instance.new("Frame")
-        AllFeatureFrame.AnchorPoint = Vector2.new(1, 0.5)
-        AllFeatureFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        AllFeatureFrame.BackgroundTransparency = 0.92
-        AllFeatureFrame.BorderSizePixel = 0
-        AllFeatureFrame.Position = UDim2.new(1, -5, 0.5, 0)
-        AllFeatureFrame.Size = UDim2.new(0, 30, 0, 15)
-        AllFeatureFrame.Name = "AllFeatureFrame"
-        AllFeatureFrame.Parent = AllRow
-        Instance.new("UICorner", AllFeatureFrame).CornerRadius = UDim.new(0, 15)
-
-        AllUIStroke = Instance.new("UIStroke")
-        AllUIStroke.Color = Color3.fromRGB(255, 255, 255)
-        AllUIStroke.Thickness = 2
-        AllUIStroke.Transparency = 0.9
-        AllUIStroke.Parent = AllFeatureFrame
-
-        AllCircle = Instance.new("Frame")
-        AllCircle.BackgroundColor3 = Color3.fromRGB(230, 230, 230)
-        AllCircle.BorderSizePixel = 0
-        AllCircle.Size = UDim2.new(0, 14, 0, 14)
-        AllCircle.Position = UDim2.new(0, 0, 0, 0)
-        AllCircle.Name = "AllCircle"
-        AllCircle.Parent = AllFeatureFrame
-        Instance.new("UICorner", AllCircle).CornerRadius = UDim.new(0, 15)
-
-        local AllButton = Instance.new("TextButton")
-        AllButton.BackgroundTransparency = 1
-        AllButton.Size = UDim2.new(1, 0, 1, 0)
-        AllButton.Text = ""
-        AllButton.Name = "AllButton"
-        AllButton.Parent = AllRow
-
-        -- AllButton.Activated handler
-        AllButton.Activated:Connect(function()
-            if not cfg.Multi then return end
-            
-            allToggleActive = not allToggleActive
-            setAllVisual(allToggleActive)
-            
-            if allToggleActive then
-                -- Kumpulkan semua nilai dari opsi yang visible
-                local allValues = {}
-                for _, opt in pairs(ScrollSelect:GetChildren()) do
-                    if opt.Name == "Option" and opt.Visible then
-                        local v = opt:GetAttribute("RealValue")
-                        if v ~= nil then
-                            -- Cegah duplikasi
-                            local found = false
-                            for _, existing in ipairs(allValues) do
-                                if existing == v then
-                                    found = true
-                                    break
-                                end
-                            end
-                            if not found then
-                                table.insert(allValues, v)
-                            end
-                        end
-                    end
-                end
-                -- Set semua nilai terpilih
-                DropdownFunc:Set(allValues)
-            else
-                -- Kosongkan semua pilihan
-                DropdownFunc:Set({})
-            end
-        end)
-    end
-
-    -- ScrollSelect posisi menyesuaikan ada/tidaknya AllRow
-    local scrollOffsetY = cfg.Multi and 55 or 25
-
     local ScrollSelect = Instance.new("ScrollingFrame")
-    ScrollSelect.Size = UDim2.new(1, 0, 1, -scrollOffsetY)
-    ScrollSelect.Position = UDim2.new(0, 0, 0, scrollOffsetY)
+    ScrollSelect.Size = UDim2.new(1, 0, 1, -30)
+    ScrollSelect.Position = UDim2.new(0, 0, 0, 30)
     ScrollSelect.ScrollBarImageTransparency = 1
     ScrollSelect.BorderSizePixel = 0
     ScrollSelect.BackgroundTransparency = 1
@@ -2084,37 +1973,6 @@ function Elements:CreateDropdown(parent, config, countItem, countDropdown, Dropd
         ScrollSelect.CanvasSize = UDim2.new(0, 0, 0, UIListLayout4.AbsoluteContentSize.Y)
     end)
 
-    -- syncAllToggle: cek apakah semua visible option sudah terpilih
-    local function syncAllToggle()
-        if not cfg.Multi then return end
-        
-        local anyVisible = false
-        local allSelected = true
-        
-        for _, opt in pairs(ScrollSelect:GetChildren()) do
-            if opt.Name == "Option" and opt.Visible then
-                anyVisible = true
-                local v = opt:GetAttribute("RealValue")
-                local found = false
-                
-                if type(DropdownFunc.Value) == "table" then
-                    for _, selected in ipairs(DropdownFunc.Value) do
-                        if selected == v then
-                            found = true
-                            break
-                        end
-                    end
-                end
-                
-                if not found then
-                    allSelected = false
-                end
-            end
-        end
-        
-        setAllVisual(anyVisible and allSelected)
-    end
-
     SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
         local query = string.lower(SearchBox.Text)
         for _, option in pairs(ScrollSelect:GetChildren()) do
@@ -2123,8 +1981,6 @@ function Elements:CreateDropdown(parent, config, countItem, countDropdown, Dropd
                 option.Visible = query == "" or string.find(text, query, 1, true) ~= nil
             end
         end
-        -- Sync All toggle setelah search
-        syncAllToggle()
     end)
 
     function DropdownFunc:Clear()
@@ -2134,9 +1990,7 @@ function Elements:CreateDropdown(parent, config, countItem, countDropdown, Dropd
         DropdownFunc.Value = cfg.Multi and {} or nil
         DropdownFunc.Options = {}
         OptionSelecting.Text = cfg.Multi and "Select Options" or "Select Option"
-        if cfg.Multi then setAllVisual(false) end
     end
-
 
     function DropdownFunc:AddOption(option)
         local label, value
@@ -2197,30 +2051,14 @@ function Elements:CreateDropdown(parent, config, countItem, countDropdown, Dropd
 
         OptionButton.Activated:Connect(function()
             if cfg.Multi then
-                -- Multi select
-                local idx = nil
-                if type(DropdownFunc.Value) == "table" then
-                    for i, v in ipairs(DropdownFunc.Value) do
-                        if v == value then
-                            idx = i
-                            break
-                        end
-                    end
-                end
-                
+                local idx = table.find(DropdownFunc.Value, value)
                 if not idx then
-                    -- Tambahkan
-                    if type(DropdownFunc.Value) ~= "table" then
-                        DropdownFunc.Value = {}
-                    end
                     table.insert(DropdownFunc.Value, value)
                 else
-                    -- Hapus
                     table.remove(DropdownFunc.Value, idx)
                 end
                 DropdownFunc:Set(DropdownFunc.Value)
             else
-                -- Single select
                 if DropdownFunc.Value == value then
                     DropdownFunc:Set(nil)
                 else
@@ -2233,28 +2071,7 @@ function Elements:CreateDropdown(parent, config, countItem, countDropdown, Dropd
     function DropdownFunc:Set(Value)
         if cfg.Multi then
             if type(Value) == "table" then
-                -- Filter hanya nilai yang valid (ada di opsi)
-                local validValues = {}
-                local validMap = {}
-                
-                -- Buat map dari nilai yang valid
-                for _, opt in pairs(ScrollSelect:GetChildren()) do
-                    if opt.Name == "Option" then
-                        local v = opt:GetAttribute("RealValue")
-                        if v ~= nil then
-                            validMap[v] = true
-                        end
-                    end
-                end
-                
-                -- Filter Value
-                for _, v in ipairs(Value) do
-                    if validMap[v] then
-                        table.insert(validValues, v)
-                    end
-                end
-                
-                DropdownFunc.Value = validValues
+                DropdownFunc.Value = Value
             elseif Value == nil then
                 DropdownFunc.Value = {}
             else
@@ -2275,20 +2092,9 @@ function Elements:CreateDropdown(parent, config, countItem, countDropdown, Dropd
         for _, Drop in ScrollSelect:GetChildren() do
             if Drop.Name == "Option" and Drop:FindFirstChild("OptionText") then
                 local v = Drop:GetAttribute("RealValue")
-                local selected = false
-                
-                if cfg.Multi then
-                    if type(DropdownFunc.Value) == "table" then
-                        for _, sel in ipairs(DropdownFunc.Value) do
-                            if sel == v then
-                                selected = true
-                                break
-                            end
-                        end
-                    end
-                else
-                    selected = (DropdownFunc.Value == v)
-                end
+                local selected = cfg.Multi
+                    and (type(DropdownFunc.Value) == "table" and table.find(DropdownFunc.Value, v) ~= nil)
+                    or (DropdownFunc.Value == v)
 
                 local cf = Drop:FindFirstChild("ChooseFrame")
                 local st = cf and cf:FindFirstChild("UIStroke")
@@ -2309,9 +2115,6 @@ function Elements:CreateDropdown(parent, config, countItem, countDropdown, Dropd
         OptionSelecting.Text = (#texts == 0)
             and (cfg.Multi and "Select Options" or "Select Option")
             or table.concat(texts, ", ")
-
-        -- Sync tampilan toggle All
-        syncAllToggle()
 
         if cfg.Multi then
             SafeCall(cfg.Callback, DropdownFunc.Value)
