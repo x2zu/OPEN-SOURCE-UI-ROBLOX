@@ -3,7 +3,7 @@ local HttpService = game:GetService("HttpService")
 local Players     = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
-local BASE = "https://raw.githubusercontent.com/nhfudzfsrzggt/brigida/refs/heads/main/"
+local BASE = "https://raw.githubusercontent.com/x2zu/OPEN-SOURCE-UI-ROBLOX/main/ui-main/ui-main/"
 local function load(path) return loadstring(game:HttpGet(BASE .. path))() end
 
 -- Modules
@@ -2846,6 +2846,7 @@ If you have suggestions or encounter any issues, feel free to contact
 end
 
 return Chloex
+
 
 
 
