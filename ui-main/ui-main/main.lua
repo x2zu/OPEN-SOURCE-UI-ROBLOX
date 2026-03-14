@@ -670,47 +670,43 @@ function Chloex:Window(GuiConfig)
     if AUTO_LOAD then LoadConfigFromFile() end
 
     ElementsModule:Initialize(GuiConfig, SaveConfig, ConfigData, Icons)
-    
-    -- ==================== KEY SYSTEM ====================
+   -- ==================== KEY SYSTEM ====================
 
 local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     local ks = GuiConfig.KeySystem
     if not ks then return true end
     if ks == true then ks = {} end
 
-    -- ── Warna utama ────────────────────────────────────────────────────────
     local C = {
-        BG          = Color3.fromRGB(22,  22,  30),   -- background card
-        Surface     = Color3.fromRGB(28,  28,  38),   -- elemen dalam card
-        SurfaceDeep = Color3.fromRGB(30,  30,  42),   -- icon block, header icon
-        Border      = Color3.fromRGB(46,  46,  58),   -- border default
-        BorderFocus = Color3.fromRGB(142, 130, 254),  -- ungu: focus / aksen
-        TextPrimary = Color3.fromRGB(232, 232, 240),  -- teks utama
-        TextMuted   = Color3.fromRGB(136, 136, 160),  -- teks sekunder
-        TextDim     = Color3.fromRGB(74,  74,  96),   -- label / placeholder
-        Accent      = Color3.fromRGB(142, 130, 254),  -- periwinkle purple
-        AccentDark  = Color3.fromRGB(123, 110, 253),  -- hover accent
-        AccentBg    = Color3.fromRGB(26,  24,  46),   -- bg notif ungu
-        AccentBgBorder = Color3.fromRGB(53, 53, 74),
-        StepBg      = Color3.fromRGB(20,  18,  46),   -- bg nomor step
-        StepBorder  = Color3.fromRGB(70,  65,  120),
-        Success     = Color3.fromRGB(107, 254, 168),
-        SuccessBg   = Color3.fromRGB(14,  32,  24),
-        SuccessBorder= Color3.fromRGB(26,  64,  48),
-        Error       = Color3.fromRGB(254, 107, 107),
-        ErrorBg     = Color3.fromRGB(32,  14,  14),
-        ErrorBorder = Color3.fromRGB(64,  24,  26),
-        Warn        = Color3.fromRGB(254, 204, 107),
-        WarnBg      = Color3.fromRGB(30,  26,  10),
-        WarnBorder  = Color3.fromRGB(58,  48,  16),
-        Divider     = Color3.fromRGB(37,  37,  47),
-        DropItem    = Color3.fromRGB(26,  26,  38),
-        DropHover   = Color3.fromRGB(34,  34,  46),
+        BG           = Color3.fromRGB(18,  18,  26),
+        Surface      = Color3.fromRGB(26,  26,  36),
+        SurfaceDeep  = Color3.fromRGB(22,  22,  32),
+        Border       = Color3.fromRGB(44,  44,  58),
+        TextPrimary  = Color3.fromRGB(230, 230, 240),
+        TextMuted    = Color3.fromRGB(130, 130, 155),
+        TextDim      = Color3.fromRGB(70,  70,  92),
+        Accent       = Color3.fromRGB(142, 130, 254),
+        AccentDark   = Color3.fromRGB(120, 108, 230),
+        AccentBg     = Color3.fromRGB(24,  22,  44),
+        AccentBorder = Color3.fromRGB(60,  55,  90),
+        StepBg       = Color3.fromRGB(18,  16,  42),
+        StepBorder   = Color3.fromRGB(65,  60,  115),
+        Success      = Color3.fromRGB(100, 240, 160),
+        SuccessBg    = Color3.fromRGB(12,  30,  22),
+        SuccessBorder= Color3.fromRGB(24,  60,  44),
+        Error        = Color3.fromRGB(240, 100, 100),
+        ErrorBg      = Color3.fromRGB(30,  12,  12),
+        ErrorBorder  = Color3.fromRGB(60,  22,  24),
+        Warn         = Color3.fromRGB(240, 195, 100),
+        WarnBg       = Color3.fromRGB(28,  24,  10),
+        WarnBorder   = Color3.fromRGB(55,  46,  16),
+        Divider      = Color3.fromRGB(35,  35,  48),
+        DropItem     = Color3.fromRGB(24,  24,  36),
+        DropHover    = Color3.fromRGB(32,  32,  46),
     }
 
     local keyResolved = false
 
-    -- ── Helper: buat UICorner ───────────────────────────────────────────────
     local function corner(parent, radius)
         local c = Instance.new("UICorner")
         c.CornerRadius = UDim.new(0, radius or 6)
@@ -718,8 +714,7 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         return c
     end
 
-    -- ── Helper: buat UIStroke ───────────────────────────────────────────────
-    local function stroke(parent, color, thickness)
+    local function mkStroke(parent, color, thickness)
         local s = Instance.new("UIStroke")
         s.Color = color or C.Border
         s.Thickness = thickness or 0.5
@@ -728,8 +723,7 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         return s
     end
 
-    -- ── Helper: buat Frame ──────────────────────────────────────────────────
-    local function frame(parent, props)
+    local function mkFrame(parent, props)
         local f = Instance.new("Frame")
         for k, v in pairs(props or {}) do f[k] = v end
         f.BorderSizePixel = 0
@@ -737,8 +731,7 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         return f
     end
 
-    -- ── Helper: buat TextLabel ──────────────────────────────────────────────
-    local function label(parent, props)
+    local function mkLabel(parent, props)
         local t = Instance.new("TextLabel")
         t.BackgroundTransparency = 1
         t.BorderSizePixel = 0
@@ -749,34 +742,42 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         return t
     end
 
-    -- ── Root ScreenGui ──────────────────────────────────────────────────────
+    -- ── Root GUI ────────────────────────────────────────────────────────────
     local KsGui = Instance.new("ScreenGui")
     KsGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     KsGui.Name = "KeySystemGui"
     KsGui.ResetOnSpawn = false
     KsGui.Parent = CoreGui
 
-    -- ── Overlay gelap di belakang card ─────────────────────────────────────
-    local Overlay = frame(KsGui, {
+    -- ── Blur effect ─────────────────────────────────────────────────────────
+    local BlurEffect = Instance.new("BlurEffect")
+    BlurEffect.Size = 0
+    BlurEffect.Parent = game:GetService("Lighting")
+
+    TweenService:Create(BlurEffect, TweenInfo.new(0.3), { Size = 18 }):Play()
+
+    -- ── Dark overlay ─────────────────────────────────────────────────────────
+    local Overlay = mkFrame(KsGui, {
         Size = UDim2.new(1, 0, 1, 0),
         BackgroundColor3 = Color3.fromRGB(0, 0, 0),
-        BackgroundTransparency = 0.55,
+        BackgroundTransparency = 1,
         ZIndex = 100,
     })
+    TweenService:Create(Overlay, TweenInfo.new(0.3), { BackgroundTransparency = 0.45 }):Play()
 
-    -- ── Card utama ──────────────────────────────────────────────────────────
-    local Card = frame(KsGui, {
+    -- ── Card ─────────────────────────────────────────────────────────────────
+    local Card = mkFrame(KsGui, {
         AnchorPoint = Vector2.new(0.5, 0.5),
-        Position = UDim2.new(0.5, 0, 0.42, 0),
-        Size = UDim2.new(0, 360, 0, 10),   -- tinggi auto via UIListLayout
+        Position = UDim2.new(0.5, 0, 0.46, 0),
+        Size = UDim2.new(0, 380, 0, 10),
         BackgroundColor3 = C.BG,
         BackgroundTransparency = 1,
         AutomaticSize = Enum.AutomaticSize.Y,
         ClipsDescendants = true,
         ZIndex = 101,
     })
-    corner(Card, 6)
-    stroke(Card, C.Border, 0.5)
+    corner(Card, 8)
+    mkStroke(Card, C.Border, 0.5)
 
     local CardList = Instance.new("UIListLayout")
     CardList.FillDirection = Enum.FillDirection.Vertical
@@ -784,64 +785,62 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     CardList.Padding = UDim.new(0, 0)
     CardList.Parent = Card
 
-    -- ── HEADER ──────────────────────────────────────────────────────────────
-    local Header = frame(Card, {
-        Size = UDim2.new(1, 0, 0, 52),
+    -- ── HEADER ───────────────────────────────────────────────────────────────
+    local Header = mkFrame(Card, {
+        Size = UDim2.new(1, 0, 0, 54),
         BackgroundColor3 = C.BG,
         LayoutOrder = 1,
         ZIndex = 102,
     })
 
-    -- garis bawah header
-    local HeaderLine = frame(Header, {
+    mkFrame(Header, {
         Position = UDim2.new(0, 0, 1, -1),
         Size = UDim2.new(1, 0, 0, 1),
         BackgroundColor3 = C.Divider,
         ZIndex = 102,
     })
 
-    -- icon box
-    local IconBox = frame(Header, {
+    local IconBox = mkFrame(Header, {
         Position = UDim2.new(0, 16, 0.5, -14),
         Size = UDim2.new(0, 28, 0, 28),
         BackgroundColor3 = C.SurfaceDeep,
         ZIndex = 103,
     })
-    corner(IconBox, 5)
-    stroke(IconBox, C.Border, 0.5)
+    corner(IconBox, 6)
+    mkStroke(IconBox, C.AccentBorder, 0.5)
 
     local IconImg = Instance.new("ImageLabel")
     IconImg.AnchorPoint = Vector2.new(0.5, 0.5)
     IconImg.Position = UDim2.new(0.5, 0, 0.5, 0)
     IconImg.Size = UDim2.new(0, 14, 0, 14)
     IconImg.BackgroundTransparency = 1
-    IconImg.Image = (getIconId and getIconId(ks.Icon or "") ~= "") and getIconId(ks.Icon or "") or "rbxassetid://6031094678"
+    local _iconId = (getIconId and getIconId(ks.Icon or "")) or ""
+    IconImg.Image = (_iconId ~= "") and _iconId or "rbxassetid://6031094678"
     IconImg.ImageColor3 = C.Accent
     IconImg.ScaleType = Enum.ScaleType.Fit
     IconImg.ZIndex = 104
     IconImg.Parent = IconBox
 
-    label(Header, {
-        Position = UDim2.new(0, 52, 0, 11),
-        Size = UDim2.new(1, -68, 0, 16),
+    mkLabel(Header, {
+        Position = UDim2.new(0, 54, 0, 12),
+        Size = UDim2.new(1, -70, 0, 16),
         Text = ks.Title or GuiConfig.Title or "Key System",
         TextColor3 = C.TextPrimary,
         TextSize = 13,
         Font = Enum.Font.GothamBold,
         ZIndex = 102,
     })
-
-    label(Header, {
-        Position = UDim2.new(0, 52, 0, 28),
-        Size = UDim2.new(1, -68, 0, 13),
+    mkLabel(Header, {
+        Position = UDim2.new(0, 54, 0, 30),
+        Size = UDim2.new(1, -70, 0, 13),
         Text = "Key verification required",
         TextColor3 = C.TextDim,
         TextSize = 11,
         ZIndex = 102,
     })
 
-    -- ── BODY ────────────────────────────────────────────────────────────────
-    local Body = frame(Card, {
+    -- ── BODY ─────────────────────────────────────────────────────────────────
+    local Body = mkFrame(Card, {
         Size = UDim2.new(1, 0, 0, 10),
         AutomaticSize = Enum.AutomaticSize.Y,
         BackgroundColor3 = C.BG,
@@ -862,22 +861,20 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     BodyList.Padding = UDim.new(0, 14)
     BodyList.Parent = Body
 
-    -- ── HOW TO GET KEY block ─────────────────────────────────────────────────
-    local HowToWrap = frame(Body, {
+    -- ── HOW TO SECTION ────────────────────────────────────────────────────────
+    local HowToWrap = mkFrame(Body, {
         Size = UDim2.new(1, 0, 0, 10),
         AutomaticSize = Enum.AutomaticSize.Y,
         BackgroundTransparency = 1,
         LayoutOrder = 1,
         ZIndex = 102,
     })
-
     local HowToWrapList = Instance.new("UIListLayout")
     HowToWrapList.FillDirection = Enum.FillDirection.Vertical
     HowToWrapList.Padding = UDim.new(0, 6)
     HowToWrapList.Parent = HowToWrap
 
-    -- label kecil
-    label(HowToWrap, {
+    mkLabel(HowToWrap, {
         Size = UDim2.new(1, 0, 0, 12),
         Text = "HOW TO GET YOUR KEY",
         TextColor3 = C.TextDim,
@@ -887,8 +884,7 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         ZIndex = 102,
     })
 
-    -- box how-to
-    local HowToBox = frame(HowToWrap, {
+    local HowToBox = mkFrame(HowToWrap, {
         Size = UDim2.new(1, 0, 0, 10),
         AutomaticSize = Enum.AutomaticSize.Y,
         BackgroundColor3 = C.Surface,
@@ -896,37 +892,32 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         ZIndex = 102,
     })
     corner(HowToBox, 6)
-    stroke(HowToBox, C.Border, 0.5)
+    mkStroke(HowToBox, C.Border, 0.5)
 
     local HowToBoxList = Instance.new("UIListLayout")
     HowToBoxList.FillDirection = Enum.FillDirection.Vertical
     HowToBoxList.Padding = UDim.new(0, 0)
     HowToBoxList.Parent = HowToBox
 
-    -- title row
-    local HowToTitleRow = frame(HowToBox, {
+    -- title row dengan aksen kiri
+    local HowToTitleRow = mkFrame(HowToBox, {
         Size = UDim2.new(1, 0, 0, 36),
         BackgroundTransparency = 1,
         LayoutOrder = 0,
         ZIndex = 103,
     })
-
-    -- garis bawah title row
-    frame(HowToTitleRow, {
+    mkFrame(HowToTitleRow, {
         Position = UDim2.new(0, 0, 1, -1),
         Size = UDim2.new(1, 0, 0, 1),
         BackgroundColor3 = C.Divider,
         ZIndex = 103,
     })
-
-    -- aksen kiri ungu
-    frame(HowToTitleRow, {
+    mkFrame(HowToTitleRow, {
         Size = UDim2.new(0, 2, 1, 0),
         BackgroundColor3 = C.Accent,
         ZIndex = 104,
     })
-
-    label(HowToTitleRow, {
+    mkLabel(HowToTitleRow, {
         Position = UDim2.new(0, 12, 0, 0),
         Size = UDim2.new(1, -14, 1, 0),
         Text = "3 simple steps to get started",
@@ -937,30 +928,26 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         ZIndex = 103,
     })
 
-    -- steps
+    -- steps data
     local stepsData = {
         "Choose your preferred source from the [dropdown] on the left.",
         "Click [Get Key] — you'll be redirected to the key website to receive your key.",
         "Paste your key into the field below, then hit [Submit] to unlock access.",
     }
-
     if ks.HowToText then
         stepsData = {}
         for line in (ks.HowToText .. "\n"):gmatch("([^\n]*)\n") do
-            if line ~= "" then
-                table.insert(stepsData, line)
-            end
+            if line ~= "" then table.insert(stepsData, line) end
         end
     end
 
-    local StepsContainer = frame(HowToBox, {
+    local StepsContainer = mkFrame(HowToBox, {
         Size = UDim2.new(1, 0, 0, 10),
         AutomaticSize = Enum.AutomaticSize.Y,
         BackgroundTransparency = 1,
         LayoutOrder = 1,
         ZIndex = 103,
     })
-
     local StepsPad = Instance.new("UIPadding")
     StepsPad.PaddingLeft   = UDim.new(0, 12)
     StepsPad.PaddingRight  = UDim.new(0, 12)
@@ -974,77 +961,73 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     StepsList.Parent = StepsContainer
 
     for i, stepText in ipairs(stepsData) do
-        local StepRow = frame(StepsContainer, {
+        local StepRow = mkFrame(StepsContainer, {
             Size = UDim2.new(1, 0, 0, 10),
             AutomaticSize = Enum.AutomaticSize.Y,
             BackgroundTransparency = 1,
             LayoutOrder = i,
             ZIndex = 103,
         })
+        local SRL = Instance.new("UIListLayout")
+        SRL.FillDirection = Enum.FillDirection.Horizontal
+        SRL.VerticalAlignment = Enum.VerticalAlignment.Top
+        SRL.Padding = UDim.new(0, 10)
+        SRL.Parent = StepRow
 
-        local StepRowList = Instance.new("UIListLayout")
-        StepRowList.FillDirection = Enum.FillDirection.Horizontal
-        StepRowList.VerticalAlignment = Enum.VerticalAlignment.Top
-        StepRowList.Padding = UDim.new(0, 10)
-        StepRowList.Parent = StepRow
-
-        -- nomor
-        local NumBox = frame(StepRow, {
+        local NumBox = mkFrame(StepRow, {
             Size = UDim2.new(0, 18, 0, 18),
             BackgroundColor3 = C.StepBg,
             LayoutOrder = 0,
             ZIndex = 104,
         })
         corner(NumBox, 4)
-        stroke(NumBox, C.StepBorder, 0.5)
+        mkStroke(NumBox, C.StepBorder, 0.5)
 
-        local NumLabel = Instance.new("TextLabel")
-        NumLabel.AnchorPoint = Vector2.new(0.5, 0.5)
-        NumLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
-        NumLabel.Size = UDim2.new(1, 0, 1, 0)
-        NumLabel.BackgroundTransparency = 1
-        NumLabel.BorderSizePixel = 0
-        NumLabel.Font = Enum.Font.GothamBold
-        NumLabel.Text = tostring(i)
-        NumLabel.TextColor3 = C.Accent
-        NumLabel.TextSize = 10
-        NumLabel.ZIndex = 105
-        NumLabel.Parent = NumBox
+        local NL = Instance.new("TextLabel")
+        NL.AnchorPoint = Vector2.new(0.5, 0.5)
+        NL.Position = UDim2.new(0.5, 0, 0.5, 0)
+        NL.Size = UDim2.new(1, 0, 1, 0)
+        NL.BackgroundTransparency = 1
+        NL.BorderSizePixel = 0
+        NL.Font = Enum.Font.GothamBold
+        NL.Text = tostring(i)
+        NL.TextColor3 = C.Accent
+        NL.TextSize = 10
+        NL.ZIndex = 105
+        NL.Parent = NumBox
 
-        -- teks step (dengan highlight kata dalam [])
         local cleanText = stepText:gsub("%[(.-)%]", "%1")
-        local StepLabel = Instance.new("TextLabel")
-        StepLabel.Size = UDim2.new(1, -28, 0, 0)
-        StepLabel.AutomaticSize = Enum.AutomaticSize.Y
-        StepLabel.BackgroundTransparency = 1
-        StepLabel.BorderSizePixel = 0
-        StepLabel.Font = Enum.Font.Gotham
-        StepLabel.Text = cleanText
-        StepLabel.TextColor3 = C.TextMuted
-        StepLabel.TextSize = 11
-        StepLabel.TextWrapped = true
-        StepLabel.TextXAlignment = Enum.TextXAlignment.Left
-        StepLabel.TextYAlignment = Enum.TextYAlignment.Top
-        StepLabel.LayoutOrder = 1
-        StepLabel.ZIndex = 104
-        StepLabel.Parent = StepRow
+        local SL = Instance.new("TextLabel")
+        SL.Size = UDim2.new(1, -28, 0, 0)
+        SL.AutomaticSize = Enum.AutomaticSize.Y
+        SL.BackgroundTransparency = 1
+        SL.BorderSizePixel = 0
+        SL.Font = Enum.Font.Gotham
+        SL.Text = cleanText
+        SL.TextColor3 = C.TextMuted
+        SL.TextSize = 11
+        SL.TextWrapped = true
+        SL.TextXAlignment = Enum.TextXAlignment.Left
+        SL.TextYAlignment = Enum.TextYAlignment.Top
+        SL.LayoutOrder = 1
+        SL.ZIndex = 104
+        SL.Parent = StepRow
     end
 
-    -- ── REDEEM KEY section ───────────────────────────────────────────────────
-    local RedeemWrap = frame(Body, {
+    -- ── REDEEM KEY SECTION ────────────────────────────────────────────────────
+    local RedeemWrap = mkFrame(Body, {
         Size = UDim2.new(1, 0, 0, 10),
         AutomaticSize = Enum.AutomaticSize.Y,
         BackgroundTransparency = 1,
         LayoutOrder = 2,
         ZIndex = 102,
     })
+    local RWL = Instance.new("UIListLayout")
+    RWL.FillDirection = Enum.FillDirection.Vertical
+    RWL.Padding = UDim.new(0, 6)
+    RWL.Parent = RedeemWrap
 
-    local RedeemWrapList = Instance.new("UIListLayout")
-    RedeemWrapList.FillDirection = Enum.FillDirection.Vertical
-    RedeemWrapList.Padding = UDim.new(0, 6)
-    RedeemWrapList.Parent = RedeemWrap
-
-    label(RedeemWrap, {
+    mkLabel(RedeemWrap, {
         Size = UDim2.new(1, 0, 0, 12),
         Text = "REDEEM KEY",
         TextColor3 = C.TextDim,
@@ -1054,28 +1037,27 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         ZIndex = 102,
     })
 
-    local InputRow = frame(RedeemWrap, {
-        Size = UDim2.new(1, 0, 0, 34),
+    local InputRow = mkFrame(RedeemWrap, {
+        Size = UDim2.new(1, 0, 0, 36),
         BackgroundTransparency = 1,
         LayoutOrder = 1,
         ZIndex = 102,
     })
+    local IRL = Instance.new("UIListLayout")
+    IRL.FillDirection = Enum.FillDirection.Horizontal
+    IRL.VerticalAlignment = Enum.VerticalAlignment.Center
+    IRL.Padding = UDim.new(0, 8)
+    IRL.Parent = InputRow
 
-    local InputRowList = Instance.new("UIListLayout")
-    InputRowList.FillDirection = Enum.FillDirection.Horizontal
-    InputRowList.VerticalAlignment = Enum.VerticalAlignment.Center
-    InputRowList.Padding = UDim.new(0, 8)
-    InputRowList.Parent = InputRow
-
-    -- ── DROPDOWN ─────────────────────────────────────────────────────────────
+    -- ── DROPDOWN ──────────────────────────────────────────────────────────────
     local getKeyLinks = ks.GetKeyLinks or {
         { Name = "Discord",     Url = "https://discord.gg/" },
         { Name = "Direct Link", Url = "" },
     }
     local selectedLink = getKeyLinks[1]
 
-    local DropWrap = frame(InputRow, {
-        Size = UDim2.new(0, 118, 1, 0),
+    local DropWrap = mkFrame(InputRow, {
+        Size = UDim2.new(0, 120, 1, 0),
         BackgroundTransparency = 1,
         LayoutOrder = 0,
         ZIndex = 103,
@@ -1090,19 +1072,19 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     DropBtn.Text = ""
     DropBtn.ZIndex = 104
     DropBtn.Parent = DropWrap
-    corner(DropBtn, 5)
-    local DropStroke = stroke(DropBtn, C.Border, 0.5)
+    corner(DropBtn, 6)
+    local DropStroke = mkStroke(DropBtn, C.Border, 0.5)
 
-    local DropBtnList = Instance.new("UIListLayout")
-    DropBtnList.FillDirection = Enum.FillDirection.Horizontal
-    DropBtnList.VerticalAlignment = Enum.VerticalAlignment.Center
-    DropBtnList.Padding = UDim.new(0, 6)
-    DropBtnList.Parent = DropBtn
+    local DBL = Instance.new("UIListLayout")
+    DBL.FillDirection = Enum.FillDirection.Horizontal
+    DBL.VerticalAlignment = Enum.VerticalAlignment.Center
+    DBL.Padding = UDim.new(0, 6)
+    DBL.Parent = DropBtn
 
-    local DropBtnPad = Instance.new("UIPadding")
-    DropBtnPad.PaddingLeft  = UDim.new(0, 10)
-    DropBtnPad.PaddingRight = UDim.new(0, 8)
-    DropBtnPad.Parent = DropBtn
+    local DBP = Instance.new("UIPadding")
+    DBP.PaddingLeft  = UDim.new(0, 10)
+    DBP.PaddingRight = UDim.new(0, 8)
+    DBP.Parent = DropBtn
 
     local DropLabelTxt = Instance.new("TextLabel")
     DropLabelTxt.BackgroundTransparency = 1
@@ -1130,21 +1112,20 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     DropArrow.ZIndex = 105
     DropArrow.Parent = DropBtn
 
-    -- dropdown list (muncul di bawah tombol)
-    local DropList = frame(KsGui, {
-        Size = UDim2.new(0, 118, 0, #getKeyLinks * 32),
+    local DropList = mkFrame(KsGui, {
+        Size = UDim2.new(0, 120, 0, 0),
         BackgroundColor3 = C.Surface,
         Visible = false,
-        ZIndex = 200,
+        ZIndex = 300,
         ClipsDescendants = true,
     })
-    corner(DropList, 5)
-    stroke(DropList, C.Border, 0.5)
+    corner(DropList, 6)
+    mkStroke(DropList, C.Border, 0.5)
 
-    local DropListLayout = Instance.new("UIListLayout")
-    DropListLayout.FillDirection = Enum.FillDirection.Vertical
-    DropListLayout.Padding = UDim.new(0, 0)
-    DropListLayout.Parent = DropList
+    local DLL = Instance.new("UIListLayout")
+    DLL.FillDirection = Enum.FillDirection.Vertical
+    DLL.Padding = UDim.new(0, 0)
+    DLL.Parent = DropList
 
     local dropOpen = false
 
@@ -1156,7 +1137,9 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
 
     local function closeDropdown()
         dropOpen = false
-        TweenService:Create(DropList, TweenInfo.new(0.12), { Size = UDim2.new(0, 118, 0, 0) }):Play()
+        TweenService:Create(DropList, TweenInfo.new(0.12), {
+            Size = UDim2.new(0, 120, 0, 0)
+        }):Play()
         task.delay(0.13, function() DropList.Visible = false end)
         TweenService:Create(DropStroke, TweenInfo.new(0.12), { Color = C.Border }):Play()
     end
@@ -1164,45 +1147,44 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     local function openDropdown()
         dropOpen = true
         positionDropList()
-        DropList.Size = UDim2.new(0, 118, 0, 0)
+        DropList.Size = UDim2.new(0, 120, 0, 0)
         DropList.Visible = true
         TweenService:Create(DropList, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-            Size = UDim2.new(0, 118, 0, #getKeyLinks * 32)
+            Size = UDim2.new(0, 120, 0, #getKeyLinks * 34)
         }):Play()
         TweenService:Create(DropStroke, TweenInfo.new(0.12), { Color = C.Accent }):Play()
     end
 
-    -- buat item dropdown
     for idx, linkData in ipairs(getKeyLinks) do
         local Item = Instance.new("TextButton")
-        Item.Size = UDim2.new(1, 0, 0, 32)
+        Item.Size = UDim2.new(1, 0, 0, 34)
         Item.BackgroundColor3 = C.DropItem
         Item.BorderSizePixel = 0
         Item.Font = Enum.Font.Gotham
         Item.Text = ""
-        Item.ZIndex = 201
+        Item.ZIndex = 301
         Item.Parent = DropList
 
-        local ItemLabel = Instance.new("TextLabel")
-        ItemLabel.AnchorPoint = Vector2.new(0, 0.5)
-        ItemLabel.Position = UDim2.new(0, 12, 0.5, 0)
-        ItemLabel.Size = UDim2.new(1, -14, 0, 14)
-        ItemLabel.BackgroundTransparency = 1
-        ItemLabel.BorderSizePixel = 0
-        ItemLabel.Font = Enum.Font.Gotham
-        ItemLabel.Text = linkData.Name
-        ItemLabel.TextColor3 = (idx == 1) and C.Accent or C.TextPrimary
-        ItemLabel.TextSize = 12
-        ItemLabel.TextXAlignment = Enum.TextXAlignment.Left
-        ItemLabel.ZIndex = 202
-        ItemLabel.Parent = Item
+        local IL = Instance.new("TextLabel")
+        IL.AnchorPoint = Vector2.new(0, 0.5)
+        IL.Position = UDim2.new(0, 12, 0.5, 0)
+        IL.Size = UDim2.new(1, -14, 0, 14)
+        IL.BackgroundTransparency = 1
+        IL.BorderSizePixel = 0
+        IL.Font = Enum.Font.Gotham
+        IL.Text = linkData.Name
+        IL.TextColor3 = (idx == 1) and C.Accent or C.TextPrimary
+        IL.TextSize = 12
+        IL.TextXAlignment = Enum.TextXAlignment.Left
+        IL.ZIndex = 302
+        IL.Parent = Item
 
         if idx < #getKeyLinks then
-            frame(Item, {
+            mkFrame(Item, {
                 Position = UDim2.new(0, 0, 1, -1),
                 Size = UDim2.new(1, 0, 0, 1),
                 BackgroundColor3 = C.Divider,
-                ZIndex = 202,
+                ZIndex = 302,
             })
         end
 
@@ -1215,14 +1197,13 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         Item.MouseButton1Click:Connect(function()
             selectedLink = linkData
             DropLabelTxt.Text = linkData.Name
-            -- reset warna semua item
             for _, child in ipairs(DropList:GetChildren()) do
                 if child:IsA("TextButton") then
                     local lbl = child:FindFirstChildOfClass("TextLabel")
                     if lbl then lbl.TextColor3 = C.TextPrimary end
                 end
             end
-            ItemLabel.TextColor3 = C.Accent
+            IL.TextColor3 = C.Accent
             closeDropdown()
         end)
     end
@@ -1231,49 +1212,47 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         if dropOpen then closeDropdown() else openDropdown() end
     end)
 
-    -- ── INPUT KEY ────────────────────────────────────────────────────────────
-    local InputWrap = frame(InputRow, {
-        Size = UDim2.new(1, -126, 1, 0),
+    -- ── INPUT KEY ─────────────────────────────────────────────────────────────
+    local InputWrap = mkFrame(InputRow, {
+        Size = UDim2.new(1, -128, 1, 0),
         BackgroundColor3 = C.Surface,
         ClipsDescendants = true,
         LayoutOrder = 1,
         ZIndex = 103,
     })
-    corner(InputWrap, 5)
-    local InputStroke = stroke(InputWrap, C.Border, 0.5)
+    corner(InputWrap, 6)
+    local InputStroke = mkStroke(InputWrap, C.Border, 0.5)
 
-    local InputWrapRow = Instance.new("UIListLayout")
-    InputWrapRow.FillDirection = Enum.FillDirection.Horizontal
-    InputWrapRow.VerticalAlignment = Enum.VerticalAlignment.Center
-    InputWrapRow.Padding = UDim.new(0, 0)
-    InputWrapRow.Parent = InputWrap
+    local IWRL = Instance.new("UIListLayout")
+    IWRL.FillDirection = Enum.FillDirection.Horizontal
+    IWRL.VerticalAlignment = Enum.VerticalAlignment.Center
+    IWRL.Padding = UDim.new(0, 0)
+    IWRL.Parent = InputWrap
 
-    -- icon block kiri
-    local IconBlock = frame(InputWrap, {
-        Size = UDim2.new(0, 34, 1, 0),
+    -- icon block kiri dengan separator
+    local IconBlock = mkFrame(InputWrap, {
+        Size = UDim2.new(0, 36, 1, 0),
         BackgroundColor3 = C.SurfaceDeep,
         LayoutOrder = 0,
         ZIndex = 104,
     })
-
-    -- border kanan icon block
-    frame(IconBlock, {
+    mkFrame(IconBlock, {
         Position = UDim2.new(1, -1, 0, 0),
         Size = UDim2.new(0, 1, 1, 0),
         BackgroundColor3 = C.Border,
         ZIndex = 105,
     })
 
-    local LockIcon = Instance.new("ImageLabel")
-    LockIcon.AnchorPoint = Vector2.new(0.5, 0.5)
-    LockIcon.Position = UDim2.new(0.5, 0, 0.5, 0)
-    LockIcon.Size = UDim2.new(0, 13, 0, 13)
-    LockIcon.BackgroundTransparency = 1
-    LockIcon.Image = "rbxassetid://6031094678" -- ganti dengan icon kunci
-    LockIcon.ImageColor3 = C.Accent
-    LockIcon.ScaleType = Enum.ScaleType.Fit
-    LockIcon.ZIndex = 105
-    LockIcon.Parent = IconBlock
+    local LockIco = Instance.new("ImageLabel")
+    LockIco.AnchorPoint = Vector2.new(0.5, 0.5)
+    LockIco.Position = UDim2.new(0.5, 0, 0.5, 0)
+    LockIco.Size = UDim2.new(0, 14, 0, 14)
+    LockIco.BackgroundTransparency = 1
+    LockIco.Image = "rbxassetid://6031094678"
+    LockIco.ImageColor3 = C.Accent
+    LockIco.ScaleType = Enum.ScaleType.Fit
+    LockIco.ZIndex = 105
+    LockIco.Parent = IconBlock
 
     local KsInput = Instance.new("TextBox")
     KsInput.Font = Enum.Font.Gotham
@@ -1286,14 +1265,14 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     KsInput.BackgroundTransparency = 1
     KsInput.BorderSizePixel = 0
     KsInput.ClearTextOnFocus = false
-    KsInput.Size = UDim2.new(1, -34, 1, 0)
+    KsInput.Size = UDim2.new(1, -36, 1, 0)
     KsInput.LayoutOrder = 1
     KsInput.ZIndex = 104
     KsInput.Parent = InputWrap
 
-    local InputPad = Instance.new("UIPadding")
-    InputPad.PaddingLeft = UDim.new(0, 10)
-    InputPad.Parent = KsInput
+    local IP = Instance.new("UIPadding")
+    IP.PaddingLeft = UDim.new(0, 10)
+    IP.Parent = KsInput
 
     KsInput.Focused:Connect(function()
         TweenService:Create(InputStroke, TweenInfo.new(0.15), { Color = C.Accent }):Play()
@@ -1302,38 +1281,75 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         TweenService:Create(InputStroke, TweenInfo.new(0.15), { Color = C.Border }):Play()
     end)
 
-    -- ── TOAST NOTIFIKASI ─────────────────────────────────────────────────────
-    local Toast = frame(KsGui, {
-        AnchorPoint = Vector2.new(0.5, 0),
-        Position = UDim2.new(0.5, 0, 0, -60),
-        Size = UDim2.new(0, 300, 0, 36),
+    -- ── FOOTER DIVIDER ────────────────────────────────────────────────────────
+    mkFrame(Card, {
+        Size = UDim2.new(1, 0, 0, 1),
+        BackgroundColor3 = C.Divider,
+        LayoutOrder = 3,
+        ZIndex = 102,
+    })
+
+    -- ── FOOTER BUTTONS ────────────────────────────────────────────────────────
+    local Footer = mkFrame(Card, {
+        Size = UDim2.new(1, 0, 0, 54),
+        BackgroundColor3 = C.BG,
+        LayoutOrder = 4,
+        ZIndex = 102,
+    })
+
+    local FP = Instance.new("UIPadding")
+    FP.PaddingLeft   = UDim.new(0, 18)
+    FP.PaddingRight  = UDim.new(0, 18)
+    FP.PaddingTop    = UDim.new(0, 10)
+    FP.PaddingBottom = UDim.new(0, 10)
+    FP.Parent = Footer
+
+    local FL = Instance.new("UIListLayout")
+    FL.FillDirection = Enum.FillDirection.Horizontal
+    FL.HorizontalAlignment = Enum.HorizontalAlignment.Right
+    FL.VerticalAlignment = Enum.VerticalAlignment.Center
+    FL.Padding = UDim.new(0, 6)
+    FL.SortOrder = Enum.SortOrder.LayoutOrder
+    FL.Parent = Footer
+
+    local buttons = ks.Buttons or {
+        { Name = "Exit",    Style = "secondary" },
+        { Name = "Discord", Style = "discord"   },
+        { Name = "Get Key", Style = "secondary" },
+        { Name = "Submit",  Style = "primary"   },
+    }
+
+    -- ── TOAST ─────────────────────────────────────────────────────────────────
+    -- Toast diletakkan di KsGui, posisi dihitung relatif terhadap Card
+    local Toast = mkFrame(KsGui, {
+        AnchorPoint = Vector2.new(0.5, 1),
+        Position = UDim2.new(0.5, 0, 0, -200), -- akan diupdate saat show
+        Size = UDim2.new(0, 320, 0, 38),
         BackgroundColor3 = C.AccentBg,
-        ZIndex = 300,
+        ZIndex = 400,
         ClipsDescendants = false,
     })
-    corner(Toast, 6)
-    local ToastStroke = stroke(Toast, C.AccentBgBorder, 0.5)
+    corner(Toast, 7)
+    local ToastStroke = mkStroke(Toast, C.AccentBorder, 0.5)
 
-    local ToastRowLayout = Instance.new("UIListLayout")
-    ToastRowLayout.FillDirection = Enum.FillDirection.Horizontal
-    ToastRowLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-    ToastRowLayout.Padding = UDim.new(0, 8)
-    ToastRowLayout.Parent = Toast
+    local TRL = Instance.new("UIListLayout")
+    TRL.FillDirection = Enum.FillDirection.Horizontal
+    TRL.VerticalAlignment = Enum.VerticalAlignment.Center
+    TRL.Padding = UDim.new(0, 8)
+    TRL.Parent = Toast
 
-    local ToastPad = Instance.new("UIPadding")
-    ToastPad.PaddingLeft  = UDim.new(0, 12)
-    ToastPad.PaddingRight = UDim.new(0, 12)
-    ToastPad.Parent = Toast
+    local TP = Instance.new("UIPadding")
+    TP.PaddingLeft  = UDim.new(0, 12)
+    TP.PaddingRight = UDim.new(0, 12)
+    TP.Parent = Toast
 
-    local ToastIcon = Instance.new("ImageLabel")
-    ToastIcon.Size = UDim2.new(0, 14, 0, 14)
-    ToastIcon.BackgroundTransparency = 1
-    ToastIcon.Image = "rbxassetid://6031094678"
-    ToastIcon.ImageColor3 = C.Accent
-    ToastIcon.ScaleType = Enum.ScaleType.Fit
-    ToastIcon.LayoutOrder = 0
-    ToastIcon.ZIndex = 301
-    ToastIcon.Parent = Toast
+    local ToastDot = mkFrame(Toast, {
+        Size = UDim2.new(0, 6, 0, 6),
+        BackgroundColor3 = C.Accent,
+        LayoutOrder = 0,
+        ZIndex = 401,
+    })
+    corner(ToastDot, 3)
 
     local ToastText = Instance.new("TextLabel")
     ToastText.BackgroundTransparency = 1
@@ -1346,115 +1362,90 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     ToastText.AutomaticSize = Enum.AutomaticSize.X
     ToastText.Size = UDim2.new(0, 0, 1, 0)
     ToastText.LayoutOrder = 1
-    ToastText.ZIndex = 301
+    ToastText.ZIndex = 401
     ToastText.Parent = Toast
 
     local toastTimer = nil
+    local toastVisible = false
 
     local function showToast(msg, toastType)
-        -- toastType: "success" | "error" | "warn" | "info"
         local cfg = {
-            success = { bg = C.SuccessBg,  border = C.SuccessBorder, text = C.Success },
-            error   = { bg = C.ErrorBg,    border = C.ErrorBorder,   text = C.Error   },
-            warn    = { bg = C.WarnBg,     border = C.WarnBorder,    text = C.Warn    },
-            info    = { bg = C.AccentBg,   border = C.AccentBgBorder,text = C.Accent  },
+            success = { bg = C.SuccessBg,  border = C.SuccessBorder, text = C.Success, dot = C.Success },
+            error   = { bg = C.ErrorBg,    border = C.ErrorBorder,   text = C.Error,   dot = C.Error   },
+            warn    = { bg = C.WarnBg,     border = C.WarnBorder,    text = C.Warn,    dot = C.Warn    },
+            info    = { bg = C.AccentBg,   border = C.AccentBorder,  text = C.Accent,  dot = C.Accent  },
         }
         local t = cfg[toastType] or cfg.info
 
-        -- posisikan di atas card
+        Toast.BackgroundColor3    = t.bg
+        ToastStroke.Color         = t.border
+        ToastText.TextColor3      = t.text
+        ToastDot.BackgroundColor3 = t.dot
+        ToastText.Text            = msg
+
+        -- posisi: tepat di atas card, center horizontal mengikuti card
         local cardAbs = Card.AbsolutePosition
-        Toast.Position = UDim2.new(0, cardAbs.X + (Card.AbsoluteSize.X / 2) - 150, 0, cardAbs.Y - 44)
+        local cardW   = Card.AbsoluteSize.X
+        local toastW  = 320
+        local toastX  = cardAbs.X + (cardW / 2) - (toastW / 2)
+        local toastY  = cardAbs.Y - 10  -- sedikit di atas card
 
-        Toast.BackgroundColor3 = t.bg
-        ToastStroke.Color      = t.border
-        ToastText.TextColor3   = t.text
-        ToastIcon.ImageColor3  = t.text
-        ToastText.Text         = msg
+        -- set posisi awal (tersembunyi sedikit lebih ke atas)
+        Toast.Position = UDim2.new(0, toastX + toastW / 2, 0, toastY - 20)
+        Toast.AnchorPoint = Vector2.new(0.5, 1)
 
-        TweenService:Create(Toast, TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-            Position = UDim2.new(0, cardAbs.X + (Card.AbsoluteSize.X / 2) - 150, 0, cardAbs.Y - 46)
+        -- animasi masuk
+        TweenService:Create(Toast, TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+            Position = UDim2.new(0, toastX + toastW / 2, 0, toastY)
         }):Play()
 
         if toastTimer then task.cancel(toastTimer) end
         toastTimer = task.delay(3, function()
-            TweenService:Create(Toast, TweenInfo.new(0.2), {
-                Position = UDim2.new(0, cardAbs.X + (Card.AbsoluteSize.X / 2) - 150, 0, cardAbs.Y - 80)
+            TweenService:Create(Toast, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+                Position = UDim2.new(0, toastX + toastW / 2, 0, toastY - 30)
             }):Play()
         end)
     end
 
-    local function setInputBorderFlash(color)
+    local function flashInput(color)
         TweenService:Create(InputStroke, TweenInfo.new(0.1), { Color = color }):Play()
         task.delay(1.8, function()
             TweenService:Create(InputStroke, TweenInfo.new(0.3), { Color = C.Border }):Play()
         end)
     end
 
-    -- ── SHAKE animasi ────────────────────────────────────────────────────────
     local function shakeCard()
         local orig = Card.Position
-        local offsets = {6, -6, 4, -4, 2, -2, 0}
-        for _, ox in ipairs(offsets) do
+        for _, ox in ipairs({7, -7, 5, -5, 3, -3, 0}) do
             Card.Position = UDim2.new(orig.X.Scale, orig.X.Offset + ox, orig.Y.Scale, orig.Y.Offset)
             task.wait(0.04)
         end
         Card.Position = orig
     end
 
-    -- ── CLOSE animasi ────────────────────────────────────────────────────────
     local ksClosing = false
     local function closeKeySystem()
         if ksClosing then return end
         ksClosing = true
         if dropOpen then closeDropdown() end
-        TweenService:Create(Card, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
-            Position = UDim2.new(0.5, 0, 0.54, 0),
+
+        -- matikan blur
+        TweenService:Create(BlurEffect, TweenInfo.new(0.25), { Size = 0 }):Play()
+        task.delay(0.28, function()
+            pcall(function() BlurEffect:Destroy() end)
+        end)
+
+        TweenService:Create(Card, TweenInfo.new(0.22, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+            Position = UDim2.new(0.5, 0, 0.56, 0),
             BackgroundTransparency = 1,
         }):Play()
-        TweenService:Create(Overlay, TweenInfo.new(0.2), { BackgroundTransparency = 1 }):Play()
-        task.delay(0.25, function()
+        TweenService:Create(Overlay, TweenInfo.new(0.22), { BackgroundTransparency = 1 }):Play()
+        task.delay(0.26, function()
             pcall(function() KsGui:Destroy() end)
         end)
     end
 
-    -- ── FOOTER / BUTTONS ─────────────────────────────────────────────────────
-    local FooterDivider = frame(Card, {
-        Size = UDim2.new(1, 0, 0, 1),
-        BackgroundColor3 = C.Divider,
-        LayoutOrder = 3,
-        ZIndex = 102,
-    })
-
-    local Footer = frame(Card, {
-        Size = UDim2.new(1, 0, 0, 52),
-        BackgroundColor3 = C.BG,
-        LayoutOrder = 4,
-        ZIndex = 102,
-    })
-
-    local FooterPad = Instance.new("UIPadding")
-    FooterPad.PaddingLeft   = UDim.new(0, 18)
-    FooterPad.PaddingRight  = UDim.new(0, 18)
-    FooterPad.PaddingTop    = UDim.new(0, 10)
-    FooterPad.PaddingBottom = UDim.new(0, 10)
-    FooterPad.Parent = Footer
-
-    local FooterList = Instance.new("UIListLayout")
-    FooterList.FillDirection = Enum.FillDirection.Horizontal
-    FooterList.HorizontalAlignment = Enum.HorizontalAlignment.Right
-    FooterList.VerticalAlignment = Enum.VerticalAlignment.Center
-    FooterList.Padding = UDim.new(0, 6)
-    FooterList.SortOrder = Enum.SortOrder.LayoutOrder
-    FooterList.Parent = Footer
-
-    -- default buttons jika tidak ada config
-    local buttons = ks.Buttons or {
-        { Name = "Exit",    Style = "secondary" },
-        { Name = "Discord", Style = "discord"   },
-        { Name = "Get Key", Style = "secondary" },
-        { Name = "Submit",  Style = "primary"   },
-    }
-
+    -- ── Build buttons ─────────────────────────────────────────────────────────
     for i, btnCfg in ipairs(buttons) do
         local style = btnCfg.Style or "secondary"
 
@@ -1474,73 +1465,69 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         else
             Btn.BackgroundColor3 = C.Surface
         end
-
         Btn.Parent = Footer
-        corner(Btn, 5)
+        corner(Btn, 6)
 
-        local BtnStroke
         if style == "primary" then
-            BtnStroke = stroke(Btn, C.AccentDark, 0.5)
+            mkStroke(Btn, C.AccentDark, 0.5)
         elseif style == "discord" then
-            BtnStroke = stroke(Btn, C.StepBorder, 0.5)
+            mkStroke(Btn, C.StepBorder, 0.5)
         else
-            BtnStroke = stroke(Btn, C.Border, 0.5)
+            mkStroke(Btn, C.Border, 0.5)
         end
 
-        local BtnPad = Instance.new("UIPadding")
-        BtnPad.PaddingLeft  = UDim.new(0, 12)
-        BtnPad.PaddingRight = UDim.new(0, 12)
-        BtnPad.Parent = Btn
+        local BP = Instance.new("UIPadding")
+        BP.PaddingLeft  = UDim.new(0, 12)
+        BP.PaddingRight = UDim.new(0, 12)
+        BP.Parent = Btn
 
-        local BtnInner = frame(Btn, {
+        local BInner = mkFrame(Btn, {
             BackgroundTransparency = 1,
             AutomaticSize = Enum.AutomaticSize.X,
             Size = UDim2.new(0, 0, 1, 0),
             ZIndex = 104,
         })
-
-        local BtnInnerList = Instance.new("UIListLayout")
-        BtnInnerList.FillDirection = Enum.FillDirection.Horizontal
-        BtnInnerList.VerticalAlignment = Enum.VerticalAlignment.Center
-        BtnInnerList.Padding = UDim.new(0, 5)
-        BtnInnerList.Parent = BtnInner
+        local BIL = Instance.new("UIListLayout")
+        BIL.FillDirection = Enum.FillDirection.Horizontal
+        BIL.VerticalAlignment = Enum.VerticalAlignment.Center
+        BIL.Padding = UDim.new(0, 5)
+        BIL.Parent = BInner
 
         local iconId = getIconId and getIconId(btnCfg.Icon or "") or ""
         if iconId ~= "" then
-            local BtnIcon = Instance.new("ImageLabel")
-            BtnIcon.BackgroundTransparency = 1
-            BtnIcon.BorderSizePixel = 0
-            BtnIcon.Size = UDim2.new(0, 12, 0, 12)
-            BtnIcon.Image = iconId
-            BtnIcon.ImageColor3 = style == "primary" and Color3.fromRGB(255, 255, 255)
-                or style == "discord" and C.Accent
+            local BI = Instance.new("ImageLabel")
+            BI.BackgroundTransparency = 1
+            BI.BorderSizePixel = 0
+            BI.Size = UDim2.new(0, 12, 0, 12)
+            BI.Image = iconId
+            BI.ImageColor3 = (style == "primary") and Color3.fromRGB(255,255,255)
+                or (style == "discord") and C.Accent
                 or C.TextMuted
-            BtnIcon.ScaleType = Enum.ScaleType.Fit
-            BtnIcon.LayoutOrder = 0
-            BtnIcon.ZIndex = 105
-            BtnIcon.Parent = BtnInner
+            BI.ScaleType = Enum.ScaleType.Fit
+            BI.LayoutOrder = 0
+            BI.ZIndex = 105
+            BI.Parent = BInner
         end
 
-        local BtnLabel = Instance.new("TextLabel")
-        BtnLabel.Font = Enum.Font.GothamBold
-        BtnLabel.Text = btnCfg.Name or "Button"
-        BtnLabel.TextColor3 = style == "primary" and Color3.fromRGB(255, 255, 255)
-            or style == "discord" and C.Accent
+        local BLbl = Instance.new("TextLabel")
+        BLbl.Font = Enum.Font.GothamBold
+        BLbl.Text = btnCfg.Name or "Button"
+        BLbl.TextColor3 = (style == "primary") and Color3.fromRGB(255,255,255)
+            or (style == "discord") and C.Accent
             or C.TextMuted
-        BtnLabel.TextSize = 12
-        BtnLabel.BackgroundTransparency = 1
-        BtnLabel.BorderSizePixel = 0
-        BtnLabel.AutomaticSize = Enum.AutomaticSize.X
-        BtnLabel.Size = UDim2.new(0, 0, 1, 0)
-        BtnLabel.LayoutOrder = 1
-        BtnLabel.ZIndex = 105
-        BtnLabel.Parent = BtnInner
+        BLbl.TextSize = 12
+        BLbl.BackgroundTransparency = 1
+        BLbl.BorderSizePixel = 0
+        BLbl.AutomaticSize = Enum.AutomaticSize.X
+        BLbl.Size = UDim2.new(0, 0, 1, 0)
+        BLbl.LayoutOrder = 1
+        BLbl.ZIndex = 105
+        BLbl.Parent = BInner
 
-        -- hover colors
         local normBg = Btn.BackgroundColor3
-        local hovBg  = style == "primary" and C.AccentDark
-            or style == "discord" and Color3.fromRGB(36, 36, 58)
-            or Color3.fromRGB(34, 34, 46)
+        local hovBg  = (style == "primary") and C.AccentDark
+            or (style == "discord") and Color3.fromRGB(34,34,56)
+            or Color3.fromRGB(32,32,46)
 
         Btn.MouseEnter:Connect(function()
             TweenService:Create(Btn, TweenInfo.new(0.1), { BackgroundColor3 = hovBg }):Play()
@@ -1563,24 +1550,21 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
                 end
 
                 if result == true then
-                    -- KEY BENAR
                     keyResolved = true
-                    setInputBorderFlash(C.Success)
+                    flashInput(C.Success)
                     showToast("Key accepted! Access granted.", "success")
-                    task.delay(0.8, closeKeySystem)
+                    task.delay(0.9, closeKeySystem)
 
                 elseif result == false then
-                    -- KEY SALAH atau KOSONG
                     if currentKey == "" then
                         showToast("Key cannot be empty — please enter your key.", "warn")
                     else
                         showToast("Invalid key — double-check and try again.", "error")
                     end
-                    setInputBorderFlash(C.Error)
+                    flashInput(C.Error)
                     task.spawn(shakeCard)
 
                 else
-                    -- nil: cek apakah tombol ini adalah tombol tutup
                     local isClose = btnCfg.Close == true
                         or btnCfg.Name == "Exit"
                         or btnCfg.Name == "Close"
@@ -1588,31 +1572,31 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
                     if isClose then
                         closeKeySystem()
                     end
-                    -- tombol lain (Get Key, Discord, dll) — hanya jalankan callback
                 end
             else
-                -- tidak ada callback: default submit logic
                 if currentKey == "" then
                     showToast("Key cannot be empty — please enter your key.", "warn")
-                    setInputBorderFlash(C.Error)
+                    flashInput(C.Error)
                     task.spawn(shakeCard)
                 else
                     keyResolved = true
                     showToast("Key accepted! Access granted.", "success")
-                    task.delay(0.8, closeKeySystem)
+                    task.delay(0.9, closeKeySystem)
                 end
             end
         end)
     end
 
-    -- ── OPEN animasi ─────────────────────────────────────────────────────────
-    TweenService:Create(Card, TweenInfo.new(0.28, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+    -- ── Open animasi ──────────────────────────────────────────────────────────
+    TweenService:Create(Card, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
         Position = UDim2.new(0.5, 0, 0.5, 0),
         BackgroundTransparency = 0,
     }):Play()
 
-    -- ── Tunggu sampai selesai ────────────────────────────────────────────────
     repeat task.wait(0.1) until keyResolved or not KsGui.Parent
+
+    -- bersihkan blur kalau user exit tanpa key
+    pcall(function() BlurEffect:Destroy() end)
 
     if not keyResolved then
         pcall(function() KsGui:Destroy() end)
@@ -1623,7 +1607,6 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
 end
 
 -- ==================== END KEY SYSTEM ====================
--- Panggil key system di sini sebelum lanjut build GUI
 if GuiConfig.KeySystem then
     local ksResult = buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     if not ksResult then return nil end
