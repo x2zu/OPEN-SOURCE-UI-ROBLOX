@@ -670,6 +670,7 @@ function Chloex:Window(GuiConfig)
     if AUTO_LOAD then LoadConfigFromFile() end
 
     ElementsModule:Initialize(GuiConfig, SaveConfig, ConfigData, Icons)
+    
     -- ==================== KEY SYSTEM ====================
 
 local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
@@ -1621,8 +1622,12 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     return true
 end
 
-return buildKeySystem
 -- ==================== END KEY SYSTEM ====================
+-- Panggil key system di sini sebelum lanjut build GUI
+if GuiConfig.KeySystem then
+    local ksResult = buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
+    if not ksResult then return nil end
+end
     local GuiFunc = {}
 
     local Chloeex           = Instance.new("ScreenGui")
