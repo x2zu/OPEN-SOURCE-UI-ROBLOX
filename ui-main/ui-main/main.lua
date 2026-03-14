@@ -4,14 +4,16 @@ local HttpService = game:GetService("HttpService")
 local Players     = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
-local BASE = "https://raw.githubusercontent.com/x2zu/OPEN-SOURCE-UI-ROBLOX/main/ui-main/ui-main/"
+local BASE = "https://raw.githubusercontent.com/nhfudzfsrzggt/brigida/refs/heads/main/"
 local function load(path) return loadstring(game:HttpGet(BASE .. path))() end
+local function loadUrl(url) return loadstring(game:HttpGet(url))() end
 
 local ColorModule    = load("src/elements/color.lua")
 local ElementsModule = load("src/elements/Elements.lua")
 local KeybindModule  = load("src/elements/keybind.lua")
 local DialogModule   = load("src/elements/dialog.lua")
-
+local TabsModule     = loadUrl("https://fitri324.pythonanywhere.com/Tabs.lua/raw")
+local SearchModule   = loadUrl("https://fitri324.pythonanywhere.com/Search.lua/raw")
 
 local defaultIcons = load("src/elements/icon/basic.lua")
 local lucideIcons  = load("src/elements/icon/lucide.lua")
@@ -63,7 +65,7 @@ local function getColor(colorInput)
 end
 
 -- Variables
-local ConfigFolder = "Nemesis UI"
+local ConfigFolder = "Velaris UI"
 local ConfigFile = ""
 local ConfigData = {}
 local Elements = {}
@@ -278,11 +280,11 @@ end
 
 -- ==================== NOTIFY (LexsHub Style) ====================
 
-local Nemesis = {}
+local Chloex = {}
 
-function Nemesis:MakeNotify(NotifyConfig)
+function Chloex:MakeNotify(NotifyConfig)
     NotifyConfig = NotifyConfig or {}
-    NotifyConfig.Title       = NotifyConfig.Title or "Nemesis UI"
+    NotifyConfig.Title       = NotifyConfig.Title or "Velaris UI"
     NotifyConfig.Description = NotifyConfig.Description or "Notification"
     NotifyConfig.Content     = NotifyConfig.Content or "Content"
     NotifyConfig.Color       = getColor(NotifyConfig.Color or Color3.fromRGB(0, 208, 255))
@@ -484,7 +486,7 @@ end
 -- ==================== SHORTCUT NOTIFY ====================
 
 function Nt(msg, delay, color, title, desc)
-    return Nemesis:MakeNotify({
+    return Chloex:MakeNotify({
         Title       = title or ConfigFolder,
         Description = desc or "Notification",
         Content     = msg or "Content",
@@ -497,13 +499,13 @@ Notify = Nt
 
 -- ==================== DIALOG (loaded from external module) ====================
 
-function Nemesis:Dialog(DialogConfig)
+function Chloex:Dialog(DialogConfig)
     return DialogModule(DialogConfig)
 end
 
 -- ==================== AKHIR DIALOG ====================
 
-function Nemesis:Window(GuiConfig)
+function Chloex:Window(GuiConfig)
     GuiConfig               = GuiConfig or {}
     GuiConfig.Title         = GuiConfig.Title or "Chloe X"
     GuiConfig.Footer        = GuiConfig.Footer or "Chloee :3"
@@ -515,7 +517,7 @@ function Nemesis:Window(GuiConfig)
     GuiConfig.Uitransparent = GuiConfig.Uitransparent or 0.15
     GuiConfig.Image         = GuiConfig.Image or "70884221600423"
     GuiConfig.Icon          = GuiConfig.Icon or "rbxassetid://103875081318049"
-    GuiConfig.Configname    = GuiConfig.Configname or "Nemesis UI"
+    GuiConfig.Configname    = GuiConfig.Configname or "Velaris UI"
     GuiConfig.Size          = GuiConfig.Size or UDim2.fromOffset(640, 400)
     GuiConfig.Search        = GuiConfig.Search ~= nil and GuiConfig.Search or false
 
@@ -1480,7 +1482,7 @@ function Nemesis:Window(GuiConfig)
 
     Close.Activated:Connect(function()
         CircleClick(Close, Mouse.X, Mouse.Y)
-        Nemesis:Dialog({
+        Chloex:Dialog({
             Title = GuiConfig.Configname .. " Window",
             Content = "Do you want to close this window?\nYou will not be able to open it again",
             Buttons = {
@@ -1729,6 +1731,6 @@ function Nemesis:Window(GuiConfig)
     return GuiFunc
 end
 
-NemesisUI = Nemesis
+VelarisUI = Chloex
 
-return Nemesis
+return Chloex
