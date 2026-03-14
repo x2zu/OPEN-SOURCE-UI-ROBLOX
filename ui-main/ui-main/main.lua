@@ -670,913 +670,347 @@ function Chloex:Window(GuiConfig)
     if AUTO_LOAD then LoadConfigFromFile() end
 
     ElementsModule:Initialize(GuiConfig, SaveConfig, ConfigData, Icons)
-   -- =============================================
---   NEMESIS KEY SYSTEM V3
---   - Dropdown pilih key source
---   - Notifikasi inline (success/error/warn)
---   - Input icon shrink saat diisi
---   - Badge status di header
---   - Logo rbxassetid support
---   - Responsive mobile & PC
--- =============================================
---
---  CARA PAKAI:
---    KeySystem = true          → aktif default
---    KeySystem = false         → skip
---    KeySystem = { ... }       → config lengkap
---
---  CARA PAKAI DENGAN DROPDOWN SOURCE:
---    KeySources = {
---        { Name = "Linkvertise", Url = "https://linkvertise.com/..." },
---        { Name = "Work.ink",    Url = "https://work.ink/..." },
---        { Name = "Direct key",  Url = "" },  -- tanpa bypass
---    }
--- =============================================
-
-local TweenService   = game:GetService("TweenService")
-local CoreGui        = game:GetService("CoreGui")
-
-local function tw(o,i,p) TweenService:Create(o,i,p):Play() end
-
-local F  = TweenInfo.new(0.14, Enum.EasingStyle.Quad)
-local M  = TweenInfo.new(0.26, Enum.EasingStyle.Quad)
-local B  = TweenInfo.new(0.40, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-
--- warna konstan
-local C = {
-    bg0   = Color3.fromRGB(8,   8,  15),
-    bg1   = Color3.fromRGB(13,  12, 24),
-    bg2   = Color3.fromRGB(10,   9, 18),
-    bg3   = Color3.fromRGB(15,  14, 26),
-    line  = Color3.fromRGB(22,  20, 38),
-    line2 = Color3.fromRGB(18,  16, 30),
-    mute  = Color3.fromRGB(40,  36, 68),
-    mute2 = Color3.fromRGB(58,  54, 90),
-    text  = Color3.fromRGB(220,216,248),
-    textD = Color3.fromRGB(160,155,210),
-    white = Color3.fromRGB(255,255,255),
-    red   = Color3.fromRGB(235, 65, 65),
-    green = Color3.fromRGB(74, 222,128),
-    amber = Color3.fromRGB(251,191, 36),
-    redBg = Color3.fromRGB(26,  10, 10),
-    grnBg = Color3.fromRGB(10,  26, 16),
-    ambBg = Color3.fromRGB(26,  20, 10),
-}
-
-local function resolveKeySystem(GuiConfig)
+    
+    -- ==================== KEY SYSTEM ====================
     local ks = GuiConfig.KeySystem
-    if not ks then return true end
+    if ks then
+        local keyResolved = false
 
-    if ks == true then
-        ks = {
-            Title       = GuiConfig.Title or "Key System",
-            Icon        = "",
-            Note        = "",
-            Placeholder = "Enter your key...",
-            Default     = "",
-            Buttons     = {
-                { Name = "Exit",   Style = "secondary" },
-                { Name = "Submit", Style = "primary",
-                  Callback = function(k) return k ~= "" end },
-            },
-        }
-    end
+        local KsGui = Instance.new("ScreenGui")
+        KsGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+        KsGui.Name = "KeySystemGui"
+        KsGui.ResetOnSpawn = false
+        KsGui.Parent = CoreGui
 
-    local theme = GuiConfig.Color or Color3.fromRGB(142,130,254)
+        local Card = Instance.new("Frame")
+        Card.AnchorPoint = Vector2.new(0.5, 0.5)
+        Card.Position = UDim2.new(0.5, 0, 0.45, 0)
+        Card.Size = UDim2.new(0, 300, 0, 178)
+        Card.BackgroundColor3 = Color3.fromRGB(16, 16, 20)
+        Card.BackgroundTransparency = 1
+        Card.BorderSizePixel = 0
+        Card.ZIndex = 101
+        Card.Parent = KsGui
 
-    -- Key sources untuk dropdown
-    local sources = GuiConfig.KeySources or ks.KeySources or {
-        { Name = "Linkvertise", Url = "" },
-        { Name = "Work.ink",    Url = "" },
-        { Name = "Loot.link",   Url = "" },
-        { Name = "Direct key",  Url = "" },
-    }
+        local CardCorner = Instance.new("UICorner")
+        CardCorner.CornerRadius = UDim.new(0, 10)
+        CardCorner.Parent = Card
 
-    local vp       = workspace.CurrentCamera.ViewportSize
-    local mobile   = vp.X < 600
-    local CW       = mobile and math.min(vp.X - 20, 360) or 440
-    local CH       = 420
+        local CardStroke = Instance.new("UIStroke")
+        CardStroke.Color = Color3.fromRGB(38, 38, 48)
+        CardStroke.Thickness = 1
+        CardStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+        CardStroke.Parent = Card
 
-    -- ── GUI root ───────────────────────────────────────────
-    local KsGui = Instance.new("ScreenGui")
-    KsGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    KsGui.Name           = "KeySystemGui"
-    KsGui.ResetOnSpawn   = false
-    KsGui.IgnoreGuiInset = true
-    KsGui.Parent         = CoreGui
+        local IconBox = Instance.new("Frame")
+        IconBox.Size = UDim2.new(0, 24, 0, 24)
+        IconBox.Position = UDim2.new(0, 14, 0, 16)
+        IconBox.BackgroundColor3 = Color3.fromRGB(28, 28, 36)
+        IconBox.BorderSizePixel = 0
+        IconBox.ZIndex = 102
+        IconBox.Parent = Card
+        local IconBoxCorner = Instance.new("UICorner")
+        IconBoxCorner.CornerRadius = UDim.new(0, 6)
+        IconBoxCorner.Parent = IconBox
+        local IconBoxStroke = Instance.new("UIStroke")
+        IconBoxStroke.Color = Color3.fromRGB(50, 50, 62)
+        IconBoxStroke.Thickness = 1
+        IconBoxStroke.Parent = IconBox
 
-    -- backdrop
-    local Bg = Instance.new("Frame", KsGui)
-    Bg.Size                   = UDim2.fromScale(1,1)
-    Bg.BackgroundColor3       = Color3.fromRGB(0,0,0)
-    Bg.BackgroundTransparency = 1
-    Bg.BorderSizePixel        = 0
-    Bg.ZIndex                 = 98
+        local KsIconImg = Instance.new("ImageLabel")
+        KsIconImg.AnchorPoint = Vector2.new(0.5, 0.5)
+        KsIconImg.Position = UDim2.new(0.5, 0, 0.5, 0)
+        KsIconImg.Size = UDim2.new(0, 13, 0, 13)
+        KsIconImg.BackgroundTransparency = 1
+        KsIconImg.BorderSizePixel = 0
+        local ksIconId = getIconId(ks.Icon or "")
+        KsIconImg.Image = (ksIconId ~= "") and ksIconId or "rbxassetid://6031094678"
+        KsIconImg.ImageColor3 = Color3.fromRGB(180, 180, 190)
+        KsIconImg.ScaleType = Enum.ScaleType.Fit
+        KsIconImg.ZIndex = 103
+        KsIconImg.Parent = IconBox
 
-    -- ── Card ───────────────────────────────────────────────
-    local Card = Instance.new("Frame", KsGui)
-    Card.AnchorPoint            = Vector2.new(0.5,0.5)
-    Card.Position               = UDim2.new(0.5,0, 0.33,0)
-    Card.Size                   = UDim2.new(0,CW, 0,CH)
-    Card.BackgroundColor3       = C.bg1
-    Card.BackgroundTransparency = 1
-    Card.BorderSizePixel        = 0
-    Card.ZIndex                 = 100
-    Instance.new("UICorner",Card).CornerRadius = UDim.new(0,6)
+        local KsTitle = Instance.new("TextLabel")
+        KsTitle.Font = Enum.Font.GothamBold
+        KsTitle.Text = ks.Title or GuiConfig.Title or "Key System"
+        KsTitle.TextColor3 = Color3.fromRGB(232, 232, 238)
+        KsTitle.TextSize = 14
+        KsTitle.TextXAlignment = Enum.TextXAlignment.Left
+        KsTitle.BackgroundTransparency = 1
+        KsTitle.BorderSizePixel = 0
+        KsTitle.AnchorPoint = Vector2.new(0, 0.5)
+        KsTitle.Position = UDim2.new(0, 44, 0, 28)
+        KsTitle.Size = UDim2.new(1, -58, 0, 18)
+        KsTitle.ZIndex = 102
+        KsTitle.Parent = Card
 
-    local CardStroke = Instance.new("UIStroke",Card)
-    CardStroke.Color           = C.line
-    CardStroke.Thickness       = 1
-    CardStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+        local HDivider = Instance.new("Frame")
+        HDivider.Size = UDim2.new(1, 0, 0, 1)
+        HDivider.Position = UDim2.new(0, 0, 0, 50)
+        HDivider.BackgroundColor3 = Color3.fromRGB(34, 34, 44)
+        HDivider.BorderSizePixel = 0
+        HDivider.ZIndex = 102
+        HDivider.Parent = Card
 
-    -- helper: buat frame
-    local function Fr(parent, props)
-        local f = Instance.new("Frame", parent)
-        for k,v in pairs(props) do f[k] = v end
-        f.BorderSizePixel = 0
-        return f
-    end
-    local function Txt(parent, props)
-        local t = Instance.new("TextLabel", parent)
-        t.BackgroundTransparency = 1
-        t.BorderSizePixel        = 0
-        t.TextXAlignment         = Enum.TextXAlignment.Left
-        for k,v in pairs(props) do t[k] = v end
-        return t
-    end
-    local function Img(parent, props)
-        local i = Instance.new("ImageLabel", parent)
-        i.BackgroundTransparency = 1
-        i.BorderSizePixel        = 0
-        i.ScaleType              = Enum.ScaleType.Fit
-        for k,v in pairs(props) do i[k] = v end
-        return i
-    end
-    local function Div(parent, yPos)
-        local d = Fr(parent, {
-            Size             = UDim2.new(1,0,0,1),
-            Position         = UDim2.new(0,0,0,yPos),
-            BackgroundColor3 = C.line2,
-            ZIndex           = 101,
-        })
-        return d
-    end
-    local function corner(parent, r)
-        Instance.new("UICorner",parent).CornerRadius = UDim.new(0, r or 6)
-    end
-    local function stroke(parent, col, thick)
-        local s = Instance.new("UIStroke",parent)
-        s.Color     = col or C.line
-        s.Thickness = thick or 1
-        return s
-    end
+        local KsNote = Instance.new("TextLabel")
+        KsNote.Font = Enum.Font.Gotham
+        KsNote.Text = ks.Note or ""
+        KsNote.TextColor3 = Color3.fromRGB(95, 95, 108)
+        KsNote.TextSize = 12
+        KsNote.TextXAlignment = Enum.TextXAlignment.Left
+        KsNote.BackgroundTransparency = 1
+        KsNote.BorderSizePixel = 0
+        KsNote.Position = UDim2.new(0, 14, 0, 60)
+        KsNote.Size = UDim2.new(1, -28, 0, 14)
+        KsNote.ZIndex = 102
+        KsNote.Parent = Card
 
-    -- ═══════════════════════════════════════════
-    --   HEADER (y 0..64)
-    -- ═══════════════════════════════════════════
-    local Hdr = Fr(Card,{
-        Size             = UDim2.new(1,0,0,64),
-        BackgroundTransparency = 1,
-        ZIndex           = 101,
-    })
-    Div(Card, 64)
+        local InputBg = Instance.new("Frame")
+        InputBg.Position = UDim2.new(0, 14, 0, 84)
+        InputBg.Size = UDim2.new(1, -28, 0, 32)
+        InputBg.BackgroundColor3 = Color3.fromRGB(22, 22, 29)
+        InputBg.BorderSizePixel = 0
+        InputBg.ZIndex = 102
+        InputBg.Parent = Card
+        local InputBgCorner = Instance.new("UICorner")
+        InputBgCorner.CornerRadius = UDim.new(0, 7)
+        InputBgCorner.Parent = InputBg
+        local InputBgStroke = Instance.new("UIStroke")
+        InputBgStroke.Color = Color3.fromRGB(44, 44, 56)
+        InputBgStroke.Thickness = 1
+        InputBgStroke.Parent = InputBg
 
-    -- Logo box
-    local LogoBox = Fr(Hdr,{
-        Size             = UDim2.new(0,40,0,40),
-        Position         = UDim2.new(0,18,0.5,-20),
-        BackgroundColor3 = C.bg2,
-        ZIndex           = 102,
-    })
-    corner(LogoBox, 6)
-    stroke(LogoBox, C.mute, 1)
+        local InputIcon = Instance.new("ImageLabel")
+        InputIcon.AnchorPoint = Vector2.new(0, 0.5)
+        InputIcon.Position = UDim2.new(0, 9, 0.5, 0)
+        InputIcon.Size = UDim2.new(0, 13, 0, 13)
+        InputIcon.BackgroundTransparency = 1
+        InputIcon.Image = "rbxassetid://6031094678"
+        InputIcon.ImageColor3 = Color3.fromRGB(75, 75, 88)
+        InputIcon.ScaleType = Enum.ScaleType.Fit
+        InputIcon.ZIndex = 103
+        InputIcon.Parent = InputBg
 
-    local rawIcon = ks.Icon or ""
-    local iconId
-    if rawIcon:match("^rbxassetid://") then
-        iconId = rawIcon
-    elseif rawIcon:match("^%d+$") and rawIcon ~= "" then
-        iconId = "rbxassetid://"..rawIcon
-    else
-        iconId = "rbxassetid://117121414363374"  -- default logo
-    end
+        local KsInput = Instance.new("TextBox")
+        KsInput.Font = Enum.Font.Gotham
+        KsInput.PlaceholderText = ks.Placeholder or "Enter Key"
+        KsInput.PlaceholderColor3 = Color3.fromRGB(65, 65, 78)
+        KsInput.Text = ks.Default or ""
+        KsInput.TextColor3 = Color3.fromRGB(210, 210, 222)
+        KsInput.TextSize = 12
+        KsInput.TextXAlignment = Enum.TextXAlignment.Left
+        KsInput.BackgroundTransparency = 1
+        KsInput.BorderSizePixel = 0
+        KsInput.ClearTextOnFocus = false
+        KsInput.Position = UDim2.new(0, 28, 0, 0)
+        KsInput.Size = UDim2.new(1, -34, 1, 0)
+        KsInput.ZIndex = 103
+        KsInput.Parent = InputBg
 
-    Img(LogoBox,{
-        AnchorPoint = Vector2.new(0.5,0.5),
-        Position    = UDim2.new(0.5,0,0.5,0),
-        Size        = UDim2.new(0,22,0,22),
-        Image       = iconId,
-        ZIndex      = 103,
-    })
-
-    -- Title
-    Txt(Hdr,{
-        Font         = Enum.Font.GothamBold,
-        Text         = ks.Title or GuiConfig.Title or "Key System",
-        TextColor3   = C.text,
-        TextSize     = mobile and 14 or 15,
-        Position     = UDim2.new(0,68,0.5,-14),
-        Size         = UDim2.new(0.55,0,0,18),
-        ZIndex       = 102,
-    })
-    Txt(Hdr,{
-        Font         = Enum.Font.Gotham,
-        Text         = "KEY AUTHENTICATION",
-        TextColor3   = C.mute2,
-        TextSize     = 10,
-        Position     = UDim2.new(0,68,0.5,4),
-        Size         = UDim2.new(0.55,0,0,14),
-        ZIndex       = 102,
-    })
-
-    -- Badge (top-right)
-    local BadgeBg = Fr(Hdr,{
-        Size             = UDim2.new(0,80,0,24),
-        Position         = UDim2.new(1,-98,0.5,-12),
-        BackgroundColor3 = C.bg2,
-        ZIndex           = 102,
-    })
-    corner(BadgeBg, 4)
-    stroke(BadgeBg, C.mute, 1)
-
-    local BadgeDot = Fr(BadgeBg,{
-        Size             = UDim2.new(0,6,0,6),
-        Position         = UDim2.new(0,9,0.5,-3),
-        BackgroundColor3 = C.red,
-        ZIndex           = 103,
-    })
-    corner(BadgeDot, 3)
-
-    local BadgeTxt = Txt(BadgeBg,{
-        Font         = Enum.Font.GothamBold,
-        Text         = "LOCKED",
-        TextColor3   = C.mute2,
-        TextSize     = 10,
-        Position     = UDim2.new(0,20,0,0),
-        Size         = UDim2.new(1,-22,1,0),
-        ZIndex       = 103,
-    })
-
-    -- badge helper
-    local function setBadge(state)
-        if state == "unlock" then
-            tw(BadgeDot,F,{BackgroundColor3=C.green})
-            BadgeTxt.Text      = "UNLOCKED"
-            tw(BadgeTxt,F,{TextColor3=C.green})
-            tw(BadgeStroke_,F,{Color=C.green})
-        elseif state == "error" then
-            tw(BadgeDot,F,{BackgroundColor3=C.red})
-            BadgeTxt.Text      = "INVALID"
-            tw(BadgeTxt,F,{TextColor3=C.red})
-        else
-            tw(BadgeDot,F,{BackgroundColor3=C.red})
-            BadgeTxt.Text      = "LOCKED"
-            tw(BadgeTxt,F,{TextColor3=C.mute2})
-        end
-    end
-    local BadgeStroke_ = stroke(BadgeBg, C.mute, 1)
-
-    -- ═══════════════════════════════════════════
-    --   BODY (y 65..)
-    -- ═══════════════════════════════════════════
-    local Y = 74    -- current y cursor
-
-    -- ── Section label helper ───────────────────
-    local function SectionLabel(text, yOff)
-        Txt(Card,{
-            Font         = Enum.Font.GothamBold,
-            Text         = text,
-            TextColor3   = C.mute,
-            TextSize     = 10,
-            Position     = UDim2.new(0,18,0,yOff),
-            Size         = UDim2.new(1,-36,0,14),
-            ZIndex       = 101,
-        })
-    end
-
-    -- ── DROPDOWN SOURCE ────────────────────────
-    SectionLabel("KEY SOURCE", Y)
-    Y = Y + 18
-
-    local selectedSrc = nil
-    local ddOpen      = false
-
-    -- Dropdown button
-    local DdBtn = Fr(Card,{
-        Size             = UDim2.new(1,-36,0,38),
-        Position         = UDim2.new(0,18,0,Y),
-        BackgroundColor3 = C.bg2,
-        ZIndex           = 102,
-    })
-    corner(DdBtn, 6)
-    local DdStroke = stroke(DdBtn, C.line, 1)
-
-    -- icon area in dd button
-    local DdIcoBox = Fr(DdBtn,{
-        Size             = UDim2.new(0,26,0,26),
-        Position         = UDim2.new(0,8,0.5,-13),
-        BackgroundColor3 = C.bg3,
-        ZIndex           = 103,
-    })
-    corner(DdIcoBox,4)
-    Img(DdIcoBox,{
-        AnchorPoint = Vector2.new(0.5,0.5),
-        Position    = UDim2.new(0.5,0,0.5,0),
-        Size        = UDim2.new(0,14,0,14),
-        Image       = "rbxassetid://6031094678",
-        ImageColor3 = C.mute2,
-        ZIndex      = 104,
-    })
-
-    local DdLabel = Txt(DdBtn,{
-        Font         = Enum.Font.Gotham,
-        Text         = "Select key source...",
-        TextColor3   = C.mute,
-        TextSize     = 12,
-        Position     = UDim2.new(0,42,0,0),
-        Size         = UDim2.new(1,-60,1,0),
-        ZIndex       = 103,
-    })
-
-    -- Arrow indicator
-    local DdArrow = Txt(DdBtn,{
-        Font              = Enum.Font.GothamBold,
-        Text              = "▾",
-        TextColor3        = C.mute,
-        TextSize          = 11,
-        TextXAlignment    = Enum.TextXAlignment.Right,
-        AnchorPoint       = Vector2.new(1,0.5),
-        Position          = UDim2.new(1,-12,0.5,0),
-        Size              = UDim2.new(0,16,0,16),
-        ZIndex            = 103,
-    })
-
-    Y = Y + 38 + 8
-
-    -- Dropdown menu (floats over card, high ZIndex)
-    local DDMenu = Fr(Card,{
-        Size             = UDim2.new(1,-36,0, #sources * 46),
-        Position         = UDim2.new(0,18,0, Y - 4),
-        BackgroundColor3 = C.bg1,
-        ZIndex           = 200,
-        Visible          = false,
-        ClipsDescendants = true,
-    })
-    corner(DDMenu, 6)
-    stroke(DDMenu, C.line, 1)
-
-    local srcIcons = {
-        "rbxassetid://6035047449",
-        "rbxassetid://6035067836",
-        "rbxassetid://6031094678",
-        "rbxassetid://6031094678",
-    }
-
-    for i, src in ipairs(sources) do
-        local ItemY = (i-1) * 46
-        local Item = Fr(DDMenu,{
-            Size             = UDim2.new(1,0,0,46),
-            Position         = UDim2.new(0,0,0,ItemY),
-            BackgroundColor3 = C.bg1,
-            ZIndex           = 201,
-        })
-        if i < #sources then
-            Fr(Item,{
-                Size             = UDim2.new(1,-24,0,1),
-                Position         = UDim2.new(0,12,1,-1),
-                BackgroundColor3 = C.line2,
-                ZIndex           = 202,
-            })
-        end
-
-        local IcoBox = Fr(Item,{
-            Size             = UDim2.new(0,26,0,26),
-            Position         = UDim2.new(0,10,0.5,-13),
-            BackgroundColor3 = C.bg3,
-            ZIndex           = 202,
-        })
-        corner(IcoBox,4)
-        Img(IcoBox,{
-            AnchorPoint = Vector2.new(0.5,0.5),
-            Position    = UDim2.new(0.5,0,0.5,0),
-            Size        = UDim2.new(0,14,0,14),
-            Image       = srcIcons[i] or srcIcons[1],
-            ImageColor3 = theme,
-            ZIndex      = 203,
-        })
-
-        Txt(Item,{
-            Font       = Enum.Font.GothamBold,
-            Text       = src.Name,
-            TextColor3 = C.textD,
-            TextSize   = 12,
-            Position   = UDim2.new(0,44,0,8),
-            Size       = UDim2.new(1,-70,0,16),
-            ZIndex     = 202,
-        })
-        Txt(Item,{
-            Font       = Enum.Font.Gotham,
-            Text       = src.Url ~= "" and src.Url:sub(1,30).."..." or "No bypass required",
-            TextColor3 = C.mute,
-            TextSize   = 10,
-            Position   = UDim2.new(0,44,0,24),
-            Size       = UDim2.new(1,-70,0,14),
-            ZIndex     = 202,
-        })
-
-        -- Checkbox
-        local Chk = Fr(Item,{
-            Size             = UDim2.new(0,16,0,16),
-            AnchorPoint      = Vector2.new(1,0.5),
-            Position         = UDim2.new(1,-12,0.5,0),
-            BackgroundColor3 = C.bg3,
-            ZIndex           = 202,
-        })
-        corner(Chk,3)
-        stroke(Chk, C.mute, 1)
-
-        -- hover
-        Item.MouseEnter:Connect(function()
-            tw(Item,F,{BackgroundColor3=C.bg3})
+        KsInput.Focused:Connect(function()
+            TweenService:Create(InputBgStroke, TweenInfo.new(0.18), {
+                Color = GuiConfig.Color, Transparency = 0.45
+            }):Play()
         end)
-        Item.MouseLeave:Connect(function()
-            tw(Item,F,{BackgroundColor3=C.bg1})
+        KsInput.FocusLost:Connect(function()
+            TweenService:Create(InputBgStroke, TweenInfo.new(0.18), {
+                Color = Color3.fromRGB(44, 44, 56), Transparency = 0
+            }):Play()
         end)
 
-        -- Click item button (invisible overlay)
-        local ItemBtn = Instance.new("TextButton",Item)
-        ItemBtn.Size                   = UDim2.fromScale(1,1)
-        ItemBtn.BackgroundTransparency = 1
-        ItemBtn.Text                   = ""
-        ItemBtn.ZIndex                 = 203
-        ItemBtn.BorderSizePixel        = 0
+        local BDivider = Instance.new("Frame")
+        BDivider.Size = UDim2.new(1, 0, 0, 1)
+        BDivider.Position = UDim2.new(0, 0, 0, 128)
+        BDivider.BackgroundColor3 = Color3.fromRGB(34, 34, 44)
+        BDivider.BorderSizePixel = 0
+        BDivider.ZIndex = 102
+        BDivider.Parent = Card
 
-        ItemBtn.MouseButton1Click:Connect(function()
-            selectedSrc = src
-            DdLabel.Text      = src.Name
-            tw(DdLabel,F,{TextColor3=C.textD})
-            -- close
-            ddOpen = false
-            tw(DDMenu,F,{Size=UDim2.new(1,-36,0,0)})
-            task.delay(0.15,function() DDMenu.Visible=false end)
-            tw(DdArrow,F,{Rotation=0})
-        end)
-    end
+        local BtnRow = Instance.new("Frame")
+        BtnRow.BackgroundTransparency = 1
+        BtnRow.BorderSizePixel = 0
+        BtnRow.Position = UDim2.new(0, 14, 0, 136)
+        BtnRow.Size = UDim2.new(1, -28, 0, 30)
+        BtnRow.ZIndex = 102
+        BtnRow.Parent = Card
 
-    -- DD toggle button
-    local DdBtnOverlay = Instance.new("TextButton",Card)
-    DdBtnOverlay.Size                   = UDim2.new(1,-36,0,38)
-    DdBtnOverlay.Position               = UDim2.new(0,18,0,Y-38-8)
-    DdBtnOverlay.BackgroundTransparency = 1
-    DdBtnOverlay.Text                   = ""
-    DdBtnOverlay.ZIndex                 = 203
-    DdBtnOverlay.BorderSizePixel        = 0
+        local BtnList = Instance.new("UIListLayout")
+        BtnList.FillDirection = Enum.FillDirection.Horizontal
+        BtnList.HorizontalAlignment = Enum.HorizontalAlignment.Right
+        BtnList.VerticalAlignment = Enum.VerticalAlignment.Center
+        BtnList.Padding = UDim.new(0, 6)
+        BtnList.SortOrder = Enum.SortOrder.LayoutOrder
+        BtnList.Parent = BtnRow
 
-    DdBtnOverlay.MouseEnter:Connect(function()
-        tw(DdStroke,F,{Color=C.mute2})
-    end)
-    DdBtnOverlay.MouseLeave:Connect(function()
-        if not ddOpen then tw(DdStroke,F,{Color=C.line}) end
-    end)
-    DdBtnOverlay.MouseButton1Click:Connect(function()
-        ddOpen = not ddOpen
-        if ddOpen then
-            DDMenu.Visible = true
-            DDMenu.Size    = UDim2.new(1,-36,0,0)
-            tw(DDMenu,TweenInfo.new(0.18,Enum.EasingStyle.Quad),{
-                Size = UDim2.new(1,-36,0,#sources*46)
-            })
-            tw(DdArrow,F,{Rotation=180})
-            tw(DdStroke,F,{Color=theme})
-        else
-            tw(DDMenu,F,{Size=UDim2.new(1,-36,0,0)})
-            task.delay(0.15,function() DDMenu.Visible=false end)
-            tw(DdArrow,F,{Rotation=0})
-            tw(DdStroke,F,{Color=C.line})
-        end
-    end)
-
-    -- ── GET KEY button ─────────────────────────
-    local GetBtn = Instance.new("TextButton",Card)
-    GetBtn.Size             = UDim2.new(1,-36,0,36)
-    GetBtn.Position         = UDim2.new(0,18,0,Y)
-    GetBtn.BackgroundColor3 = C.bg2
-    GetBtn.BorderSizePixel  = 0
-    GetBtn.Text             = ""
-    GetBtn.ZIndex           = 102
-    corner(GetBtn,6)
-    stroke(GetBtn, C.mute, 1)
-
-    local GetBtnList = Instance.new("UIListLayout",GetBtn)
-    GetBtnList.FillDirection      = Enum.FillDirection.Horizontal
-    GetBtnList.HorizontalAlignment= Enum.HorizontalAlignment.Center
-    GetBtnList.VerticalAlignment  = Enum.VerticalAlignment.Center
-    GetBtnList.Padding            = UDim.new(0,7)
-
-    Img(GetBtn,{
-        Size        = UDim2.new(0,13,0,13),
-        Image       = "rbxassetid://6035067836",
-        ImageColor3 = theme,
-        ZIndex      = 103,
-        LayoutOrder = 0,
-    })
-    Txt(GetBtn,{
-        Font         = Enum.Font.GothamBold,
-        Text         = "Get key from source  ↗",
-        TextColor3   = theme,
-        TextSize     = 12,
-        Size         = UDim2.new(0,170,1,0),
-        TextXAlignment = Enum.TextXAlignment.Left,
-        ZIndex       = 103,
-        LayoutOrder  = 1,
-    })
-
-    GetBtn.MouseEnter:Connect(function()
-        tw(GetBtn,F,{BackgroundColor3=C.bg3})
-    end)
-    GetBtn.MouseLeave:Connect(function()
-        tw(GetBtn,F,{BackgroundColor3=C.bg2})
-    end)
-
-    Y = Y + 36 + 14
-
-    -- Divider
-    Div(Card, Y)
-    Y = Y + 12
-
-    -- ── Section: Enter Key ─────────────────────
-    SectionLabel("ENTER KEY", Y)
-    Y = Y + 18
-
-    -- Input container
-    local InpBg = Fr(Card,{
-        Size             = UDim2.new(1,-36,0,40),
-        Position         = UDim2.new(0,18,0,Y),
-        BackgroundColor3 = Color3.fromRGB(8,8,22),
-        ZIndex           = 101,
-    })
-    corner(InpBg,6)
-    local InpStroke = stroke(InpBg, C.line, 1)
-
-    -- Lock icon (shrinks when input has value)
-    local LockIco = Img(InpBg,{
-        AnchorPoint = Vector2.new(0,0.5),
-        Position    = UDim2.new(0,11,0.5,0),
-        Size        = UDim2.new(0,15,0,15),
-        Image       = "rbxassetid://6031094678",
-        ImageColor3 = C.mute,
-        ZIndex      = 102,
-    })
-
-    local KsInput = Instance.new("TextBox",InpBg)
-    KsInput.Font              = Enum.Font.Code
-    KsInput.PlaceholderText   = ks.Placeholder or "Enter your key..."
-    KsInput.PlaceholderColor3 = C.mute
-    KsInput.Text              = ks.Default or ""
-    KsInput.TextColor3        = C.text
-    KsInput.TextSize          = 13
-    KsInput.TextXAlignment    = Enum.TextXAlignment.Left
-    KsInput.BackgroundTransparency = 1
-    KsInput.BorderSizePixel   = 0
-    KsInput.ClearTextOnFocus  = false
-    KsInput.ZIndex            = 102
-    -- mulai dengan padding kiri normal
-    KsInput.Position = UDim2.new(0,32,0,0)
-    KsInput.Size     = UDim2.new(1,-42,1,0)
-
-    -- Enter hint label
-    local HintTxt = Txt(InpBg,{
-        Font           = Enum.Font.Gotham,
-        Text           = "enter ↵",
-        TextColor3     = C.mute,
-        TextSize       = 10,
-        TextXAlignment = Enum.TextXAlignment.Right,
-        AnchorPoint    = Vector2.new(1,0.5),
-        Position       = UDim2.new(1,-9,0.5,0),
-        Size           = UDim2.new(0,50,0,14),
-        ZIndex         = 102,
-    })
-
-    -- Responsive icon: shrink & warna saat ada isi
-    local function updateIcon()
-        local hasVal = KsInput.Text ~= ""
-        if hasVal then
-            tw(LockIco,F,{
-                Size        = UDim2.new(0,12,0,12),
-                Position    = UDim2.new(0,12,0.5,0),
-                ImageColor3 = theme,
-            })
-            tw(HintTxt,F,{TextColor3=C.mute2})
-        else
-            tw(LockIco,F,{
-                Size        = UDim2.new(0,15,0,15),
-                Position    = UDim2.new(0,11,0.5,0),
-                ImageColor3 = C.mute,
-            })
-            tw(HintTxt,F,{TextColor3=C.mute})
-        end
-    end
-
-    KsInput.Focused:Connect(function()
-        tw(InpStroke,F,{Color=theme, Transparency=0.25})
-        tw(InpBg,F,{BackgroundColor3=Color3.fromRGB(10,9,26)})
-        tw(LockIco,F,{ImageColor3=theme})
-    end)
-    KsInput.FocusLost:Connect(function()
-        tw(InpStroke,F,{Color=C.line, Transparency=0})
-        tw(InpBg,F,{BackgroundColor3=Color3.fromRGB(8,8,22)})
-        updateIcon()
-    end)
-
-    -- update icon on every char change
-    KsInput:GetPropertyChangedSignal("Text"):Connect(updateIcon)
-
-    Y = Y + 40 + 10
-
-    -- ═══════════════════════════════════════════
-    --   NOTIFIKASI INLINE
-    -- ═══════════════════════════════════════════
-    local NotifBg = Fr(Card,{
-        Size             = UDim2.new(1,-36,0,0),
-        Position         = UDim2.new(0,18,0,Y),
-        BackgroundColor3 = C.redBg,
-        ZIndex           = 102,
-        ClipsDescendants = true,
-    })
-    corner(NotifBg,5)
-    local NotifStroke_ = stroke(NotifBg, C.red, 1)
-    NotifStroke_.Transparency = 1
-
-    local NotifDot = Fr(NotifBg,{
-        Size             = UDim2.new(0,6,0,6),
-        Position         = UDim2.new(0,10,0.5,-3),
-        BackgroundColor3 = C.red,
-        ZIndex           = 103,
-    })
-    corner(NotifDot,3)
-
-    local NotifTxt = Txt(NotifBg,{
-        Font         = Enum.Font.GothamBold,
-        Text         = "",
-        TextColor3   = C.red,
-        TextSize     = 12,
-        Position     = UDim2.new(0,24,0,0),
-        Size         = UDim2.new(1,-32,1,0),
-        ZIndex       = 103,
-    })
-
-    local notifTimer = nil
-    local function showNotif(ntype, msg)
-        if notifTimer then task.cancel(notifTimer) end
-
-        local bgCol, dotCol, txtCol, strCol
-        if ntype == "success" then
-            bgCol=C.grnBg; dotCol=C.green; txtCol=C.green; strCol=C.green
-        elseif ntype == "warn" then
-            bgCol=C.ambBg; dotCol=C.amber; txtCol=C.amber; strCol=C.amber
-        else
-            bgCol=C.redBg; dotCol=C.red; txtCol=C.red; strCol=C.red
+        local function ShakeCard()
+            local origPos = Card.Position
+            local offsets = {7, -7, 5, -5, 3, -3, 0}
+            for _, ox in ipairs(offsets) do
+                Card.Position = UDim2.new(
+                    origPos.X.Scale, origPos.X.Offset + ox,
+                    origPos.Y.Scale, origPos.Y.Offset
+                )
+                task.wait(0.04)
+            end
+            Card.Position = origPos
         end
 
-        NotifBg.BackgroundColor3 = bgCol
-        NotifDot.BackgroundColor3 = dotCol
-        NotifTxt.TextColor3 = txtCol
-        NotifTxt.Text = msg
-        tw(NotifStroke_,F,{Color=strCol, Transparency=0})
-        tw(NotifBg,TweenInfo.new(0.2,Enum.EasingStyle.Back,Enum.EasingDirection.Out),{
-            Size = UDim2.new(1,-36,0,32)
-        })
-
-        notifTimer = task.delay(3.5, function()
-            tw(NotifBg,M,{Size=UDim2.new(1,-36,0,0)})
-            tw(NotifStroke_,M,{Transparency=1})
-        end)
-    end
-
-    Y = Y + 10   -- space for notif (dynamic)
-
-    -- ── Button row ─────────────────────────────
-    local BtnY = CH - 62
-    Div(Card, BtnY - 8)
-
-    local BtnRow = Fr(Card,{
-        Size             = UDim2.new(1,-36,0,40),
-        Position         = UDim2.new(0,18,0,BtnY),
-        BackgroundTransparency = 1,
-        ZIndex           = 101,
-    })
-    local BtnLL = Instance.new("UIListLayout",BtnRow)
-    BtnLL.FillDirection       = Enum.FillDirection.Horizontal
-    BtnLL.HorizontalAlignment = Enum.HorizontalAlignment.Right
-    BtnLL.VerticalAlignment   = Enum.VerticalAlignment.Center
-    BtnLL.Padding             = UDim.new(0,7)
-
-    -- ── Footer dots ────────────────────────────
-    local FtrY = CH - 30
-    Div(Card, FtrY - 1)
-    local Ftr = Fr(Card,{
-        Size             = UDim2.new(1,0,0,30),
-        Position         = UDim2.new(0,0,0,FtrY),
-        BackgroundColor3 = Color3.fromRGB(10,9,18),
-        ZIndex           = 101,
-    })
-    for i=1,3 do
-        local dot = Fr(Ftr,{
-            Size             = UDim2.new(0, i==1 and 14 or 5, 0, 5),
-            Position         = UDim2.new(0, 16+(i-1)*11, 0.5,-2),
-            BackgroundColor3 = i==1 and theme or C.mute,
-            ZIndex           = 102,
-        })
-        corner(dot,2)
-    end
-    Txt(Ftr,{
-        Font           = Enum.Font.Gotham,
-        Text           = string.lower(GuiConfig.Title or "nemesis").." v"..(GuiConfig.Version or "1.0"),
-        TextColor3     = C.mute,
-        TextSize       = 10,
-        TextXAlignment = Enum.TextXAlignment.Right,
-        AnchorPoint    = Vector2.new(1,0.5),
-        Position       = UDim2.new(1,-16,0.5,0),
-        Size           = UDim2.new(0.5,0,1,0),
-        ZIndex         = 102,
-    })
-
-    -- ═══════════════════════════════════════════
-    --   BUILD BUTTONS
-    -- ═══════════════════════════════════════════
-    local buttons = ks.Buttons or {}
-    if #buttons == 0 then
-        buttons = {
-            {Name="Exit",   Style="secondary"},
-            {Name="Submit", Style="primary",
-             Callback=function(k) return k~="" end},
-        }
-    end
-
-    local submitCb   = nil
-    local ksClosing  = false
-    local keyResolved= false
-
-    local function CloseKS()
-        if ksClosing then return end
-        ksClosing = true
-        tw(Bg, M, {BackgroundTransparency=1})
-        tw(Card, TweenInfo.new(0.24,Enum.EasingStyle.Quad,Enum.EasingDirection.In),{
-            Position = UDim2.new(0.5,0,0.64,0),
-            BackgroundTransparency = 1,
-        })
-        task.delay(0.28, function() pcall(function() KsGui:Destroy() end) end)
-    end
-
-    local shaking = false
-    local function Shake()
-        if shaking then return end
-        shaking = true
-        local base = Card.Position
-        for _, ox in ipairs({9,-9,7,-7,5,-5,3,-3,0}) do
-            Card.Position = UDim2.new(base.X.Scale, base.X.Offset+ox,
-                                      base.Y.Scale, base.Y.Offset)
-            task.wait(0.033)
-        end
-        Card.Position = base
-        shaking = false
-    end
-
-    for i, btnCfg in ipairs(buttons) do
-        local lName = (btnCfg.Name or ""):lower()
-        local isPri = (btnCfg.Style=="primary") or lName=="submit"
-            or (i==#buttons and lName~="exit" and lName~="close"
-                and lName~="cancel" and lName~="get key")
-
-        if isPri and btnCfg.Callback then
-            submitCb = btnCfg.Callback
+        local ksClosing = false
+        local function CloseKeySystem()
+            if ksClosing then return end
+            ksClosing = true
+            TweenService:Create(Card, TweenInfo.new(0.22, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+                Position = UDim2.new(0.5, 0, 0.56, 0),
+                BackgroundTransparency = 1,
+            }):Play()
+            task.delay(0.25, function()
+                pcall(function() KsGui:Destroy() end)
+            end)
         end
 
-        local Btn = Instance.new("TextButton",BtnRow)
-        Btn.Font             = Enum.Font.GothamBold
-        Btn.Text             = btnCfg.Name or "Button"
-        Btn.TextSize         = 12
-        Btn.BorderSizePixel  = 0
-        Btn.LayoutOrder      = i
-        Btn.ZIndex           = 102
-        Btn.Size             = isPri and UDim2.new(0,120,1,0) or UDim2.new(0,72,1,0)
-        Btn.TextColor3       = isPri and C.white or C.mute2
-        Btn.BackgroundColor3 = isPri and theme or C.bg2
-        corner(Btn,6)
-        if not isPri then stroke(Btn, C.line, 1) end
+        local buttons = ks.Buttons or {}
+        if #buttons == 0 then
+            buttons = {
+                { Name = "Exit" },
+                { Name = "Submit" },
+            }
+        end
 
-        local nb = isPri and theme or C.bg2
-        local hb = isPri and Color3.fromRGB(165,152,255) or C.bg3
-        Btn.MouseEnter:Connect(function() tw(Btn,F,{BackgroundColor3=hb}) end)
-        Btn.MouseLeave:Connect(function() tw(Btn,F,{BackgroundColor3=nb}) end)
-        Btn.MouseButton1Down:Connect(function()
-            tw(Btn,TweenInfo.new(0.07),{BackgroundColor3=isPri and Color3.fromRGB(110,100,210) or C.bg0})
-        end)
-        Btn.MouseButton1Up:Connect(function() tw(Btn,F,{BackgroundColor3=hb}) end)
+        for i, btnCfg in ipairs(buttons) do
+            local isPrimary = (btnCfg.Style == "primary")
+                or (btnCfg.Name == "Submit")
+                or (i == #buttons)
 
-        Btn.MouseButton1Click:Connect(function()
-            local key = KsInput.Text
-            if btnCfg.Callback then
-                local ok, res = pcall(btnCfg.Callback, key)
-                if ok then
-                    if res == true then
-                        showNotif("success","Key verified — access granted!")
-                        setBadge("unlock")
-                        task.wait(0.5)
-                        keyResolved = true
-                        CloseKS()
-                    elseif res == false then
-                        if key == "" then
-                            showNotif("warn","Key cannot be empty")
-                        else
-                            showNotif("error","Invalid key — please try again")
-                            setBadge("error")
-                            task.delay(2, function() setBadge("locked") end)
-                        end
-                        task.spawn(Shake)
-                    else
-                        local isClose = btnCfg.Close==true
-                            or lName=="exit" or lName=="close" or lName=="cancel"
-                        if isClose then CloseKS() end
-                    end
-                end
+            local Btn = Instance.new("TextButton")
+            Btn.Font = Enum.Font.GothamBold
+            Btn.Text = ""
+            Btn.AutomaticSize = Enum.AutomaticSize.X
+            Btn.Size = UDim2.new(0, 0, 1, 0)
+            Btn.BorderSizePixel = 0
+            Btn.LayoutOrder = i
+            Btn.ZIndex = 103
+            Btn.Parent = BtnRow
+
+            if isPrimary then
+                Btn.BackgroundColor3 = Color3.fromRGB(50, 50, 62)
+                Btn.BackgroundTransparency = 0
             else
-                CloseKS()
+                Btn.BackgroundColor3 = Color3.fromRGB(26, 26, 34)
+                Btn.BackgroundTransparency = 0
             end
-        end)
-    end
 
-    -- Get key button callback
-    GetBtn.MouseButton1Click:Connect(function()
-        if not selectedSrc then
-            showNotif("warn","Please select a key source first")
-            task.spawn(Shake)
-            return
-        end
-        if selectedSrc.Url ~= "" then
-            -- setclipboard(selectedSrc.Url)  -- uncomment jika pakai clipboard
-            showNotif("success","Opening "..selectedSrc.Name.."...")
-        else
-            showNotif("warn",selectedSrc.Name.." — no URL configured")
-        end
-    end)
+            local BtnCorner = Instance.new("UICorner")
+            BtnCorner.CornerRadius = UDim.new(0, 7)
+            BtnCorner.Parent = Btn
 
-    -- Enter key shortcut
-    KsInput.FocusLost:Connect(function(enter)
-        if not enter or not submitCb then return end
-        local key = KsInput.Text
-        local ok, res = pcall(submitCb, key)
-        if ok then
-            if res == true then
-                showNotif("success","Key verified — access granted!")
-                setBadge("unlock")
-                task.wait(0.5)
-                keyResolved = true
-                CloseKS()
-            elseif res == false then
-                if key == "" then
-                    showNotif("warn","Key cannot be empty")
+            local BtnStroke = Instance.new("UIStroke")
+            BtnStroke.Color = isPrimary and Color3.fromRGB(65, 65, 80) or Color3.fromRGB(44, 44, 56)
+            BtnStroke.Thickness = 1
+            BtnStroke.Parent = Btn
+
+            local BtnPadding = Instance.new("UIPadding")
+            BtnPadding.PaddingLeft  = UDim.new(0, 10)
+            BtnPadding.PaddingRight = UDim.new(0, 10)
+            BtnPadding.Parent = Btn
+
+            local BtnInner = Instance.new("Frame")
+            BtnInner.BackgroundTransparency = 1
+            BtnInner.BorderSizePixel = 0
+            BtnInner.AutomaticSize = Enum.AutomaticSize.X
+            BtnInner.Size = UDim2.new(0, 0, 1, 0)
+            BtnInner.ZIndex = 103
+            BtnInner.Parent = Btn
+
+            local BtnInnerList = Instance.new("UIListLayout")
+            BtnInnerList.FillDirection = Enum.FillDirection.Horizontal
+            BtnInnerList.VerticalAlignment = Enum.VerticalAlignment.Center
+            BtnInnerList.Padding = UDim.new(0, 5)
+            BtnInnerList.Parent = BtnInner
+
+            local iconId = getIconId(btnCfg.Icon or "")
+            if iconId and iconId ~= "" then
+                local BtnIcon = Instance.new("ImageLabel")
+                BtnIcon.BackgroundTransparency = 1
+                BtnIcon.BorderSizePixel = 0
+                BtnIcon.Size = UDim2.new(0, 12, 0, 12)
+                BtnIcon.Image = iconId
+                BtnIcon.ImageColor3 = Color3.fromRGB(180, 180, 195)
+                BtnIcon.ScaleType = Enum.ScaleType.Fit
+                BtnIcon.LayoutOrder = 0
+                BtnIcon.ZIndex = 104
+                BtnIcon.Parent = BtnInner
+            end
+
+            local BtnLabel = Instance.new("TextLabel")
+            BtnLabel.Font = Enum.Font.GothamBold
+            BtnLabel.Text = btnCfg.Name or "Button"
+            BtnLabel.TextColor3 = Color3.fromRGB(195, 195, 208)
+            BtnLabel.TextSize = 12
+            BtnLabel.BackgroundTransparency = 1
+            BtnLabel.BorderSizePixel = 0
+            BtnLabel.AutomaticSize = Enum.AutomaticSize.X
+            BtnLabel.Size = UDim2.new(0, 0, 1, 0)
+            BtnLabel.LayoutOrder = 1
+            BtnLabel.ZIndex = 104
+            BtnLabel.Parent = BtnInner
+
+            local normBg = isPrimary and Color3.fromRGB(50,50,62) or Color3.fromRGB(26,26,34)
+            local hovBg  = isPrimary and Color3.fromRGB(62,62,78) or Color3.fromRGB(34,34,44)
+            Btn.MouseEnter:Connect(function()
+                TweenService:Create(Btn, TweenInfo.new(0.12), { BackgroundColor3 = hovBg }):Play()
+            end)
+            Btn.MouseLeave:Connect(function()
+                TweenService:Create(Btn, TweenInfo.new(0.12), { BackgroundColor3 = normBg }):Play()
+            end)
+
+            Btn.MouseButton1Click:Connect(function()
+                local currentKey = KsInput.Text
+                if btnCfg.Callback then
+                    pcall(function()
+                        local result = btnCfg.Callback(currentKey)
+                        if result == true then
+                            keyResolved = true
+                            CloseKeySystem()
+                        elseif result == false then
+                            TweenService:Create(InputBgStroke, TweenInfo.new(0.1), {
+                                Color = Color3.fromRGB(220, 55, 55), Transparency = 0
+                            }):Play()
+                            task.delay(0.7, function()
+                                TweenService:Create(InputBgStroke, TweenInfo.new(0.3), {
+                                    Color = Color3.fromRGB(44,44,56), Transparency = 0
+                                }):Play()
+                            end)
+                            task.spawn(ShakeCard)
+                        else
+                            local isCloseBtn = btnCfg.Close == true
+                                or btnCfg.Name == "Exit"
+                                or btnCfg.Name == "Close"
+                                or btnCfg.Name == "Cancel"
+                            if isCloseBtn then
+                                CloseKeySystem()
+                            end
+                        end
+                    end)
                 else
-                    showNotif("error","Invalid key — please try again")
-                    setBadge("error")
-                    task.delay(2, function() setBadge("locked") end)
+                    CloseKeySystem()
                 end
-                task.spawn(Shake)
-            end
+            end)
         end
-    end)
 
-    -- ── Entrance animation ─────────────────────
-    tw(Bg,  M, {BackgroundTransparency=0.68})
-    tw(Card, B, {
-        Position = UDim2.new(0.5,0,0.5,0),
-        BackgroundTransparency = 0,
-    })
+        TweenService:Create(Card, TweenInfo.new(0.32, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+            Position = UDim2.new(0.5, 0, 0.5, 0),
+            BackgroundTransparency = 0,
+        }):Play()
 
-    -- Subtle card stroke pulse
-    task.spawn(function()
-        while KsGui and KsGui.Parent do
-            tw(CardStroke,TweenInfo.new(3.5,Enum.EasingStyle.Sine),{Color=theme,Transparency=0.72})
-            task.wait(3.5)
-            tw(CardStroke,TweenInfo.new(3.5,Enum.EasingStyle.Sine),{Color=C.line,Transparency=0})
-            task.wait(3.5)
+        repeat task.wait(0.1) until keyResolved or not KsGui.Parent
+
+        if not keyResolved then
+            pcall(function() KsGui:Destroy() end)
+            return nil
         end
-    end)
-
-    -- ── Wait ───────────────────────────────────
-    repeat task.wait(0.08) until keyResolved or not KsGui.Parent
-    if not keyResolved then
-        pcall(function() KsGui:Destroy() end)
-        return false
     end
-    return true
+    -- ==================== END KEY SYSTEM ====================
 
-end -- ← END resolveKeySystem
-
-return resolveKeySystem
--- =============================================
---   END KEY SYSTEM V3
--- =============================================
     local GuiFunc = {}
 
     local Chloeex           = Instance.new("ScreenGui")
@@ -3087,6 +2521,3 @@ end
 
 VelarisUI = Chloex
 return Chloex
-
-
-
