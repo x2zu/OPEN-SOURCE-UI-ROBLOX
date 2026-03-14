@@ -4,9 +4,7 @@ local Players     = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
 local BASE = "https://raw.githubusercontent.com/x2zu/OPEN-SOURCE-UI-ROBLOX/main/ui-main/ui-main/"
-local function load(path) 
-    return loadstring(game:HttpGet(BASE .. path))()
-end
+local function load(path) return loadstring(game:HttpGet(BASE .. path))() end
 
 -- Modules
 local ColorModule    = load("Elements/color.lua")
@@ -17,6 +15,7 @@ local KeybindModule  = load("Elements/keybind.lua")
 local defaultIcons = load("Icon/defaulticons.lua")
 local lucideIcons  = load("Icon/lucideIcons.lua")
 local solarIcons   = load("Icon/solarIcons.lua")
+
 -- Merge all icons
 local Icons = {}
 for name, id in pairs(defaultIcons) do
@@ -283,7 +282,7 @@ function Chloex:MakeNotify(NotifyConfig)
     NotifyConfig.Title = NotifyConfig.Title or "Chloe X"
     NotifyConfig.Description = NotifyConfig.Description or "Notification"
     NotifyConfig.Content = NotifyConfig.Content or "Content"
-    NotifyConfig.Color = getColor(NotifyConfig.Color or "Default")
+    NotifyConfig.Color = getColor(NotifyConfig.Color or "Periwinkle Purple")
     NotifyConfig.Time = NotifyConfig.Time or 0.5
     NotifyConfig.Delay = NotifyConfig.Delay or 5
     NotifyConfig.Icon = NotifyConfig.Icon or ""
@@ -2181,5 +2180,7 @@ function Chloex:Window(GuiConfig)
 end
 
 VelarisUI = Chloex
-
 return Chloex
+
+
+
