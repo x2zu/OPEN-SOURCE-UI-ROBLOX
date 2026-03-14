@@ -706,6 +706,24 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         White        = Color3.fromRGB(255, 255, 255),
     }
 
+    -- Lucide icon IDs yang relevan
+    local LI = {
+        lock      = "rbxassetid://134724289526879",
+        key       = "rbxassetid://96510194465420",
+        link      = "rbxassetid://131607023382430",
+        externalLink = "rbxassetid://129331830773832",
+        logOut    = "rbxassetid://84895399304975",
+        x         = "rbxassetid://110786993356448",
+        send      = "rbxassetid://127751956873796",
+        chevronDown = "rbxassetid://134243273101015",
+        chevronUp = "rbxassetid://122444883127455",
+        messageCircle = "rbxassetid://127255077587058",
+        circleCheck = "rbxassetid://85262178816537",
+        clock     = "rbxassetid://121808839832144",
+        info      = "rbxassetid://124560466474914",
+        keyRound  = "rbxassetid://83619031955390",
+    }
+
     local keyResolved = false
     local Lighting = game:GetService("Lighting")
 
@@ -740,16 +758,15 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         t.Parent = parent
         return t
     end
-    local function mkImg(parent, id, size, color, zindex, layout)
+    local function mkImage(parent, id, size, zindex)
         local img = Instance.new("ImageLabel")
         img.BackgroundTransparency = 1
         img.BorderSizePixel = 0
-        img.Size = UDim2.new(0, size or 14, 0, size or 14)
-        img.Image = id or ""
-        img.ImageColor3 = color or C.White
+        img.Size = UDim2.new(0, size, 0, size)
+        img.Image = id
+        img.ImageColor3 = C.White
         img.ScaleType = Enum.ScaleType.Fit
         img.ZIndex = zindex or 105
-        if layout then img.LayoutOrder = layout end
         img.Parent = parent
         return img
     end
@@ -760,7 +777,7 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     BlurEffect.Parent = Lighting
     TweenService:Create(BlurEffect, TweenInfo.new(0.4), { Size = 24 }):Play()
 
-    -- ── ScreenGui full screen ─────────────────────────────────────────────────
+    -- ── ScreenGui ─────────────────────────────────────────────────────────────
     local KsGui = Instance.new("ScreenGui")
     KsGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     KsGui.Name = "KeySystemGui"
@@ -768,7 +785,7 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     KsGui.IgnoreGuiInset = true
     KsGui.Parent = CoreGui
 
-    -- ── Full overlay ──────────────────────────────────────────────────────────
+    -- ── Overlay ───────────────────────────────────────────────────────────────
     local Overlay = mkFrame(KsGui, {
         Size = UDim2.new(1, 0, 1, 0),
         Position = UDim2.new(0, 0, 0, 0),
@@ -812,23 +829,23 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         ZIndex = 102,
     })
 
-    -- Logo: ImageLabel penuh tanpa frame/border, tampil logo langsung
+    -- Logo: tampil penuh tanpa frame
     local LogoImg = Instance.new("ImageLabel")
     LogoImg.AnchorPoint = Vector2.new(0, 0.5)
     LogoImg.Position = UDim2.new(0, 14, 0.5, 0)
-    LogoImg.Size = UDim2.new(0, 32, 0, 32)
+    LogoImg.Size = UDim2.new(0, 30, 0, 30)
     LogoImg.BackgroundTransparency = 1
     LogoImg.BorderSizePixel = 0
     local _iconId = (getIconId and getIconId(ks.Icon or "")) or ""
     LogoImg.Image = (_iconId ~= "") and _iconId or "rbxassetid://6031094678"
-    LogoImg.ImageColor3 = C.White  -- putih
+    LogoImg.ImageColor3 = C.White
     LogoImg.ScaleType = Enum.ScaleType.Fit
     LogoImg.ZIndex = 103
     LogoImg.Parent = Header
 
     mkLabel(Header, {
-        Position = UDim2.new(0, 54, 0, 12),
-        Size = UDim2.new(1, -70, 0, 17),
+        Position = UDim2.new(0, 52, 0, 12),
+        Size = UDim2.new(1, -68, 0, 17),
         Text = ks.Title or GuiConfig.Title or "Key System",
         TextColor3 = C.TextPrimary,
         TextSize = 14,
@@ -836,8 +853,8 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         ZIndex = 102,
     })
     mkLabel(Header, {
-        Position = UDim2.new(0, 54, 0, 31),
-        Size = UDim2.new(1, -70, 0, 13),
+        Position = UDim2.new(0, 52, 0, 31),
+        Size = UDim2.new(1, -68, 0, 13),
         Text = "Key verification required",
         TextColor3 = C.TextDim,
         TextSize = 11,
@@ -865,31 +882,8 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     BodyList.Padding = UDim.new(0, 14)
     BodyList.Parent = Body
 
-    -- ── HOW TO SECTION ────────────────────────────────────────────────────────
-    local HowToWrap = mkFrame(Body, {
-        Size = UDim2.new(1, 0, 0, 10),
-        AutomaticSize = Enum.AutomaticSize.Y,
-        BackgroundTransparency = 1,
-        LayoutOrder = 1,
-        ZIndex = 102,
-    })
-    local HWL = Instance.new("UIListLayout")
-    HWL.FillDirection = Enum.FillDirection.Vertical
-    HWL.Padding = UDim.new(0, 6)
-    HWL.Parent = HowToWrap
-
-    -- label "HOW TO GET YOUR KEY" di atas paragraph
-    mkLabel(HowToWrap, {
-        Size = UDim2.new(1, 0, 0, 12),
-        Text = "HOW TO GET YOUR KEY",
-        TextColor3 = C.TextDim,
-        TextSize = 10,
-        Font = Enum.Font.GothamBold,
-        LayoutOrder = 0,
-        ZIndex = 102,
-    })
-
-    local HowToBox = mkFrame(HowToWrap, {
+    -- ── HOW TO (tanpa label judul di atas, langsung box) ──────────────────────
+    local HowToBox = mkFrame(Body, {
         Size = UDim2.new(1, 0, 0, 10),
         AutomaticSize = Enum.AutomaticSize.Y,
         BackgroundColor3 = C.Surface,
@@ -904,7 +898,7 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     HBL.Padding = UDim.new(0, 0)
     HBL.Parent = HowToBox
 
-    -- title row
+    -- title row dengan aksen kiri
     local HowToTitleRow = mkFrame(HowToBox, {
         Size = UDim2.new(1, 0, 0, 36),
         BackgroundTransparency = 1,
@@ -934,7 +928,7 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     })
 
     local stepsData = {
-        "Choose your preferred source from the [dropdown] on the left.",
+        "Choose your preferred source from the [dropdown] on the right.",
         "Click [Get Key] — you'll be redirected to the key website to receive your key.",
         "Paste your key into the field below, then hit [Submit] to unlock access.",
     }
@@ -1016,9 +1010,9 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         SL.Parent = StepRow
     end
 
-    -- ── REDEEM KEY SECTION ────────────────────────────────────────────────────
-    -- Layout: baris atas = label kiri "REDEEM KEY" + label kanan "SELECT GET KEY"
-    --         baris bawah = dropdown + input
+    -- ── REDEEM + DROPDOWN SECTION ─────────────────────────────────────────────
+    -- Layout: label "REDEEM KEY" kiri + label "SELECT SOURCE" tepat di atas dropdown kanan
+    -- Caranya: bungkus semuanya dalam satu wrap, baris atas = dua label, baris bawah = input + dropdown
 
     local RedeemWrap = mkFrame(Body, {
         Size = UDim2.new(1, 0, 0, 10),
@@ -1029,29 +1023,36 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     })
     local RWL = Instance.new("UIListLayout")
     RWL.FillDirection = Enum.FillDirection.Vertical
-    RWL.Padding = UDim.new(0, 6)
+    RWL.Padding = UDim.new(0, 5)
     RWL.Parent = RedeemWrap
 
-    -- baris label: "REDEEM KEY" kiri + "SELECT GET KEY SOURCE" kanan
+    -- baris label atas
     local LabelRow = mkFrame(RedeemWrap, {
-        Size = UDim2.new(1, 0, 0, 13),
+        Size = UDim2.new(1, 0, 0, 12),
         BackgroundTransparency = 1,
         LayoutOrder = 0,
         ZIndex = 102,
     })
+
+    -- "REDEEM KEY" — kiri, lebar = lebar input (1 - 128px dropdown - 8px gap)
+    -- Pakai UDim2 absolut yang cocok dengan lebar input di bawah (1, -136)
     mkLabel(LabelRow, {
         Position = UDim2.new(0, 0, 0, 0),
-        Size = UDim2.new(0.5, 0, 1, 0),
+        Size = UDim2.new(1, -136, 1, 0),
         Text = "REDEEM KEY",
         TextColor3 = C.TextDim,
         TextSize = 10,
         Font = Enum.Font.GothamBold,
+        TextXAlignment = Enum.TextXAlignment.Left,
         ZIndex = 102,
     })
+
+    -- "SELECT SOURCE" — kanan, lebar = lebar dropdown (128px), rata kanan
     mkLabel(LabelRow, {
-        Position = UDim2.new(0.5, 0, 0, 0),
-        Size = UDim2.new(0.5, 0, 1, 0),
-        Text = "SELECT KEY SOURCE",
+        AnchorPoint = Vector2.new(1, 0),
+        Position = UDim2.new(1, 0, 0, 0),
+        Size = UDim2.new(0, 120, 1, 0),
+        Text = "SELECT SOURCE",
         TextColor3 = C.TextDim,
         TextSize = 10,
         Font = Enum.Font.GothamBold,
@@ -1072,9 +1073,9 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     IRL.Padding = UDim.new(0, 8)
     IRL.Parent = InputRow
 
-    -- ── INPUT KEY (kiri, lebar lebih besar) ───────────────────────────────────
+    -- ── INPUT KEY ─────────────────────────────────────────────────────────────
     local InputWrap = mkFrame(InputRow, {
-        Size = UDim2.new(1, -136, 1, 0),
+        Size = UDim2.new(1, -128, 1, 0),
         BackgroundColor3 = C.Surface,
         ClipsDescendants = true,
         LayoutOrder = 0,
@@ -1089,7 +1090,7 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     IWRL.Padding = UDim.new(0, 0)
     IWRL.Parent = InputWrap
 
-    -- icon block dengan icon GEMBOK (bukan X)
+    -- icon block GEMBOK
     local IconBlock = mkFrame(InputWrap, {
         Size = UDim2.new(0, 36, 1, 0),
         BackgroundColor3 = C.SurfaceDeep,
@@ -1102,17 +1103,9 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         BackgroundColor3 = C.Border,
         ZIndex = 105,
     })
-    -- icon gembok: rbxassetid://6031090990 = lock icon
-    local LockIco = Instance.new("ImageLabel")
+    local LockIco = mkImage(IconBlock, LI.lock, 14, 105)
     LockIco.AnchorPoint = Vector2.new(0.5, 0.5)
     LockIco.Position = UDim2.new(0.5, 0, 0.5, 0)
-    LockIco.Size = UDim2.new(0, 14, 0, 14)
-    LockIco.BackgroundTransparency = 1
-    LockIco.Image = "rbxassetid://6031090990"  -- lock icon putih
-    LockIco.ImageColor3 = C.White
-    LockIco.ScaleType = Enum.ScaleType.Fit
-    LockIco.ZIndex = 105
-    LockIco.Parent = IconBlock
 
     local KsInput = Instance.new("TextBox")
     KsInput.Font = Enum.Font.Gotham
@@ -1140,16 +1133,18 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         TweenService:Create(InputStroke, TweenInfo.new(0.15), { Color = C.Border }):Play()
     end)
 
-    -- ── DROPDOWN (kanan) ──────────────────────────────────────────────────────
+    -- ── DROPDOWN ──────────────────────────────────────────────────────────────
     local getKeyLinks = ks.GetKeyLinks or {
         { Name = "Discord",     Url = "https://discord.gg/" },
         { Name = "Direct Link", Url = "" },
     }
+    -- icon per nama sumber (lucide)
     local dropIcons = {
-        ["Discord"]     = "rbxassetid://6031068426",
-        ["Direct Link"] = "rbxassetid://6031071038",
-        ["Linkvertise"] = "rbxassetid://6031071038",
-        ["Website"]     = "rbxassetid://6031071038",
+        ["Discord"]     = LI.messageCircle,
+        ["Direct Link"] = LI.externalLink,
+        ["Linkvertise"] = LI.link,
+        ["Website"]     = LI.externalLink,
+        ["Default"]     = LI.link,
     }
 
     local selectedLink = getKeyLinks[1]
@@ -1184,21 +1179,12 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     DBIL.Padding = UDim.new(0, 6)
     DBIL.Parent = DBInner
     local DBIP = Instance.new("UIPadding")
-    DBIP.PaddingLeft  = UDim.new(0, 10)
+    DBIP.PaddingLeft  = UDim.new(0, 9)
     DBIP.PaddingRight = UDim.new(0, 8)
     DBIP.Parent = DBInner
 
-    -- icon di dropdown button (PUTIH)
-    local DropIconImg = Instance.new("ImageLabel")
-    DropIconImg.BackgroundTransparency = 1
-    DropIconImg.BorderSizePixel = 0
-    DropIconImg.Size = UDim2.new(0, 12, 0, 12)
-    DropIconImg.Image = selectedLink.Icon or dropIcons[selectedLink.Name] or "rbxassetid://6031071038"
-    DropIconImg.ImageColor3 = C.White  -- PUTIH
-    DropIconImg.ScaleType = Enum.ScaleType.Fit
+    local DropIconImg = mkImage(DBInner, dropIcons[selectedLink.Name] or LI.link, 12, 106)
     DropIconImg.LayoutOrder = 0
-    DropIconImg.ZIndex = 106
-    DropIconImg.Parent = DBInner
 
     local DropLabelTxt = Instance.new("TextLabel")
     DropLabelTxt.BackgroundTransparency = 1
@@ -1213,20 +1199,27 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     DropLabelTxt.ZIndex = 106
     DropLabelTxt.Parent = DBInner
 
-    local DropArrow = Instance.new("TextLabel")
-    DropArrow.BackgroundTransparency = 1
-    DropArrow.BorderSizePixel = 0
-    DropArrow.Font = Enum.Font.Gotham
-    DropArrow.Text = "▾"
-    DropArrow.TextColor3 = C.TextDim
-    DropArrow.TextSize = 10
-    DropArrow.Size = UDim2.new(1, 0, 1, 0)
-    DropArrow.TextXAlignment = Enum.TextXAlignment.Right
+    local DropArrow = mkImage(DBInner, LI.chevronDown, 12, 106)
     DropArrow.LayoutOrder = 2
-    DropArrow.ZIndex = 106
-    DropArrow.Parent = DBInner
+    DropArrow.Size = UDim2.new(1, 0, 0, 12)
+    DropArrow.ImageRectSize = Vector2.new(0, 0)
 
-    -- dropdown list popup
+    -- Arrow pakai TextLabel karena lebih mudah di-right-align
+    DropArrow:Destroy()
+    local DropArrowTxt = Instance.new("TextLabel")
+    DropArrowTxt.BackgroundTransparency = 1
+    DropArrowTxt.BorderSizePixel = 0
+    DropArrowTxt.Font = Enum.Font.Gotham
+    DropArrowTxt.Text = "▾"
+    DropArrowTxt.TextColor3 = C.TextDim
+    DropArrowTxt.TextSize = 10
+    DropArrowTxt.Size = UDim2.new(1, 0, 1, 0)
+    DropArrowTxt.TextXAlignment = Enum.TextXAlignment.Right
+    DropArrowTxt.LayoutOrder = 2
+    DropArrowTxt.ZIndex = 106
+    DropArrowTxt.Parent = DBInner
+
+    -- dropdown popup
     local DropList = mkFrame(KsGui, {
         Size = UDim2.new(0, 120, 0, 0),
         BackgroundColor3 = C.Surface,
@@ -1254,7 +1247,7 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         TweenService:Create(DropList, TweenInfo.new(0.12), { Size = UDim2.new(0, 120, 0, 0) }):Play()
         task.delay(0.13, function() DropList.Visible = false end)
         TweenService:Create(DropStroke, TweenInfo.new(0.12), { Color = C.Border }):Play()
-        DropArrow.Text = "▾"
+        DropArrowTxt.Text = "▾"
     end
     local function openDropdown()
         dropOpen = true
@@ -1265,7 +1258,7 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
             Size = UDim2.new(0, 120, 0, #getKeyLinks * 36)
         }):Play()
         TweenService:Create(DropStroke, TweenInfo.new(0.12), { Color = C.Accent }):Play()
-        DropArrow.Text = "▴"
+        DropArrowTxt.Text = "▴"
     end
 
     for idx, linkData in ipairs(getKeyLinks) do
@@ -1289,27 +1282,18 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         IIL.Padding = UDim.new(0, 7)
         IIL.Parent = ItemInner
         local IIP = Instance.new("UIPadding")
-        IIP.PaddingLeft = UDim.new(0, 10)
+        IIP.PaddingLeft = UDim.new(0, 9)
         IIP.Parent = ItemInner
 
-        local itemIconId = linkData.Icon or dropIcons[linkData.Name] or "rbxassetid://6031071038"
-        local ItemIcon = Instance.new("ImageLabel")
-        ItemIcon.BackgroundTransparency = 1
-        ItemIcon.BorderSizePixel = 0
-        ItemIcon.Size = UDim2.new(0, 12, 0, 12)
-        ItemIcon.Image = itemIconId
-        ItemIcon.ImageColor3 = C.White  -- PUTIH semua
-        ItemIcon.ScaleType = Enum.ScaleType.Fit
-        ItemIcon.LayoutOrder = 0
-        ItemIcon.ZIndex = 303
-        ItemIcon.Parent = ItemInner
+        local itemIcon = mkImage(ItemInner, linkData.Icon or dropIcons[linkData.Name] or LI.link, 12, 303)
+        itemIcon.LayoutOrder = 0
 
         local IL = Instance.new("TextLabel")
         IL.BackgroundTransparency = 1
         IL.BorderSizePixel = 0
         IL.Font = Enum.Font.Gotham
         IL.Text = linkData.Name
-        IL.TextColor3 = (idx == 1) and C.TextPrimary or C.TextMuted
+        IL.TextColor3 = C.TextPrimary
         IL.TextSize = 12
         IL.TextXAlignment = Enum.TextXAlignment.Left
         IL.AutomaticSize = Enum.AutomaticSize.X
@@ -1336,8 +1320,7 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         Item.MouseButton1Click:Connect(function()
             selectedLink = linkData
             DropLabelTxt.Text = linkData.Name
-            DropIconImg.Image = linkData.Icon or dropIcons[linkData.Name] or "rbxassetid://6031071038"
-            DropIconImg.ImageColor3 = C.White
+            DropIconImg.Image = linkData.Icon or dropIcons[linkData.Name] or LI.link
             closeDropdown()
         end)
     end
@@ -1346,7 +1329,7 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         if dropOpen then closeDropdown() else openDropdown() end
     end)
 
-    -- ── FOOTER DIVIDER + FOOTER ────────────────────────────────────────────────
+    -- ── FOOTER ────────────────────────────────────────────────────────────────
     mkFrame(Card, {
         Size = UDim2.new(1, 0, 0, 1),
         BackgroundColor3 = C.Divider,
@@ -1482,13 +1465,14 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     end
 
     -- ── BUTTONS ───────────────────────────────────────────────────────────────
-    local btnDefaultIcons = {
-        ["Exit"]    = "rbxassetid://6031094676",
-        ["Discord"] = "rbxassetid://6031068426",
-        ["Get Key"] = "rbxassetid://6031071038",
-        ["Submit"]  = "rbxassetid://6031090990",
-        ["Close"]   = "rbxassetid://6031094676",
-        ["Cancel"]  = "rbxassetid://6031094676",
+    -- Default icon per nama tombol — semua dari lucide
+    local btnIcons = {
+        ["Exit"]    = LI.logOut,
+        ["Discord"] = LI.messageCircle,
+        ["Get Key"] = LI.externalLink,
+        ["Submit"]  = LI.send,
+        ["Close"]   = LI.x,
+        ["Cancel"]  = LI.logOut,
     }
 
     local buttons = ks.Buttons or {
@@ -1540,30 +1524,20 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         BIL.Padding = UDim.new(0, 5)
         BIL.Parent = BInner
 
-        -- cari icon
+        -- cari icon: config dulu, fallback ke btnIcons
         local rawIconId = btnCfg.Icon or ""
         local resolvedIcon = (getIconId and rawIconId ~= "") and getIconId(rawIconId) or ""
         if resolvedIcon == "" then
-            resolvedIcon = btnDefaultIcons[btnCfg.Name] or ""
+            resolvedIcon = btnIcons[btnCfg.Name] or LI.key
         end
 
-        if resolvedIcon ~= "" then
-            local BI = Instance.new("ImageLabel")
-            BI.BackgroundTransparency = 1
-            BI.BorderSizePixel = 0
-            BI.Size = UDim2.new(0, 12, 0, 12)
-            BI.Image = resolvedIcon
-            BI.ImageColor3 = C.White  -- SEMUA PUTIH
-            BI.ScaleType = Enum.ScaleType.Fit
-            BI.LayoutOrder = 0
-            BI.ZIndex = 105
-            BI.Parent = BInner
-        end
+        local BI = mkImage(BInner, resolvedIcon, 12, 105)
+        BI.LayoutOrder = 0
 
         local BLbl = Instance.new("TextLabel")
         BLbl.Font = Enum.Font.GothamBold
         BLbl.Text = btnCfg.Name or "Button"
-        BLbl.TextColor3 = C.White  -- teks tombol semua putih
+        BLbl.TextColor3 = C.White
         BLbl.TextSize = 12
         BLbl.BackgroundTransparency = 1
         BLbl.BorderSizePixel = 0
