@@ -670,12 +670,15 @@ function Chloex:Window(GuiConfig)
     if AUTO_LOAD then LoadConfigFromFile() end
 
     ElementsModule:Initialize(GuiConfig, SaveConfig, ConfigData, Icons)
-    
     -- ==================== KEY SYSTEM ====================
     local ks = GuiConfig.KeySystem
     if ks then
         local keyResolved = false
-
+        local getKeyLinks = ks.GetKeyLinks or {
+            { Name = "Linkvertise", Url = "https://linkvertise.com/..." },
+            { Name = "Direct Download", Url = "https://direct-link.com/..." },
+        }
+        
         local KsGui = Instance.new("ScreenGui")
         KsGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
         KsGui.Name = "KeySystemGui"
@@ -685,7 +688,7 @@ function Chloex:Window(GuiConfig)
         local Card = Instance.new("Frame")
         Card.AnchorPoint = Vector2.new(0.5, 0.5)
         Card.Position = UDim2.new(0.5, 0, 0.45, 0)
-        Card.Size = UDim2.new(0, 300, 0, 178)
+        Card.Size = UDim2.new(0, 320, 0, 240)
         Card.BackgroundColor3 = Color3.fromRGB(16, 16, 20)
         Card.BackgroundTransparency = 1
         Card.BorderSizePixel = 0
@@ -702,6 +705,7 @@ function Chloex:Window(GuiConfig)
         CardStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
         CardStroke.Parent = Card
 
+        -- Header Icon & Title
         local IconBox = Instance.new("Frame")
         IconBox.Size = UDim2.new(0, 24, 0, 24)
         IconBox.Position = UDim2.new(0, 14, 0, 16)
@@ -752,28 +756,133 @@ function Chloex:Window(GuiConfig)
         HDivider.ZIndex = 102
         HDivider.Parent = Card
 
-        local KsNote = Instance.new("TextLabel")
-        KsNote.Font = Enum.Font.Gotham
-        KsNote.Text = ks.Note or ""
-        KsNote.TextColor3 = Color3.fromRGB(95, 95, 108)
-        KsNote.TextSize = 12
-        KsNote.TextXAlignment = Enum.TextXAlignment.Left
-        KsNote.BackgroundTransparency = 1
-        KsNote.BorderSizePixel = 0
-        KsNote.Position = UDim2.new(0, 14, 0, 60)
-        KsNote.Size = UDim2.new(1, -28, 0, 14)
-        KsNote.ZIndex = 102
-        KsNote.Parent = Card
+        -- How to Get Key Section (Paragraph)
+        local KsHowTo = Instance.new("TextLabel")
+        KsHowTo.Font = Enum.Font.Gotham
+        KsHowTo.Text = ks.HowToText or "Join our Discord and verify to get the key."
+        KsHowTo.TextColor3 = Color3.fromRGB(140, 140, 155)
+        KsHowTo.TextSize = 11
+        KsHowTo.TextWrapped = true
+        KsHowTo.TextXAlignment = Enum.TextXAlignment.Left
+        KsHowTo.TextYAlignment = Enum.TextYAlignment.Top
+        KsHowTo.BackgroundTransparency = 1
+        KsHowTo.BorderSizePixel = 0
+        KsHowTo.Position = UDim2.new(0, 14, 0, 60)
+        KsHowTo.Size = UDim2.new(1, -28, 0, 32)
+        KsHowTo.ZIndex = 102
+        KsHowTo.Parent = Card
 
+        -- Dropdown for Get Key Links
+        local DropdownBg = Instance.new("Frame")
+        DropdownBg.Position = UDim2.new(0, 14, 0, 100)
+        DropdownBg.Size = UDim2.new(0, 130, 0, 28)
+        DropdownBg.BackgroundColor3 = Color3.fromRGB(22, 22, 29)
+        DropdownBg.BorderSizePixel = 0
+        DropdownBg.ZIndex = 102
+        DropdownBg.Parent = Card
+        local DropdownBgCorner = Instance.new("UICorner")
+        DropdownBgCorner.CornerRadius = UDim.new(0, 6)
+        DropdownBgCorner.Parent = DropdownBg
+        local DropdownBgStroke = Instance.new("UIStroke")
+        DropdownBgStroke.Color = Color3.fromRGB(44, 44, 56)
+        DropdownBgStroke.Thickness = 1
+        DropdownBgStroke.Parent = DropdownBg
+
+        local DropdownIcon = Instance.new("ImageLabel")
+        DropdownIcon.AnchorPoint = Vector2.new(0, 0.5)
+        DropdownIcon.Position = UDim2.new(0, 8, 0.5, 0)
+        DropdownIcon.Size = UDim2.new(0, 12, 0, 12)
+        DropdownIcon.BackgroundTransparency = 1
+        DropdownIcon.Image = "rbxassetid://6031094678"
+        DropdownIcon.ImageColor3 = Color3.fromRGB(100, 100, 120)
+        DropdownIcon.ScaleType = Enum.ScaleType.Fit
+        DropdownIcon.ZIndex = 103
+        DropdownIcon.Parent = DropdownBg
+
+        local DropdownButton = Instance.new("TextButton")
+        DropdownButton.Font = Enum.Font.Gotham
+        DropdownButton.Text = getKeyLinks[1].Name .. "  ▼"
+        DropdownButton.TextColor3 = Color3.fromRGB(200, 200, 215)
+        DropdownButton.TextSize = 11
+        DropdownButton.TextXAlignment = Enum.TextXAlignment.Left
+        DropdownButton.BackgroundTransparency = 1
+        DropdownButton.BorderSizePixel = 0
+        DropdownButton.Position = UDim2.new(0, 24, 0, 0)
+        DropdownButton.Size = UDim2.new(1, -28, 1, 0)
+        DropdownButton.ZIndex = 103
+        DropdownButton.Parent = DropdownBg
+
+        local DropdownList = Instance.new("ScrollingFrame")
+        DropdownList.Position = UDim2.new(0, 14, 0, 130)
+        DropdownList.Size = UDim2.new(0, 130, 0, 0)
+        DropdownList.BackgroundColor3 = Color3.fromRGB(22, 22, 29)
+        DropdownList.BorderSizePixel = 0
+        DropdownList.ZIndex = 104
+        DropdownList.Visible = false
+        DropdownList.CanvasSize = UDim2.new(0, 0, 0, #getKeyLinks * 28)
+        DropdownList.ScrollBarThickness = 4
+        DropdownList.Parent = Card
+        local DropdownListCorner = Instance.new("UICorner")
+        DropdownListCorner.CornerRadius = UDim.new(0, 6)
+        DropdownListCorner.Parent = DropdownList
+        local DropdownListStroke = Instance.new("UIStroke")
+        DropdownListStroke.Color = Color3.fromRGB(44, 44, 56)
+        DropdownListStroke.Thickness = 1
+        DropdownListStroke.Parent = DropdownList
+
+        local DropdownListLayout = Instance.new("UIListLayout")
+        DropdownListLayout.Padding = UDim.new(0, 2)
+        DropdownListLayout.Parent = DropdownList
+
+        for idx, linkData in ipairs(getKeyLinks) do
+            local Item = Instance.new("TextButton")
+            Item.Font = Enum.Font.Gotham
+            Item.Text = linkData.Name
+            Item.TextColor3 = Color3.fromRGB(200, 200, 215)
+            Item.TextSize = 11
+            Item.TextXAlignment = Enum.TextXAlignment.Left
+            Item.BackgroundColor3 = Color3.fromRGB(26, 26, 34)
+            Item.BorderSizePixel = 0
+            Item.Size = UDim2.new(1, -4, 0, 26)
+            Item.ZIndex = 105
+            Item.Parent = DropdownList
+            local ItemCorner = Instance.new("UICorner")
+            ItemCorner.CornerRadius = UDim.new(0, 4)
+            ItemCorner.Parent = Item
+            Item.MouseEnter:Connect(function()
+                TweenService:Create(Item, TweenInfo.new(0.1), { BackgroundColor3 = Color3.fromRGB(36, 36, 46) }):Play()
+            end)
+            Item.MouseLeave:Connect(function()
+                TweenService:Create(Item, TweenInfo.new(0.1), { BackgroundColor3 = Color3.fromRGB(26, 26, 34) }):Play()
+            end)
+            Item.MouseButton1Click:Connect(function()
+                DropdownButton.Text = linkData.Name .. "  ▼"
+                DropdownList.Visible = false
+                -- Open URL (mock, replace with actual function)
+                print("Opening:", linkData.Url)
+            end)
+        end
+
+        DropdownButton.MouseButton1Click:Connect(function()
+            DropdownList.Visible = not DropdownList.Visible
+            if DropdownList.Visible then
+                TweenService:Create(DropdownList, TweenInfo.new(0.15), { Size = UDim2.new(0, 130, 0, math.min(#getKeyLinks * 28, 100)) }):Play()
+            else
+                TweenService:Create(DropdownList, TweenInfo.new(0.15), { Size = UDim2.new(0, 130, 0, 0) }):Play()
+                task.delay(0.16, function() DropdownList.Visible = false end)
+            end
+        end)
+
+        -- Key Input
         local InputBg = Instance.new("Frame")
-        InputBg.Position = UDim2.new(0, 14, 0, 84)
-        InputBg.Size = UDim2.new(1, -28, 0, 32)
+        InputBg.Position = UDim2.new(0, 150, 0, 100) -- Adjusted for dropdown
+        InputBg.Size = UDim2.new(0, 156, 0, 28)
         InputBg.BackgroundColor3 = Color3.fromRGB(22, 22, 29)
         InputBg.BorderSizePixel = 0
         InputBg.ZIndex = 102
         InputBg.Parent = Card
         local InputBgCorner = Instance.new("UICorner")
-        InputBgCorner.CornerRadius = UDim.new(0, 7)
+        InputBgCorner.CornerRadius = UDim.new(0, 6)
         InputBgCorner.Parent = InputBg
         local InputBgStroke = Instance.new("UIStroke")
         InputBgStroke.Color = Color3.fromRGB(44, 44, 56)
@@ -782,8 +891,8 @@ function Chloex:Window(GuiConfig)
 
         local InputIcon = Instance.new("ImageLabel")
         InputIcon.AnchorPoint = Vector2.new(0, 0.5)
-        InputIcon.Position = UDim2.new(0, 9, 0.5, 0)
-        InputIcon.Size = UDim2.new(0, 13, 0, 13)
+        InputIcon.Position = UDim2.new(0, 8, 0.5, 0)
+        InputIcon.Size = UDim2.new(0, 12, 0, 12)
         InputIcon.BackgroundTransparency = 1
         InputIcon.Image = "rbxassetid://6031094678"
         InputIcon.ImageColor3 = Color3.fromRGB(75, 75, 88)
@@ -802,8 +911,8 @@ function Chloex:Window(GuiConfig)
         KsInput.BackgroundTransparency = 1
         KsInput.BorderSizePixel = 0
         KsInput.ClearTextOnFocus = false
-        KsInput.Position = UDim2.new(0, 28, 0, 0)
-        KsInput.Size = UDim2.new(1, -34, 1, 0)
+        KsInput.Position = UDim2.new(0, 24, 0, 0)
+        KsInput.Size = UDim2.new(1, -28, 1, 0)
         KsInput.ZIndex = 103
         KsInput.Parent = InputBg
 
@@ -818,18 +927,20 @@ function Chloex:Window(GuiConfig)
             }):Play()
         end)
 
+        -- Divider
         local BDivider = Instance.new("Frame")
         BDivider.Size = UDim2.new(1, 0, 0, 1)
-        BDivider.Position = UDim2.new(0, 0, 0, 128)
+        BDivider.Position = UDim2.new(0, 0, 0, 140)
         BDivider.BackgroundColor3 = Color3.fromRGB(34, 34, 44)
         BDivider.BorderSizePixel = 0
         BDivider.ZIndex = 102
         BDivider.Parent = Card
 
+        -- Button Row
         local BtnRow = Instance.new("Frame")
         BtnRow.BackgroundTransparency = 1
         BtnRow.BorderSizePixel = 0
-        BtnRow.Position = UDim2.new(0, 14, 0, 136)
+        BtnRow.Position = UDim2.new(0, 14, 0, 148)
         BtnRow.Size = UDim2.new(1, -28, 0, 30)
         BtnRow.ZIndex = 102
         BtnRow.Parent = Card
@@ -842,6 +953,68 @@ function Chloex:Window(GuiConfig)
         BtnList.SortOrder = Enum.SortOrder.LayoutOrder
         BtnList.Parent = BtnRow
 
+        -- Notification System
+        local Notification = Instance.new("Frame")
+        Notification.AnchorPoint = Vector2.new(0.5, 0)
+        Notification.Position = UDim2.new(0.5, 0, 0, -40)
+        Notification.Size = UDim2.new(0, 200, 0, 32)
+        Notification.BackgroundColor3 = Color3.fromRGB(22, 22, 29)
+        Notification.BorderSizePixel = 0
+        Notification.ZIndex = 110
+        Notification.Parent = Card
+        local NotifCorner = Instance.new("UICorner")
+        NotifCorner.CornerRadius = UDim.new(0, 8)
+        NotifCorner.Parent = Notification
+        local NotifStroke = Instance.new("UIStroke")
+        NotifStroke.Color = Color3.fromRGB(44, 44, 56)
+        NotifStroke.Thickness = 1
+        NotifStroke.Parent = Notification
+        local NotifIcon = Instance.new("ImageLabel")
+        NotifIcon.AnchorPoint = Vector2.new(0, 0.5)
+        NotifIcon.Position = UDim2.new(0, 8, 0.5, 0)
+        NotifIcon.Size = UDim2.new(0, 14, 0, 14)
+        NotifIcon.BackgroundTransparency = 1
+        NotifIcon.Image = "rbxassetid://6031094678"
+        NotifIcon.ScaleType = Enum.ScaleType.Fit
+        NotifIcon.ZIndex = 111
+        NotifIcon.Parent = Notification
+        local NotifText = Instance.new("TextLabel")
+        NotifText.Font = Enum.Font.Gotham
+        NotifText.Text = ""
+        NotifText.TextColor3 = Color3.fromRGB(220, 220, 235)
+        NotifText.TextSize = 12
+        NotifText.BackgroundTransparency = 1
+        NotifText.Position = UDim2.new(0, 28, 0, 0)
+        NotifText.Size = UDim2.new(1, -32, 1, 0)
+        NotifText.ZIndex = 111
+        NotifText.Parent = Notification
+
+        local function ShowNotification(msg, isSuccess)
+            NotifText.Text = msg
+            NotifIcon.ImageColor3 = isSuccess and Color3.fromRGB(50, 200, 100) or Color3.fromRGB(220, 60, 60)
+            TweenService:Create(Notification, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+                Position = UDim2.new(0.5, 0, 0, 10)
+            }):Play()
+            task.delay(2.5, function()
+                TweenService:Create(Notification, TweenInfo.new(0.25), {
+                    Position = UDim2.new(0.5, 0, 0, -40)
+                }):Play()
+            end)
+        end
+
+        -- Lock/Unlock Animation
+        local LockIcon = Instance.new("ImageLabel")
+        LockIcon.AnchorPoint = Vector2.new(0.5, 0.5)
+        LockIcon.Position = UDim2.new(0.5, 0, 0.5, -10)
+        LockIcon.Size = UDim2.new(0, 40, 0, 40)
+        LockIcon.BackgroundTransparency = 1
+        LockIcon.Image = "rbxassetid://6031094678"
+        LockIcon.ImageColor3 = Color3.fromRGB(220, 180, 60)
+        LockIcon.ScaleType = Enum.ScaleType.Fit
+        LockIcon.ZIndex = 200
+        LockIcon.Visible = false
+        LockIcon.Parent = Card
+
         local function ShakeCard()
             local origPos = Card.Position
             local offsets = {7, -7, 5, -5, 3, -3, 0}
@@ -853,6 +1026,18 @@ function Chloex:Window(GuiConfig)
                 task.wait(0.04)
             end
             Card.Position = origPos
+        end
+
+        local function PlayLockAnimation(unlock)
+            LockIcon.Visible = true
+            LockIcon.Image = unlock and "rbxassetid://6031094678" or "rbxassetid://6031094678" -- Replace with actual lock/unlock icons
+            LockIcon.ImageColor3 = unlock and Color3.fromRGB(60, 200, 100) or Color3.fromRGB(220, 180, 60)
+            TweenService:Create(LockIcon, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+                Size = UDim2.new(0, 60, 0, 60),
+                Rotation = 360,
+                ImageTransparency = 1
+            }):Play()
+            task.delay(0.5, function() LockIcon.Visible = false end)
         end
 
         local ksClosing = false
@@ -970,11 +1155,15 @@ function Chloex:Window(GuiConfig)
                         local result = btnCfg.Callback(currentKey)
                         if result == true then
                             keyResolved = true
+                            ShowNotification("Key Accepted!", true)
+                            PlayLockAnimation(true)
                             CloseKeySystem()
                         elseif result == false then
                             TweenService:Create(InputBgStroke, TweenInfo.new(0.1), {
                                 Color = Color3.fromRGB(220, 55, 55), Transparency = 0
                             }):Play()
+                            ShowNotification("Invalid Key", false)
+                            PlayLockAnimation(false)
                             task.delay(0.7, function()
                                 TweenService:Create(InputBgStroke, TweenInfo.new(0.3), {
                                     Color = Color3.fromRGB(44,44,56), Transparency = 0
@@ -992,7 +1181,14 @@ function Chloex:Window(GuiConfig)
                         end
                     end)
                 else
-                    CloseKeySystem()
+                    if currentKey == "" then
+                        ShowNotification("Key cannot be empty", false)
+                        task.spawn(ShakeCard)
+                    else
+                        ShowNotification("Key submitted (no callback)", true)
+                        PlayLockAnimation(true)
+                        CloseKeySystem()
+                    end
                 end
             end)
         end
