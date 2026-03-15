@@ -1,5 +1,3 @@
-
-
 local HttpService = game:GetService("HttpService")
 local Players     = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -678,18 +676,21 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     if not ks then return true end
     if ks == true then ks = {} end
 
-    -- ── BYPASS: jika script_key sudah di-set dari luar ─────────────────────
-    if typeof(script_key) == "string" and script_key ~= "" then
-        local ksButtons = ks.Buttons or {}
-        for _, btn in ipairs(ksButtons) do
-            if btn.Name == "Submit" and btn.Callback then
-                local ok, result = pcall(function() return btn.Callback(script_key) end)
-                if ok and result == true then
-                    print("[KeySystem] script_key valid! Bypassing GUI...")
-                    return true
-                else
-                    print("[KeySystem] script_key invalid, membuka GUI normal...")
-                    break
+    -- ── BYPASS: cek script_key global (set tanpa local di script user) ────────
+    do
+        local sk = script_key  -- baca global langsung
+        if typeof(sk) == "string" and sk ~= "" then
+            local ksButtons = ks.Buttons or {}
+            for _, btn in ipairs(ksButtons) do
+                if btn.Name == "Submit" and btn.Callback then
+                    local ok, result = pcall(function() return btn.Callback(sk) end)
+                    if ok and result == true then
+                        print("[KeySystem] script_key valid! Bypassing GUI...")
+                        return true  -- langsung masuk, GUI tidak muncul
+                    else
+                        print("[KeySystem] script_key invalid, membuka GUI normal...")
+                        break  -- buka GUI, minta input manual
+                    end
                 end
             end
         end
@@ -741,7 +742,7 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     local keyResolved = false
     local Lighting = game:GetService("Lighting")
 
-    -- ── AUTO SAVE / LOAD ───────────────────────────────────────────────────
+    -- ── AUTO SAVE / LOAD ───────────────────────────────────────────────────────
     local KeySystemAutoSaveLoad = ks.AutoSaveLoad ~= false  -- default true
 
     local function saveValidKey(key)
@@ -1485,7 +1486,7 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
                     end
 
                 elseif result == true then
-                    -- ── KEY VALID: simpan dan tutup ──
+                    -- KEY VALID: simpan otomatis lalu tutup
                     keyResolved = true
                     saveValidKey(currentKey)
                     flashInput(C.Success)
@@ -1528,7 +1529,7 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         end)
     end
 
-    -- ── AUTO CHECK KEY TERSIMPAN ───────────────────────────────────────────
+    -- ── AUTO CHECK: saved key dari file ───────────────────────────────────────
     task.spawn(function()
         task.wait(0.5)
         local savedKey = loadValidKey()
