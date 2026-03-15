@@ -1527,23 +1527,27 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         end)
     end
         
-    -- ── AUTO CHECK KEY TERSIMPAN ───────────────────────────────────────────
-    task.spawn(function()
-        task.wait(0.5)
-        local savedKey = loadValidKey()
-        if savedKey then
-            -- Panggil callback submit dengan key tersimpan
-            for _, btn in ipairs(buttons) do
-                if btn.Name == "Submit" and btn.Callback then
-                    local result = btn.Callback(savedKey)
-                    if result then
-                        break
-                    end
+-- ── AUTO CHECK KEY TERSIMPAN ───────────────────────────────────────────
+task.spawn(function()
+    task.wait(0.5)  -- Tunggu UI siap
+    local savedKey = loadValidKey()
+    if savedKey and savedKey ~= "" then
+        print("Found saved key: " .. savedKey)
+        -- Panggil callback submit dengan key tersimpan
+        for _, btn in ipairs(buttons) do
+            if btn.Name == "Submit" and btn.Callback then
+                local success = btn.Callback(savedKey)
+                if success then
+                    print("Auto login successful with saved key!")
+                    break
+                else
+                    print("Saved key invalid, deleting...")
+                    deleteSavedKey()
                 end
             end
         end
-    end)
-
+    end
+end)
     -- ── Open animasi ──────────────────────────────────────────────────────────
     TweenService:Create(Card, TweenInfo.new(0.32,Enum.EasingStyle.Back,Enum.EasingDirection.Out), {
         Position=UDim2.new(0.5,0,0.5,0), BackgroundTransparency=0,
