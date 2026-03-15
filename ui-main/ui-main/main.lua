@@ -677,19 +677,19 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     if ks == true then ks = {} end
 
     -- ── BYPASS: cek script_key global (set tanpa local di script user) ────────
-do
-    local sk = getgenv().script_key or script_key
-    if typeof(sk) == "string" and sk ~= "" then
+    do
+        local sk = getgenv().script_key or script_key
+        if typeof(sk) == "string" and sk ~= "" then
             local ksButtons = ks.Buttons or {}
             for _, btn in ipairs(ksButtons) do
                 if btn.Name == "Submit" and btn.Callback then
                     local ok, result = pcall(function() return btn.Callback(sk) end)
                     if ok and result == true then
                         print("[KeySystem] script_key valid! Bypassing GUI...")
-                        return true  -- langsung masuk, GUI tidak muncul
+                        return true
                     else
                         print("[KeySystem] script_key invalid, membuka GUI normal...")
-                        break  -- buka GUI, minta input manual
+                        break
                     end
                 end
             end
@@ -743,7 +743,7 @@ do
     local Lighting = game:GetService("Lighting")
 
     -- ── AUTO SAVE / LOAD ───────────────────────────────────────────────────────
-    local KeySystemAutoSaveLoad = ks.AutoSaveLoad ~= false  -- default true
+    local KeySystemAutoSaveLoad = ks.AutoSaveLoad ~= false
 
     local function saveValidKey(key)
         if not KeySystemAutoSaveLoad then return end
@@ -1486,7 +1486,6 @@ do
                     end
 
                 elseif result == true then
-                    -- KEY VALID: simpan otomatis lalu tutup
                     keyResolved = true
                     saveValidKey(currentKey)
                     flashInput(C.Success)
@@ -1573,6 +1572,18 @@ end
 if GuiConfig.KeySystem then
     local ksResult = buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     if not ksResult then return nil end
+end
+
+-- ── FUNGSI STANDALONE — dipanggil dari luar tanpa Window ─────────────────────
+-- Tambahkan ini ke dalam object NemesisUI setelah semua fungsi selesai didefinisikan
+-- Letakkan di bagian paling bawah main.lua sebelum return
+NemesisUI.KeySystemStandalone = function(self, config)
+    return buildKeySystem(
+        { KeySystem = config },
+        game:GetService("CoreGui"),
+        game:GetService("TweenService"),
+        getIconId
+    )
 end
     local GuiFunc = {}
 
