@@ -671,13 +671,29 @@ function Chloex:Window(GuiConfig)
     if AUTO_LOAD then LoadConfigFromFile() end
 
     ElementsModule:Initialize(GuiConfig, SaveConfig, ConfigData, Icons)
-    
     -- ==================== KEY SYSTEM ====================
 
 local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     local ks = GuiConfig.KeySystem
     if not ks then return true end
     if ks == true then ks = {} end
+
+    -- ── BYPASS: jika script_key sudah di-set dari luar ─────────────────────
+    if typeof(script_key) == "string" and script_key ~= "" then
+        local ksButtons = ks.Buttons or {}
+        for _, btn in ipairs(ksButtons) do
+            if btn.Name == "Submit" and btn.Callback then
+                local ok, result = pcall(function() return btn.Callback(script_key) end)
+                if ok and result == true then
+                    print("[KeySystem] script_key valid! Bypassing GUI...")
+                    return true
+                else
+                    print("[KeySystem] script_key invalid, membuka GUI normal...")
+                    break
+                end
+            end
+        end
+    end
 
     local C = {
         BG           = Color3.fromRGB(18,  18,  26),
@@ -708,33 +724,35 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         White        = Color3.fromRGB(255, 255, 255),
     }
 
-    -- Lucide icons
     local LI = {
-        lock         = "rbxassetid://134724289526879",
-        key          = "rbxassetid://96510194465420",
-        link         = "rbxassetid://131607023382430",
-        externalLink = "rbxassetid://129331830773832",
-        logOut       = "rbxassetid://84895399304975",
-        x            = "rbxassetid://110786993356448",
-        send         = "rbxassetid://127751956873796",
-        messageCircle= "rbxassetid://127255077587058",
-        circleCheck  = "rbxassetid://85262178816537",
-        copy         = "rbxassetid://78979572434545",
+        lock           = "rbxassetid://134724289526879",
+        key            = "rbxassetid://96510194465420",
+        link           = "rbxassetid://131607023382430",
+        externalLink   = "rbxassetid://129331830773832",
+        logOut         = "rbxassetid://84895399304975",
+        x              = "rbxassetid://110786993356448",
+        send           = "rbxassetid://127751956873796",
+        messageCircle  = "rbxassetid://127255077587058",
+        circleCheck    = "rbxassetid://85262178816537",
+        copy           = "rbxassetid://78979572434545",
         clipboardCheck = "rbxassetid://92649798577170",
     }
 
     local keyResolved = false
     local Lighting = game:GetService("Lighting")
-    
-    -- ===== TAMBAHKAN INI =====
+
+    -- ── AUTO SAVE / LOAD ───────────────────────────────────────────────────
     local KeySystemAutoSaveLoad = ks.AutoSaveLoad ~= false  -- default true
-    
+
     local function saveValidKey(key)
         if not KeySystemAutoSaveLoad then return end
         pcall(function()
             if writefile then
                 writefile("Nemesis_ValidKey.txt", key)
+                print("[KeySystem] Key tersimpan ke file.")
             elseif gethui then
+                local existing = gethui():FindFirstChild("NemesisKey")
+                if existing then existing:Destroy() end
                 local folder = Instance.new("Folder")
                 folder.Name = "NemesisKey"
                 folder.Parent = gethui()
@@ -742,43 +760,43 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
                 value.Name = "Key"
                 value.Value = key
                 value.Parent = folder
+                print("[KeySystem] Key tersimpan ke gethui.")
             end
         end)
     end
-    
+
     local function loadValidKey()
         if not KeySystemAutoSaveLoad then return nil end
         local key = nil
         pcall(function()
-            if readfile then
+            if readfile and isfile and isfile("Nemesis_ValidKey.txt") then
                 key = readfile("Nemesis_ValidKey.txt")
             elseif gethui then
                 local folder = gethui():FindFirstChild("NemesisKey")
                 if folder then
                     local value = folder:FindFirstChild("Key")
-                    if value then
-                        key = value.Value
-                    end
+                    if value then key = value.Value end
                 end
             end
         end)
         return key
     end
-    
+
     local function deleteSavedKey()
         if not KeySystemAutoSaveLoad then return end
         pcall(function()
-            if readfile and isfile and isfile("Nemesis_ValidKey.txt") then
+            if isfile and isfile("Nemesis_ValidKey.txt") and delfile then
                 delfile("Nemesis_ValidKey.txt")
+                print("[KeySystem] Key file dihapus.")
             elseif gethui then
                 local folder = gethui():FindFirstChild("NemesisKey")
                 if folder then
                     folder:Destroy()
+                    print("[KeySystem] Key gethui dihapus.")
                 end
             end
         end)
     end
-    -- ===== SAMPAI SINI =====
 
     -- ── Helpers ───────────────────────────────────────────────────────────────
     local function corner(p, r)
@@ -1049,7 +1067,6 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         l.FillDirection=Enum.FillDirection.Vertical l.Padding=UDim.new(0,5) l.Parent=RedeemWrap
     end
 
-    -- label row
     local LabelRow = mkFrame(RedeemWrap, {
         Size=UDim2.new(1,0,0,12), BackgroundTransparency=1, LayoutOrder=0, ZIndex=102,
     })
@@ -1065,7 +1082,6 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         TextXAlignment=Enum.TextXAlignment.Right, ZIndex=102,
     })
 
-    -- input row
     local InputRow = mkFrame(RedeemWrap, {
         Size=UDim2.new(1,0,0,36), BackgroundTransparency=1, LayoutOrder=1, ZIndex=102,
     })
@@ -1076,7 +1092,6 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         l.Padding=UDim.new(0,8) l.Parent=InputRow
     end
 
-    -- Input field
     local InputWrap = mkFrame(InputRow, {
         Size=UDim2.new(1,-128,1,0), BackgroundColor3=C.Surface,
         ClipsDescendants=true, LayoutOrder=0, ZIndex=103,
@@ -1119,16 +1134,7 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         TweenService:Create(InputStroke,TweenInfo.new(0.15),{Color=C.Border}):Play()
     end)
 
-    -- ── DROPDOWN — hanya dari GetKeyLinks ──────────────────────────────────────
-    --[[
-        PENTING: Dropdown hanya menampilkan item dari GetKeyLinks.
-        Setiap item bisa punya field opsional:
-            Icon = "rbxassetid://..."   (opsional, icon custom)
-            CopyUrl = true              (opsional, jika true maka klik = copy URL, bukan navigate)
-        Default behaviour klik item dropdown:
-            - Jika CopyUrl = true → copy URL ke clipboard + notif hijau
-            - Jika tidak → hanya update label dropdown (URL dipakai saat Get Key ditekan)
-    --]]
+    -- ── DROPDOWN ──────────────────────────────────────────────────────────────
     local getKeyLinks = ks.GetKeyLinks or {
         { Name = "Discord",     Url = "https://discord.gg/" },
         { Name = "Direct Link", Url = "" },
@@ -1219,7 +1225,6 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         if dropOpen then closeDropdown() else openDropdown() end
     end)
 
-    -- Dropdown items — hanya dari GetKeyLinks
     for idx, linkData in ipairs(getKeyLinks) do
         local Item = Instance.new("TextButton")
         Item.Size=UDim2.new(1,0,0,36) Item.BackgroundColor3=C.DropItem
@@ -1455,19 +1460,14 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         Btn.MouseButton1Click:Connect(function()
             local currentKey = KsInput.Text
 
-            -- ── SPECIAL HANDLING: Discord button → copy + notif hijau ──────────
             local isDiscordBtn = btnCfg.Name == "Discord" or btnCfg.Style == "discord"
-            -- ── SPECIAL HANDLING: Get Key button → copy selectedLink.Url + notif hijau
             local isGetKeyBtn  = btnCfg.Name == "Get Key"
 
             if btnCfg.Callback then
                 local ok, result = pcall(function() return btnCfg.Callback(currentKey) end)
                 if not ok then showToast("Something went wrong.", "error") return end
 
-                -- Setelah callback dijalankan, cek apakah ini Discord / Get Key
-                -- untuk tampilkan notif hijau
                 if isDiscordBtn then
-                    -- ambil URL dari Discord di GetKeyLinks (jika ada) atau dari callback
                     local discordUrl = ""
                     for _, lnk in ipairs(getKeyLinks) do
                         if lnk.Name == "Discord" then discordUrl = lnk.Url break end
@@ -1476,7 +1476,6 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
                     showToast("Copied to clipboard: " .. displayName, "success")
 
                 elseif isGetKeyBtn then
-                    -- copy URL dari selectedLink
                     local url = selectedLink.Url or ""
                     if url ~= "" then
                         pcall(function() setclipboard(url) end)
@@ -1486,7 +1485,9 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
                     end
 
                 elseif result == true then
+                    -- ── KEY VALID: simpan dan tutup ──
                     keyResolved = true
+                    saveValidKey(currentKey)
                     flashInput(C.Success)
                     showToast("Key accepted! Access granted.", "success")
                     task.delay(0.9, closeKeySystem)
@@ -1507,7 +1508,6 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
                 end
 
             else
-                -- tidak ada callback
                 if isDiscordBtn or isGetKeyBtn then
                     local url = (isGetKeyBtn and selectedLink.Url) or ""
                     for _, lnk in ipairs(getKeyLinks) do
@@ -1520,39 +1520,44 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
                     flashInput(C.Error) task.spawn(shakeCard)
                 else
                     keyResolved = true
+                    saveValidKey(currentKey)
                     showToast("Key accepted! Access granted.", "success")
                     task.delay(0.9, closeKeySystem)
                 end
             end
         end)
     end
-        
--- ── AUTO CHECK KEY TERSIMPAN ───────────────────────────────────────────
-task.spawn(function()
-    task.wait(0.5)  -- Tunggu UI siap
-    local savedKey = loadValidKey()
-    if savedKey and savedKey ~= "" then
-        print("Found saved key: " .. savedKey)
-        -- Panggil callback submit dengan key tersimpan
-        for _, btn in ipairs(buttons) do
-            if btn.Name == "Submit" and btn.Callback then
-                local success = btn.Callback(savedKey)
-                if success then
-                    print("Auto login successful with saved key!")
+
+    -- ── AUTO CHECK KEY TERSIMPAN ───────────────────────────────────────────
+    task.spawn(function()
+        task.wait(0.5)
+        local savedKey = loadValidKey()
+        if savedKey and savedKey ~= "" then
+            print("[KeySystem] Ditemukan saved key, mencoba auto-login...")
+            for _, btn in ipairs(buttons) do
+                if btn.Name == "Submit" and btn.Callback then
+                    local ok, result = pcall(function() return btn.Callback(savedKey) end)
+                    if ok and result == true then
+                        print("[KeySystem] Auto-login berhasil!")
+                        KsInput.Text = savedKey
+                        keyResolved = true
+                        showToast("Key validated! Welcome back.", "success")
+                        task.delay(1.2, closeKeySystem)
+                    else
+                        print("[KeySystem] Saved key tidak valid, menghapus...")
+                        deleteSavedKey()
+                    end
                     break
-                else
-                    print("Saved key invalid, deleting...")
-                    deleteSavedKey()
                 end
             end
         end
-    end
-end)
+    end)
+
     -- ── Open animasi ──────────────────────────────────────────────────────────
     TweenService:Create(Card, TweenInfo.new(0.32,Enum.EasingStyle.Back,Enum.EasingDirection.Out), {
         Position=UDim2.new(0.5,0,0.5,0), BackgroundTransparency=0,
     }):Play()
-        
+
     repeat task.wait(0.1) until keyResolved or not KsGui.Parent
 
     pcall(function() BlurEffect:Destroy() end)
