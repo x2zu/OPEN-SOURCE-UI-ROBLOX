@@ -723,50 +723,119 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
 
     local keyResolved = false
     local Lighting = game:GetService("Lighting")
+    
+    -- ── FITUR AUTO SAVE LOAD KEY ─────────────────────────────────────────────
+    local KeySystemAutoSaveLoad = ks.AutoSaveLoad ~= false  -- default true
 
-    -- ── Helpers ───────────────────────────────────────────────────────────────
-    local function corner(p, r)
-        local c = Instance.new("UICorner")
-        c.CornerRadius = UDim.new(0, r or 6)
-        c.Parent = p
-        return c
+    -- ── FUNGSI GLOBAL UNTUK KEY SYSTEM ───────────────────────────────────────
+    local function validateUniversalKey(key)
+        local success, response = pcall(function()
+            local apiUrl = "https://nemesis-api-production.up.railway.app/api/universal-key/validate"
+            
+            local request = syn and syn.request 
+                or http_request 
+                or (game:GetService("HttpService") and function(...)
+                    return game:GetService("HttpService"):RequestAsync(...)
+                end)
+                or request
+            
+            if not request then
+                return { Success = false, Message = "No HTTP library" }
+            end
+            
+            local response = request({
+                Url = apiUrl,
+                Method = "POST",
+                Headers = {
+                    ["Content-Type"] = "application/json"
+                },
+                Body = game:GetService("HttpService"):JSONEncode({
+                    key = key
+                })
+            })
+            
+            if response.StatusCode == 200 then
+                local data = game:GetService("HttpService"):JSONDecode(response.Body)
+                return { 
+                    Success = data.success, 
+                    Message = data.message,
+                    Data = data
+                }
+            else
+                return { 
+                    Success = false, 
+                    Message = "HTTP Error: " .. response.StatusCode
+                }
+            end
+        end)
+        
+        return success and response or { Success = false, Message = "Connection error" }
     end
-    local function mkStroke(p, color, t)
-        local s = Instance.new("UIStroke")
-        s.Color = color or C.Border
-        s.Thickness = t or 0.5
-        s.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-        s.Parent = p
-        return s
+
+    local function saveValidKey(key)
+        if not KeySystemAutoSaveLoad then return end
+        pcall(function()
+            if writefile then
+                writefile("Nemesis_ValidKey.txt", key)
+            elseif gethui then
+                local folder = Instance.new("Folder")
+                folder.Name = "NemesisKey"
+                folder.Parent = gethui()
+                local value = Instance.new("StringValue")
+                value.Name = "Key"
+                value.Value = key
+                value.Parent = folder
+            end
+        end)
     end
-    local function mkFrame(p, props)
-        local f = Instance.new("Frame")
-        for k,v in pairs(props or {}) do f[k]=v end
-        f.BorderSizePixel = 0
-        f.Parent = p
-        return f
+
+    local function loadValidKey()
+        if not KeySystemAutoSaveLoad then return nil end
+        local key = nil
+        pcall(function()
+            if readfile then
+                key = readfile("Nemesis_ValidKey.txt")
+            elseif gethui then
+                local folder = gethui():FindFirstChild("NemesisKey")
+                if folder then
+                    local value = folder:FindFirstChild("Key")
+                    if value then
+                        key = value.Value
+                    end
+                end
+            end
+        end)
+        return key
     end
-    local function mkLabel(p, props)
-        local t = Instance.new("TextLabel")
-        t.BackgroundTransparency = 1
-        t.BorderSizePixel = 0
-        t.Font = Enum.Font.Gotham
-        t.TextXAlignment = Enum.TextXAlignment.Left
-        for k,v in pairs(props or {}) do t[k]=v end
-        t.Parent = p
-        return t
+
+    local function deleteSavedKey()
+        if not KeySystemAutoSaveLoad then return end
+        pcall(function()
+            if readfile and isfile and isfile("Nemesis_ValidKey.txt") then
+                delfile("Nemesis_ValidKey.txt")
+            elseif gethui then
+                local folder = gethui():FindFirstChild("NemesisKey")
+                if folder then
+                    folder:Destroy()
+                end
+            end
+        end)
     end
-    local function mkImage(p, id, size, zindex)
-        local img = Instance.new("ImageLabel")
-        img.BackgroundTransparency = 1
-        img.BorderSizePixel = 0
-        img.Size = UDim2.new(0, size, 0, size)
-        img.Image = id
-        img.ImageColor3 = C.White
-        img.ScaleType = Enum.ScaleType.Fit
-        img.ZIndex = zindex or 105
-        img.Parent = p
-        return img
+
+    -- ── CEK KEY TERSIMPAN SAAT KEY SYSTEM MUNCUL ────────────────────────────
+    local function checkAndAutoSubmit()
+        local savedKey = loadValidKey()
+        if savedKey then
+            local result = validateUniversalKey(savedKey)
+            if result and result.Success then
+                keyResolved = true
+                task.delay(0.5, closeKeySystem)
+                return true
+            else
+                deleteSavedKey()
+            end
+        end
+        return false
     end
 
     -- ── Blur fullscreen ───────────────────────────────────────────────────────
@@ -1341,6 +1410,12 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
         { Name="Submit",  Style="primary"   },
     }
 
+    -- ── AUTO CHECK KEY TERSIMPAN (DILAKUKAN SETELAH UI SIAP) ─────────────────
+    task.spawn(function()
+        task.wait(0.5)
+        checkAndAutoSubmit()
+    end)
+
     for i, btnCfg in ipairs(buttons) do
         local style = btnCfg.Style or "secondary"
 
@@ -1433,6 +1508,7 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
                     keyResolved = true
                     flashInput(C.Success)
                     showToast("Key accepted! Access granted.", "success")
+                    saveValidKey(currentKey)  -- Simpan key yang valid
                     task.delay(0.9, closeKeySystem)
 
                 elseif result == false then
@@ -1440,6 +1516,7 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
                         showToast("Key cannot be empty — please enter your key.", "warn")
                     else
                         showToast("Invalid key — double-check and try again.", "error")
+                        deleteSavedKey()  -- Hapus key yang tersimpan kalau invalid
                     end
                     flashInput(C.Error)
                     task.spawn(shakeCard)
@@ -1465,6 +1542,7 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
                 else
                     keyResolved = true
                     showToast("Key accepted! Access granted.", "success")
+                    saveValidKey(currentKey)
                     task.delay(0.9, closeKeySystem)
                 end
             end
