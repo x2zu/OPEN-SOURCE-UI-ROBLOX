@@ -671,6 +671,7 @@ function Chloex:Window(GuiConfig)
     if AUTO_LOAD then LoadConfigFromFile() end
 
     ElementsModule:Initialize(GuiConfig, SaveConfig, ConfigData, Icons)
+    
     -- ==================== KEY SYSTEM ====================
 
 local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
@@ -724,6 +725,60 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
 
     local keyResolved = false
     local Lighting = game:GetService("Lighting")
+    
+    -- ===== TAMBAHKAN INI =====
+    local KeySystemAutoSaveLoad = ks.AutoSaveLoad ~= false  -- default true
+    
+    local function saveValidKey(key)
+        if not KeySystemAutoSaveLoad then return end
+        pcall(function()
+            if writefile then
+                writefile("Nemesis_ValidKey.txt", key)
+            elseif gethui then
+                local folder = Instance.new("Folder")
+                folder.Name = "NemesisKey"
+                folder.Parent = gethui()
+                local value = Instance.new("StringValue")
+                value.Name = "Key"
+                value.Value = key
+                value.Parent = folder
+            end
+        end)
+    end
+    
+    local function loadValidKey()
+        if not KeySystemAutoSaveLoad then return nil end
+        local key = nil
+        pcall(function()
+            if readfile then
+                key = readfile("Nemesis_ValidKey.txt")
+            elseif gethui then
+                local folder = gethui():FindFirstChild("NemesisKey")
+                if folder then
+                    local value = folder:FindFirstChild("Key")
+                    if value then
+                        key = value.Value
+                    end
+                end
+            end
+        end)
+        return key
+    end
+    
+    local function deleteSavedKey()
+        if not KeySystemAutoSaveLoad then return end
+        pcall(function()
+            if readfile and isfile and isfile("Nemesis_ValidKey.txt") then
+                delfile("Nemesis_ValidKey.txt")
+            elseif gethui then
+                local folder = gethui():FindFirstChild("NemesisKey")
+                if folder then
+                    folder:Destroy()
+                end
+            end
+        end)
+    end
+    -- ===== SAMPAI SINI =====
 
     -- ── Helpers ───────────────────────────────────────────────────────────────
     local function corner(p, r)
@@ -1471,12 +1526,29 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
             end
         end)
     end
+        
+    -- ── AUTO CHECK KEY TERSIMPAN ───────────────────────────────────────────
+    task.spawn(function()
+        task.wait(0.5)
+        local savedKey = loadValidKey()
+        if savedKey then
+            -- Panggil callback submit dengan key tersimpan
+            for _, btn in ipairs(buttons) do
+                if btn.Name == "Submit" and btn.Callback then
+                    local result = btn.Callback(savedKey)
+                    if result then
+                        break
+                    end
+                end
+            end
+        end
+    end)
 
     -- ── Open animasi ──────────────────────────────────────────────────────────
     TweenService:Create(Card, TweenInfo.new(0.32,Enum.EasingStyle.Back,Enum.EasingDirection.Out), {
         Position=UDim2.new(0.5,0,0.5,0), BackgroundTransparency=0,
     }):Play()
-
+        
     repeat task.wait(0.1) until keyResolved or not KsGui.Parent
 
     pcall(function() BlurEffect:Destroy() end)
