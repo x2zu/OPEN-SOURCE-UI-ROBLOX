@@ -677,9 +677,9 @@ local function buildKeySystem(GuiConfig, CoreGui, TweenService, getIconId)
     if ks == true then ks = {} end
 
     -- ── BYPASS: cek script_key global (set tanpa local di script user) ────────
-    do
-        local sk = script_key  -- baca global langsung
-        if typeof(sk) == "string" and sk ~= "" then
+do
+    local sk = getgenv().script_key or script_key
+    if typeof(sk) == "string" and sk ~= "" then
             local ksButtons = ks.Buttons or {}
             for _, btn in ipairs(ksButtons) do
                 if btn.Name == "Submit" and btn.Callback then
