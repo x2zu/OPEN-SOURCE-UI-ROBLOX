@@ -1368,7 +1368,6 @@ function Nemesis:Window(GuiConfig)
     end
     ScrollTab.ChildAdded:Connect(UpdateSize1)
     ScrollTab.ChildRemoved:Connect(UpdateSize1)
-
     if GuiConfig.ShowUser then
         local UserInfoFrame = Instance.new("Frame")
         UserInfoFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
@@ -1384,8 +1383,14 @@ function Nemesis:Window(GuiConfig)
         UserInfoCorner.CornerRadius = UDim.new(0, 6)
         UserInfoCorner.Parent = UserInfoFrame
 
+        local UserInfoStroke = Instance.new("UIStroke")
+        UserInfoStroke.Color = Color3.fromRGB(142, 130, 254)
+        UserInfoStroke.Thickness = 1
+        UserInfoStroke.Transparency = 0.5
+        UserInfoStroke.Parent = UserInfoFrame
+
         local Avatar = Instance.new("ImageLabel")
-        Avatar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        Avatar.BackgroundColor3 = Color3.fromRGB(142, 130, 254)
         Avatar.BackgroundTransparency = 0.5
         Avatar.BorderColor3 = Color3.fromRGB(0, 0, 0)
         Avatar.BorderSizePixel = 0
@@ -1398,21 +1403,18 @@ function Nemesis:Window(GuiConfig)
         AvatarCorner.CornerRadius = UDim.new(1, 0)
         AvatarCorner.Parent = Avatar
 
-        local userId = LocalPlayer.UserId
-        local thumbType = Enum.ThumbnailType.HeadShot
-        local thumbSize = Enum.ThumbnailSize.Size48x48
-        local success, content = pcall(function()
-            return Players:GetUserThumbnailAsync(userId, thumbType, thumbSize)
-        end)
-        if success and content then
-            Avatar.Image = content
-        else
-            Avatar.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
-        end
+        local AvatarStroke = Instance.new("UIStroke")
+        AvatarStroke.Color = Color3.fromRGB(142, 130, 254)
+        AvatarStroke.Thickness = 1.5
+        AvatarStroke.Transparency = 0.3
+        AvatarStroke.Parent = Avatar
+
+        -- Avatar pakai logo custom, matikan GetUserThumbnailAsync
+        Avatar.Image = "rbxassetid://82972649071701"
 
         local DisplayName = Instance.new("TextLabel")
         DisplayName.Font = Enum.Font.GothamBold
-        DisplayName.Text = LocalPlayer.DisplayName
+        DisplayName.Text = ".gg/nemesishub"
         DisplayName.TextColor3 = Color3.fromRGB(255, 255, 255)
         DisplayName.TextSize = 13
         DisplayName.TextXAlignment = Enum.TextXAlignment.Left
@@ -1425,10 +1427,19 @@ function Nemesis:Window(GuiConfig)
         DisplayName.Name = "DisplayName"
         DisplayName.Parent = UserInfoFrame
 
+        local GradientDisplay = Instance.new("UIGradient")
+        GradientDisplay.Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0,   Color3.fromRGB(142, 130, 254)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(210, 205, 255)),
+            ColorSequenceKeypoint.new(1,   Color3.fromRGB(142, 130, 254))
+        })
+        GradientDisplay.Rotation = 0
+        GradientDisplay.Parent = DisplayName
+
         local Username = Instance.new("TextLabel")
         Username.Font = Enum.Font.Gotham
-        Username.Text = "@" .. LocalPlayer.Name
-        Username.TextColor3 = Color3.fromRGB(150, 150, 150)
+        Username.Text = "Join Discord"
+        Username.TextColor3 = Color3.fromRGB(255, 255, 255)
         Username.TextSize = 11
         Username.TextXAlignment = Enum.TextXAlignment.Left
         Username.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -1439,6 +1450,15 @@ function Nemesis:Window(GuiConfig)
         Username.Size = UDim2.new(1, -45, 0, 14)
         Username.Name = "Username"
         Username.Parent = UserInfoFrame
+
+        local GradientUsername = Instance.new("UIGradient")
+        GradientUsername.Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0,   Color3.fromRGB(142, 130, 254)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(180, 170, 255)),
+            ColorSequenceKeypoint.new(1,   Color3.fromRGB(142, 130, 254))
+        })
+        GradientUsername.Rotation = 0
+        GradientUsername.Parent = Username
     end
 
     _G.ScrollTab = ScrollTab
