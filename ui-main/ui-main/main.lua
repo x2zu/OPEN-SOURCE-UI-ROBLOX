@@ -1390,12 +1390,12 @@ function Nemesis:Window(GuiConfig)
         UserInfoStroke.Parent = UserInfoFrame
 
         local Avatar = Instance.new("ImageLabel")
-        Avatar.BackgroundColor3 = Color3.fromRGB(142, 130, 254)
-        Avatar.BackgroundTransparency = 0.5
+        Avatar.BackgroundTransparency = 1  -- transparan, ga ada background ungu
         Avatar.BorderColor3 = Color3.fromRGB(0, 0, 0)
         Avatar.BorderSizePixel = 0
         Avatar.Position = UDim2.new(0, 5, 0.5, -15)
         Avatar.Size = UDim2.new(0, 30, 0, 30)
+        Avatar.ScaleType = Enum.ScaleType.Fit
         Avatar.Name = "Avatar"
         Avatar.Parent = UserInfoFrame
 
@@ -1403,27 +1403,20 @@ function Nemesis:Window(GuiConfig)
         AvatarCorner.CornerRadius = UDim.new(1, 0)
         AvatarCorner.Parent = Avatar
 
-        local AvatarStroke = Instance.new("UIStroke")
-        AvatarStroke.Color = Color3.fromRGB(142, 130, 254)
-        AvatarStroke.Thickness = 1.5
-        AvatarStroke.Transparency = 0.3
-        AvatarStroke.Parent = Avatar
-
-        -- Avatar pakai logo custom, matikan GetUserThumbnailAsync
         Avatar.Image = "rbxassetid://82972649071701"
 
         local DisplayName = Instance.new("TextLabel")
         DisplayName.Font = Enum.Font.GothamBold
         DisplayName.Text = ".gg/nemesishub"
         DisplayName.TextColor3 = Color3.fromRGB(255, 255, 255)
-        DisplayName.TextSize = 13
+        DisplayName.TextSize = 12
         DisplayName.TextXAlignment = Enum.TextXAlignment.Left
-        DisplayName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        DisplayName.TextTruncate = Enum.TextTruncate.AtEnd  -- biar ga keluar frame
         DisplayName.BackgroundTransparency = 1
         DisplayName.BorderColor3 = Color3.fromRGB(0, 0, 0)
         DisplayName.BorderSizePixel = 0
-        DisplayName.Position = UDim2.new(0, 40, 0, 6)
-        DisplayName.Size = UDim2.new(1, -45, 0, 16)
+        DisplayName.Position = UDim2.new(0, 40, 0, 5)
+        DisplayName.Size = UDim2.new(1, -48, 0, 16)  -- size lebih pas
         DisplayName.Name = "DisplayName"
         DisplayName.Parent = UserInfoFrame
 
@@ -1438,16 +1431,16 @@ function Nemesis:Window(GuiConfig)
 
         local Username = Instance.new("TextLabel")
         Username.Font = Enum.Font.Gotham
-        Username.Text = "Join Discord"
+        Username.Text = "JOIN DISCORD"
         Username.TextColor3 = Color3.fromRGB(255, 255, 255)
-        Username.TextSize = 11
+        Username.TextSize = 10
         Username.TextXAlignment = Enum.TextXAlignment.Left
-        Username.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        Username.TextTruncate = Enum.TextTruncate.AtEnd  -- biar ga keluar frame
         Username.BackgroundTransparency = 1
         Username.BorderColor3 = Color3.fromRGB(0, 0, 0)
         Username.BorderSizePixel = 0
         Username.Position = UDim2.new(0, 40, 0, 22)
-        Username.Size = UDim2.new(1, -45, 0, 14)
+        Username.Size = UDim2.new(1, -48, 0, 13)  -- size lebih pas
         Username.Name = "Username"
         Username.Parent = UserInfoFrame
 
@@ -1460,7 +1453,6 @@ function Nemesis:Window(GuiConfig)
         GradientUsername.Rotation = 0
         GradientUsername.Parent = Username
     end
-
     _G.ScrollTab = ScrollTab
 
     DecideFrame.AnchorPoint = Vector2.new(0.5, 0)
