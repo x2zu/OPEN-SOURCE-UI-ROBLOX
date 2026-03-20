@@ -1407,7 +1407,7 @@ function Nemesis:Window(GuiConfig)
 
         local DisplayName = Instance.new("TextLabel")
         DisplayName.Font = Enum.Font.GothamBold
-        DisplayName.Text = ".gg/nemesishub"
+        DisplayName.Text = "NEMESIS"
         DisplayName.TextColor3 = Color3.fromRGB(255, 255, 255)
         DisplayName.TextSize = 12
         DisplayName.TextXAlignment = Enum.TextXAlignment.Left
